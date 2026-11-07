@@ -328,11 +328,14 @@
         </div>
 
         <div class="form-card" style="border-color:rgba(245,158,11,0.4);">
-            <div style="font-size:14px;font-weight:800;color:#fde047;">📲 Cách thêm App ra Màn hình chính Điện thoại</div>
+            <div style="font-size:14px;font-weight:800;color:#fde047;">📲 Cài đặt App Android (.APK) hoặc iPhone</div>
+            <a href="https://hoanghaictcxht-bot.github.io/jin-admin/JIN_Admin.apk" download="JIN_Admin.apk" class="btn btn-y1" style="padding:13px;font-size:13.5px;text-decoration:none;margin-bottom:4px;">
+                🤖 TẢI FILE CÀI ĐẶT ANDROID (JIN_Admin.apk)
+            </a>
             <div style="font-size:12.5px;color:#cbd5e1;line-height:1.6;">
+                • <b>Trên Android:</b> Bấm nút màu xanh phía trên để tải trực tiếp file <b><code>JIN_Admin.apk</code></b> về máy và bấm <b>Cài đặt</b>.<br>
                 • <b>Trên iPhone (Safari):</b> Bấm nút <b>Chia sẻ (biểu tượng mũi tên lên ⬆️ ở dưới cùng)</b> ➔ chọn <b>"Thêm vào MH chính" (Add to Home Screen)</b>.<br>
-                • <b>Trên Android (Chrome):</b> Bấm nút <b>3 chấm ⋮ ở góc trên phải</b> ➔ chọn <b>"Cài đặt ứng dụng"</b> hoặc <b>"Thêm vào màn hình chính"</b>.<br>
-                ✨ Biểu tượng <b>👑 JIN Admin</b> sẽ nằm ngay ngoài màn hình điện thoại của Bố như một App độc lập!
+                ✨ Biểu tượng <b>👑 JIN Admin</b> sẽ nằm ngay ngoài màn hình điện thoại của Bố!
             </div>
             <button class="btn btn-del" style="padding:10px;margin-top:4px;" onclick="logoutPin()">
                 🔒 Khóa lại màn hình PIN trên thiết bị này
@@ -385,17 +388,80 @@ function showMsg(msg, isErr = false) {
     window._toastTimer = setTimeout(() => { t.style.display = 'none'; }, 3800);
 }
 
+function rightRotate(value, amount) { return (value >>> amount) | (value << (32 - amount)); }
+function sha256BytesPure(ascii) {
+    const mathPow = Math.pow, maxWord = mathPow(2, 32);
+    const words = [], asciiBitLength = ascii.length * 8;
+    let hash = [], k = [], primeCounter = 0;
+    const isComposite = {};
+    for (let candidate = 2; primeCounter < 64; candidate++) {
+        if (!isComposite[candidate]) {
+            for (let i = 0; i < 313; i += candidate) isComposite[i] = candidate;
+            hash[primeCounter] = (mathPow(candidate, .5) * maxWord) | 0;
+            k[primeCounter++] = (mathPow(candidate, 1 / 3) * maxWord) | 0;
+        }
+    }
+    ascii += '\x80';
+    while (ascii.length % 64 - 56) ascii += '\x00';
+    for (let i = 0; i < ascii.length; i++) {
+        const j = ascii.charCodeAt(i);
+        words[i >> 2] |= j << ((3 - i) % 4) * 8;
+    }
+    words[words.length] = ((asciiBitLength / maxWord) | 0);
+    words[words.length] = (asciiBitLength);
+    for (let j = 0; j < words.length;) {
+        const w = words.slice(j, j += 16);
+        const oldHash = hash.slice(0);
+        for (let i = 0; i < 64; i++) {
+            const w15 = w[i - 15], w2 = w[i - 2];
+            const a = hash[0], e = hash[4];
+            const temp1 = hash[7] + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25)) + ((e & hash[5]) ^ ((~e) & hash[6])) + k[i] + (w[i] = (i < 16) ? w[i] : (w[i - 16] + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3)) + w[i - 7] + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))) | 0);
+            const temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22)) + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+            hash = [(temp1 + temp2) | 0].concat(hash);
+            hash[4] = (hash[4] + temp1) | 0;
+            hash.pop();
+        }
+        for (let i = 0; i < 8; i++) hash[i] = (hash[i] + oldHash[i]) | 0;
+    }
+    const bytes = [];
+    for (let i = 0; i < 8; i++) {
+        for (let j = 3; j + 1; j--) bytes.push((hash[i] >> (j * 8)) & 255);
+    }
+    return bytes;
+}
+function utf8Str(s) { return unescape(encodeURIComponent(String(s || ''))); }
+
 async function sha256Hex(str) {
-    const buf = new TextEncoder().encode(str);
-    const hash = await crypto.subtle.digest('SHA-256', buf);
-    return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+    return sha256BytesPure(utf8Str(str)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
 async function hmacSha256Hex(keyStr, msgStr) {
-    const enc = new TextEncoder();
-    const cryptoKey = await crypto.subtle.importKey('raw', enc.encode(keyStr), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-    const sigBuf = await crypto.subtle.sign('HMAC', cryptoKey, enc.encode(msgStr));
-    return Array.from(new Uint8Array(sigBuf)).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+    let kBytes = utf8Str(keyStr).split('').map(c => c.charCodeAt(0));
+    if (kBytes.length > 64) kBytes = sha256BytesPure(utf8Str(keyStr));
+    while (kBytes.length < 64) kBytes.push(0);
+    const oKey = kBytes.map(b => String.fromCharCode(b ^ 0x5c)).join('');
+    const iKey = kBytes.map(b => String.fromCharCode(b ^ 0x36)).join('');
+    const inner = sha256BytesPure(iKey + utf8Str(msgStr)).map(b => String.fromCharCode(b)).join('');
+    return sha256BytesPure(oKey + inner).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+}
+
+function copyTextSafe(text) {
+    try {
+        if (window.AndroidBridge && typeof window.AndroidBridge.copyToClipboard === 'function') {
+            window.AndroidBridge.copyToClipboard(String(text));
+            return Promise.resolve();
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            return navigator.clipboard.writeText(String(text));
+        }
+    } catch (_) {}
+    const ta = document.createElement('textarea');
+    ta.value = String(text);
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    return Promise.resolve();
 }
 
 function decryptTokenWithPin6(pin6) {
@@ -687,7 +753,7 @@ function renderDevices() {
                 <span class="hwid-code">${i.hwid}</span>
                 <div style="display:flex;gap:6px;">
                     <button class="btn btn-del" style="padding:4px 8px;" onclick="editCustomerMobile('${i.hwid}', '${safeName}', '${safePhone}')">✏️ Sửa tên</button>
-                    <button class="btn btn-del" style="padding:4px 8px;" onclick="navigator.clipboard.writeText('${i.hwid}');showMsg('📋 Đã copy ${i.hwid}')">📋 Copy</button>
+                    <button class="btn btn-del" style="padding:4px 8px;" onclick="copyTextSafe('${i.hwid}');showMsg('📋 Đã copy ${i.hwid}')">📋 Copy</button>
                 </div>
             </div>
 
@@ -869,7 +935,7 @@ async function generateOfflineKeyMobile() {
     if (!hwid || hwid.length < 8) return showMsg('⚠️ Vui lòng nhập mã HWID trước!', true);
     const expTs = days >= 9999 ? 4102444800000 : (Date.now() + days * 86400000);
     const key = await createOfflineKey(hwid, expTs, 'vip');
-    await navigator.clipboard.writeText(key);
+    await copyTextSafe(key);
     showMsg(`📋 Đã Copy Key:\n${key}`);
 }
 
