@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.hoanghai.jinadmin",
+        "sha256_cert_fingerprints": ["29:15:89:4B:95:5D:E1:EB:11:55:CA:C5:A9:EE:B9:D9:0C:4A:41:27:DA:E3:8A:8C:DE:06:76:26:68:9A:D6:FB"]
+      }
+    }]
