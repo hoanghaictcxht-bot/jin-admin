@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="JIN Admin" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#0f172a" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" href="icon.png" />
+    <link rel="icon" type="image/png" href="icon.png" />
+    <title>👑 JIN Admin — Quản Lý Bản Quyền</title>
+    <style>
+        :root {
+            --bg: #070b14;
+            --card: #111827;
+            --card2: #1e293b;
+            --gold: #f59e0b;
+            --green: #10b981;
+            --blue: #3b82f6;
+            --red: #ef4444;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; }
+        body { background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 86px; overflow-x: hidden; }
+
+        /* PIN LOGIN SCREEN */
+        #pinLockScreen {
+            position: fixed; inset: 0; z-index: 99999; background: radial-gradient(circle at top, #1e293b 0%, #070b14 70%);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; text-align: center;
+        }
+        .pin-card {
+            background: rgba(17, 24, 39, 0.92); border: 1.5px solid rgba(245, 158, 11, 0.45); border-radius: 22px;
+            padding: 28px 22px; width: 100%; max-width: 360px; box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+        .pin-logo {
+            width: 68px; height: 68px; border-radius: 18px; margin: 0 auto 14px;
+            background: linear-gradient(135deg, #f59e0b, #ea580c); display: flex; align-items: center; justify-content: center;
+            font-size: 32px; box-shadow: 0 8px 24px rgba(245, 158, 11, 0.4);
+        }
+        .pin-input {
+            width: 100%; background: #070b14; border: 1.5px solid rgba(255,255,255,0.2); border-radius: 12px;
+            padding: 14px; color: #fde047; font-size: 22px; font-weight: 800; text-align: center; letter-spacing: 6px;
+            margin: 16px 0 14px; outline: none;
+        }
+        .pin-input:focus { border-color: #f59e0b; }
+
+        /* APP TOP HEADER */
+        .app-header {
+            position: sticky; top: 0; z-index: 100; background: rgba(15, 23, 42, 0.94); backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(245, 158, 11, 0.3); padding: 12px 16px;
+            padding-top: max(12px, env(safe-area-inset-top));
+            display: flex; align-items: center; justify-content: space-between; gap: 10px;
+        }
+        .brand { display: flex; align-items: center; gap: 10px; }
+        .brand-icon {
+            width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #f59e0b, #ea580c);
+            display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
+        }
+        .brand-title { font-size: 15px; font-weight: 800; color: #fde047; letter-spacing: 0.2px; }
+        .brand-sub { font-size: 11px; color: var(--muted); }
+        .refresh-btn {
+            background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.5); color: #93c5fd;
+            padding: 8px 12px; border-radius: 10px; font-size: 12.5px; font-weight: 700; cursor: pointer;
+        }
+
+        /* STATS ROW */
+        .stats-bar {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 12px 14px 4px; max-width: 760px; margin: 0 auto;
+        }
+        .stat-box {
+            background: var(--card); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;
+            padding: 10px 8px; text-align: center;
+        }
+        .stat-num { font-size: 19px; font-weight: 900; margin-bottom: 2px; }
+        .stat-lbl { font-size: 10.5px; color: var(--muted); font-weight: 600; }
+
+        /* MAIN CONTENT CONTAINER */
+        .main-wrap { max-width: 760px; margin: 0 auto; padding: 10px 14px; }
+        .tab-view { display: none; flex-direction: column; gap: 12px; }
+        .tab-view.active { display: flex; }
+
+        /* FILTER CHIPS */
+        .filter-row { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+        .filter-row::-webkit-scrollbar { display: none; }
+        .chip {
+            background: var(--card); border: 1px solid rgba(255,255,255,0.12); color: #cbd5e1;
+            padding: 7px 13px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; cursor: pointer;
+        }
+        .chip.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+
+        .search-input {
+            width: 100%; background: var(--card); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px;
+            padding: 11px 14px; color: #fff; font-size: 13.5px; outline: none;
+        }
+        .search-input:focus { border-color: var(--gold); }
+
+        /* DEVICE CARD (MOBILE FRIENDLY) */
+        .dev-card {
+            background: var(--card); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px;
+            padding: 14px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.35);
+        }
+        .dev-card.pending {
+            border: 1.5px solid #ef4444; background: linear-gradient(145deg, rgba(239, 68, 68, 0.12), #111827);
+        }
+        .dev-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+        .cust-name { font-size: 14.5px; font-weight: 800; color: #fde047; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        .pc-info { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
+        .hwid-row {
+            display: flex; align-items: center; justify-content: space-between; background: #070b14;
+            padding: 7px 10px; border-radius: 8px; border: 1px dashed rgba(56, 189, 248, 0.3);
+        }
+        .hwid-code { font-family: monospace; font-size: 13px; font-weight: 800; color: #38bdf8; }
+        .action-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+        .action-grid-2 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 2px; }
+
+        .btn {
+            border: none; border-radius: 9px; padding: 10px 6px; font-size: 12px; font-weight: 800;
+            color: #fff; cursor: pointer; text-align: center; display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+        }
+        .btn:active { transform: scale(0.96); opacity: 0.9; }
+        .btn-m1 { background: rgba(59, 130, 246, 0.25); border: 1px solid rgba(59, 130, 246, 0.55); color: #93c5fd; }
+        .btn-m3 { background: rgba(139, 92, 246, 0.25); border: 1px solid rgba(139, 92, 246, 0.55); color: #c4b5fd; }
+        .btn-y1 { background: linear-gradient(135deg, #10b981, #059669); }
+        .btn-life { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .btn-trial { background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); color: #7dd3fc; padding: 8px 6px; font-size: 11px; }
+        .btn-lock { background: rgba(239, 68, 68, 0.18); border: 1px solid rgba(239, 68, 68, 0.45); color: #fca5a5; padding: 8px 6px; font-size: 11px; }
+        .btn-del { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #94a3b8; padding: 8px 6px; font-size: 11px; }
+
+        /* FORM CARDS */
+        .form-card {
+            background: var(--card); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px;
+            padding: 16px; display: flex; flex-direction: column; gap: 12px;
+        }
+        .form-label { font-size: 12px; font-weight: 700; color: #cbd5e1; margin-bottom: 4px; display: block; }
+        .form-input, .form-select {
+            width: 100%; background: #070b14; border: 1px solid rgba(255,255,255,0.2); border-radius: 10px;
+            padding: 12px; color: #fff; font-size: 14px; outline: none;
+        }
+        .form-input:focus { border-color: var(--gold); }
+
+        /* BOTTOM TAB BAR */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+            background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+        }
+        .nav-item {
+            background: none; border: none; color: var(--muted); display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 3px; padding: 6px 4px; font-size: 11px; font-weight: 700;
+            cursor: pointer; position: relative;
+        }
+        .nav-item.active { color: #fde047; }
+        .nav-icon { font-size: 19px; }
+        .nav-badge {
+            position: absolute; top: 2px; right: calc(50% - 22px); background: #ef4444; color: #fff;
+            font-size: 10px; font-weight: 900; padding: 1px 5px; border-radius: 10px; display: none;
+        }
+
+        /* TOAST */
+        #toast {
+            position: fixed; top: 18px; left: 50%; transform: translateX(-50%); z-index: 100000;
+            background: #10b981; color: #fff; padding: 11px 18px; border-radius: 12px; font-size: 13px;
+            font-weight: 800; box-shadow: 0 10px 30px rgba(0,0,0,0.7); display: none; width: max-content; max-width: 92vw; text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<!-- MÀN HÌNH KHÓA MÃ PIN BẢO VỆ -->
+<div id="pinLockScreen">
+    <div class="pin-card">
+        <div class="pin-logo">👑</div>
+        <div style="font-size:18px;font-weight:900;color:#fde047;">JIN AI ADMIN</div>
+        <div style="font-size:12.5px;color:#94a3b8;margin-top:4px;line-height:1.45;">
+            Trung tâm Quản lý Bản quyền Online dành riêng cho Admin Nguyễn Hoàng Hải
+        </div>
+        <input type="password" id="pinInput" class="pin-input" inputmode="numeric" placeholder="••••••" onkeydown="if(event.key==='Enter')unlockApp()" />
+        <div style="font-size:11px;color:#64748b;margin-bottom:14px;">
+            💡 Nhập 6 số cuối SĐT Zalo của Bố (hoặc cả SĐT) để mở khóa
+        </div>
+        <button class="btn btn-life" style="width:100%;padding:13px;font-size:14px;" onclick="unlockApp()">
+            🔓 Mở Khóa Quản Trị
+        </button>
+    </div>
+</div>
+
+<!-- HEADER -->
+<div class="app-header">
+    <div class="brand">
+        <div class="brand-icon">👑</div>
+        <div>
+            <div class="brand-title">JIN AI CLOUD ADMIN</div>
+            <div class="brand-sub" id="syncTimeLabel">Đang kết nối GitHub Cloud...</div>
+        </div>
+    </div>
+    <button class="refresh-btn" onclick="loadCloudData(true)" id="btnRefresh">🔄 Làm mới</button>
+</div>
+
+<!-- THỐNG KÊ NHANH -->
+<div class="stats-bar">
+    <div class="stat-box">
+        <div class="stat-num" style="color:#38bdf8;" id="stTotal">0</div>
+        <div class="stat-lbl">💻 Tổng máy</div>
+    </div>
+    <div class="stat-box" style="border-color:rgba(239,68,68,0.35);">
+        <div class="stat-num" style="color:#f87171;" id="stPending">0</div>
+        <div class="stat-lbl">🔔 Chờ duyệt</div>
+    </div>
+    <div class="stat-box" style="border-color:rgba(16,185,129,0.35);">
+        <div class="stat-num" style="color:#34d399;" id="stActive">0</div>
+        <div class="stat-lbl">⭐ Đã kích hoạt</div>
+    </div>
+</div>
+
+<!-- NỘI DUNG CHÍNH -->
+<div class="main-wrap">
+
+    <!-- TAB 1: DANH SÁCH MÁY KHÁCH & DUYỆT 1-CHẠM -->
+    <div id="tabDevices" class="tab-view active">
+        <div class="filter-row">
+            <button class="chip active" onclick="setFilter('all', this)">Tất cả</button>
+            <button class="chip" onclick="setFilter('pending', this)">🔔 Chờ duyệt</button>
+            <button class="chip" onclick="setFilter('trial', this)">⏳ Dùng thử</button>
+            <button class="chip" onclick="setFilter('active', this)">⭐ Đã kích hoạt VIP</button>
+            <button class="chip" onclick="setFilter('expired', this)">🔒 Hết hạn / Khóa</button>
+        </div>
+
+        <input type="text" id="searchBox" class="search-input" oninput="renderDevices()" placeholder="🔍 Tìm theo SĐT, Tên khách, Tên máy, HWID..." />
+
+        <div id="devicesList" style="display:flex;flex-direction:column;gap:10px;">
+            <div style="text-align:center;padding:36px 16px;color:#94a3b8;">⏳ Đang tải danh sách máy khách...</div>
+        </div>
+    </div>
+
+    <!-- TAB 2: CẤP QUYỀN TRƯỚC THEO SỐ ĐIỆN THOẠI ZALO -->
+    <div id="tabPhone" class="tab-view">
+        <div class="form-card" style="border-color:rgba(16,185,129,0.45);">
+            <div style="font-size:15px;font-weight:800;color:#34d399;">⚡ Cấp quyền trước theo SĐT Zalo</div>
+            <div style="font-size:12px;color:#94a3b8;line-height:1.5;">
+                Khách chưa cần cài App hay gửi mã UID! Bố chỉ cần nhập SĐT Zalo của khách vào đây. Khi khách mở phần mềm và gõ SĐT của họ vào ô bản quyền, máy khách sẽ <b>tự động kích hoạt VIP ngay lập tức</b>.
+            </div>
+
+            <div>
+                <label class="form-label">📱 Số điện thoại Zalo của khách:</label>
+                <input type="tel" id="prePhone" class="form-input" placeholder="Ví dụ: 0912345678" style="font-weight:800;color:#38bdf8;" />
+            </div>
+
+            <div>
+                <label class="form-label">👤 Tên khách hàng / Ghi chú:</label>
+                <input type="text" id="preName" class="form-input" placeholder="Ví dụ: Anh Minh - Hà Nội" />
+            </div>
+
+            <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:10px;">
+                <div>
+                    <label class="form-label">⏳ Gói thời hạn:</label>
+                    <select id="preDays" class="form-select" style="color:#fde047;font-weight:800;">
+                        <option value="30">⭐ 1 Tháng (30 ngày)</option>
+                        <option value="90">⭐ 3 Tháng (90 ngày)</option>
+                        <option value="180">⭐ 6 Tháng (180 ngày)</option>
+                        <option value="365" selected>⭐ 1 Năm (365 ngày)</option>
+                        <option value="36500">👑 VĨNH VIỄN (Trọn đời)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label">💻 Số máy tối đa:</label>
+                    <select id="preMax" class="form-select">
+                        <option value="1" selected>1 máy</option>
+                        <option value="2">2 máy</option>
+                        <option value="3">3 máy</option>
+                        <option value="5">5 máy</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn btn-y1" style="padding:14px;font-size:14px;margin-top:4px;" onclick="createPhonePreApproval()">
+                ✅ CẤP QUYỀN CHO SĐT NÀY NGAY
+            </button>
+        </div>
+
+        <div class="form-card">
+            <div style="font-size:13.5px;font-weight:800;color:#fde047;">📋 Danh sách SĐT đã cấp quyền trước</div>
+            <div id="preListWrap" style="display:flex;flex-direction:column;gap:8px;"></div>
+        </div>
+    </div>
+
+    <!-- TAB 3: KÍCH HOẠT MÃ HWID & CÀI APP ĐIỆN THOẠI -->
+    <div id="tabManual" class="tab-view">
+        <div class="form-card" style="border-color:rgba(99,102,241,0.45);">
+            <div style="font-size:15px;font-weight:800;color:#a5b4fc;">🔑 Kích hoạt hoặc Tạo Key theo HWID</div>
+            <div style="font-size:12px;color:#94a3b8;line-height:1.45;">
+                Nếu khách chụp ảnh gửi mã <code>JIN-XXXX-XXXX-XXXX</code>, Bố nhập vào đây để kích hoạt thẳng lên Cloud hoặc copy mã Key gửi Zalo:
+            </div>
+
+            <div>
+                <label class="form-label">💻 Mã máy khách (HWID):</label>
+                <input type="text" id="manHwid" class="form-input" placeholder="JIN-XXXX-XXXX-XXXX" style="font-family:monospace;font-weight:800;color:#38bdf8;text-transform:uppercase;" />
+            </div>
+
+            <div>
+                <label class="form-label">👤 Tên khách hàng / SĐT:</label>
+                <input type="text" id="manName" class="form-input" placeholder="Tên khách hoặc ghi chú" />
+            </div>
+
+            <div>
+                <label class="form-label">⏳ Gói thời hạn:</label>
+                <select id="manDays" class="form-select" style="color:#fde047;font-weight:800;">
+                    <option value="30">1 Tháng (30 ngày)</option>
+                    <option value="90">3 Tháng (90 ngày)</option>
+                    <option value="365" selected>1 Năm (365 ngày)</option>
+                    <option value="36500">👑 VĨNH VIỄN (Trọn đời)</option>
+                </select>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                <button class="btn" style="background:linear-gradient(135deg,#4f46e5,#3b82f6);padding:13px;" onclick="manualGrantHwid()">
+                    ☁️ Kích hoạt Online
+                </button>
+                <button class="btn btn-life" style="padding:13px;" onclick="generateOfflineKeyMobile()">
+                    📋 Copy Key Offline
+                </button>
+            </div>
+        </div>
+
+        <div class="form-card" style="border-color:rgba(245,158,11,0.4);">
+            <div style="font-size:14px;font-weight:800;color:#fde047;">📲 Cách thêm App ra Màn hình chính Điện thoại</div>
+            <div style="font-size:12.5px;color:#cbd5e1;line-height:1.6;">
+                • <b>Trên iPhone (Safari):</b> Bấm nút <b>Chia sẻ (biểu tượng mũi tên lên ⬆️ ở dưới cùng)</b> ➔ chọn <b>"Thêm vào MH chính" (Add to Home Screen)</b>.<br>
+                • <b>Trên Android (Chrome):</b> Bấm nút <b>3 chấm ⋮ ở góc trên phải</b> ➔ chọn <b>"Cài đặt ứng dụng"</b> hoặc <b>"Thêm vào màn hình chính"</b>.<br>
+                ✨ Biểu tượng <b>👑 JIN Admin</b> sẽ nằm ngay ngoài màn hình điện thoại của Bố như một App độc lập!
+            </div>
+            <button class="btn btn-del" style="padding:10px;margin-top:4px;" onclick="logoutPin()">
+                🔒 Khóa lại màn hình PIN trên thiết bị này
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<!-- THANH ĐIỀU HƯỚNG DƯỚI CÙNG (BOTTOM NAV) -->
+<div class="bottom-nav">
+    <button class="nav-item active" onclick="switchTab('tabDevices', this)">
+        <span class="nav-icon">💻</span>
+        <span>Máy khách & Duyệt</span>
+        <span class="nav-badge" id="navPendingBadge">0</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('tabPhone', this)">
+        <span class="nav-icon">⚡</span>
+        <span>Cấp quyền SĐT</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('tabManual', this)">
+        <span class="nav-icon">🔑</span>
+        <span>Mã HWID / App</span>
+    </button>
+</div>
+
+<div id="toast"></div>
+
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+
+const CLOUD_OWNER = 'hoanghaictcxht-bot';
+const CLOUD_REPO = 'jin-ai-license-cloud';
+const PIN_CIPHER_HEX = '2d213e00247e3633407401067372280528083e012a102f7e11757b5b05337c1e35637a2931735a46';
+const PIN_HASH_CHECK = '911c2fcb65eb07fa0465a1fd1a5784c9b08e34d4526602f3754c1ed6659f482e';
+const MASTER_SECRET = 'JIN_AI_STUDIO_COMMERCIAL_MASTER_SECRET_2026_@#!';
+
+let ACTIVE_TOKEN = '';
+window.cloudState = { items: [], pre_approvals: [] };
+window.curFilter = 'all';
+
+function showMsg(msg, isErr = false) {
+    const t = document.getElementById('toast');
+    t.style.background = isErr ? '#ef4444' : '#10b981';
+    t.textContent = msg;
+    t.style.display = 'block';
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(() => { t.style.display = 'none'; }, 3800);
+}
+
+async function sha256Hex(str) {
+    const buf = new TextEncoder().encode(str);
+    const hash = await crypto.subtle.digest('SHA-256', buf);
+    return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function hmacSha256Hex(keyStr, msgStr) {
+    const enc = new TextEncoder();
+    const cryptoKey = await crypto.subtle.importKey('raw', enc.encode(keyStr), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+    const sigBuf = await crypto.subtle.sign('HMAC', cryptoKey, enc.encode(msgStr));
+    return Array.from(new Uint8Array(sigBuf)).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+}
+
+function decryptTokenWithPin6(pin6) {
+    const mask = `JIN_PIN_${pin6}_HOANG_HAI_2026`;
+    const bytes = [];
+    for (let i = 0; i < PIN_CIPHER_HEX.length; i += 2) {
+        bytes.push(parseInt(PIN_CIPHER_HEX.substr(i, 2), 16));
+    }
+    let out = '';
+    for (let i = 0; i < bytes.length; i++) {
+        out += String.fromCharCode(bytes[i] ^ mask.charCodeAt(i % mask.length));
+    }
+    return out;
+}
+
+async function unlockApp(savedPin6 = null) {
+    const raw = savedPin6 || (document.getElementById('pinInput')?.value || '').replace(/\D+/g, '');
+    const pin6 = raw.length >= 6 ? raw.slice(-6) : raw;
+    if (!pin6) return showMsg('⚠️ Vui lòng nhập mã PIN!', true);
+
+    const h = await sha256Hex(`JIN_CHECK_${pin6}`);
+    if (h !== PIN_HASH_CHECK) {
+        if (!savedPin6) showMsg('❌ Mã PIN không đúng! Hãy nhập 6 số cuối SĐT Zalo của Bố (227766).', true);
+        return;
+    }
+
+    ACTIVE_TOKEN = decryptTokenWithPin6(pin6);
+    localStorage.setItem('jin_admin_pin6', pin6);
+    document.getElementById('pinLockScreen').style.display = 'none';
+    loadCloudData(false);
+}
+
+function logoutPin() {
+    localStorage.removeItem('jin_admin_pin6');
+    ACTIVE_TOKEN = '';
+    document.getElementById('pinLockScreen').style.display = 'flex';
+}
+
+function switchTab(tabId, btnEl) {
+    document.querySelectorAll('.tab-view').forEach(el => el.classList.remove('active'));
+    document.getElementById(tabId)?.classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+}
+
+function setFilter(f, btnEl) {
+    window.curFilter = f;
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    if (btnEl) btnEl.classList.add('active');
+    renderDevices();
+}
+
+function normalizeHwid(rawHwid) {
+    if (!rawHwid) return '';
+    const upper = rawHwid.toString().toUpperCase().trim();
+    const match = upper.match(/JIN-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}/);
+    if (match) return match[0];
+    let clean = upper.replace(/[^A-Z0-9]/g, '');
+    if (clean.startsWith('JIN')) clean = clean.substring(3);
+    clean = clean.substring(0, 12).padEnd(12, '0');
+    return `JIN-${clean.substring(0, 4)}-${clean.substring(4, 8)}-${clean.substring(8, 12)}`;
+}
+
+function normalizePhone(input) {
+    let digits = String(input || '').replace(/\D+/g, '');
+    if (digits.startsWith('84') && digits.length >= 10) digits = '0' + digits.slice(2);
+    return digits;
+}
+
+async function signRecord(hwid, expireTimestamp, status, locked) {
+    const norm = normalizeHwid(hwid);
+    const full = await hmacSha256Hex(MASTER_SECRET + '_CLOUD_V1', `${norm}|${Number(expireTimestamp)}|${status || 'active'}|${locked ? '1' : '0'}`);
+    return full.substring(0, 16);
+}
+
+async function createOfflineKey(hwid, expireTimestamp, plan = 'vip') {
+    const norm = normalizeHwid(hwid);
+    const p = plan.toLowerCase();
+    const full = await hmacSha256Hex(MASTER_SECRET, `${norm}|${expireTimestamp}|${p}`);
+    const sig = full.substring(0, 8);
+    const expHex = expireTimestamp.toString(16).toUpperCase();
+    const hwidShort = norm.split('-').pop();
+    return `JIN-${p.toUpperCase()}-${hwidShort}-${expHex}-${sig}`;
+}
+
+function b64EncodeUtf8(str) { return btoa(unescape(encodeURIComponent(str))); }
+function b64DecodeUtf8(b64) { return decodeURIComponent(escape(atob(b64.replace(/\s+/g, '')))); }
+
+async function ghReq(method, path, body = null) {
+    const headers = { 'Authorization': `token ${ACTIVE_TOKEN}`, 'Accept': 'application/vnd.github+json' };
+    if (body) headers['Content-Type'] = 'application/json';
+    const res = await fetch(`https://api.github.com${path}`, {
+        method, headers, body: body ? JSON.stringify(body) : null
+    });
+    const data = await res.json().catch(() => ({}));
+    return { status: res.status, data };
+}
+
+async function readCloudJson(filePath) {
+    const r = await ghReq('GET', `/repos/${CLOUD_OWNER}/${CLOUD_REPO}/contents/${filePath}`);
+    if (r.status === 200 && r.data && r.data.content) {
+        return { exists: true, sha: r.data.sha, json: JSON.parse(b64DecodeUtf8(r.data.content)) };
+    }
+    return { exists: false, sha: null, json: null };
+}
+
+async function writeCloudJson(filePath, jsonContent, commitMsg, sha = null) {
+    for (let attempt = 0; attempt < 3; attempt++) {
+        let curSha = sha;
+        if (!curSha && attempt > 0) {
+            const cur = await readCloudJson(filePath);
+            curSha = cur.sha;
+        }
+        const payload = { message: commitMsg, content: b64EncodeUtf8(JSON.stringify(jsonContent, null, 2)) };
+        if (curSha) payload.sha = curSha;
+        const r = await ghReq('PUT', `/repos/${CLOUD_OWNER}/${CLOUD_REPO}/contents/${filePath}`, payload);
+        if (r.status === 200 || r.status === 201) return true;
+        sha = null;
+    }
+    return false;
+}
+
+async function loadCloudData(notify = false) {
+    if (!ACTIVE_TOKEN) return;
+    const btn = document.getElementById('btnRefresh');
+    if (btn) btn.textContent = '⏳ Đang tải...';
+    try {
+        const query = `{
+          repository(owner: "${CLOUD_OWNER}", name: "${CLOUD_REPO}") {
+            licensesFile: object(expression: "HEAD:licenses/cloud_licenses.json") { ... on Blob { text } }
+            devicesDir: object(expression: "HEAD:devices") {
+              ... on Tree { entries { name object { ... on Blob { text } } } }
+            }
+          }
+        }`;
+        const res = await fetch('https://api.github.com/graphql', {
+            method: 'POST',
+            headers: { 'Authorization': `bearer ${ACTIVE_TOKEN}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query })
+        });
+        const gql = await res.json();
+        const repo = gql?.data?.repository || {};
+        let cloudDb = { records: {}, pre_approvals: {} };
+        if (repo.licensesFile?.text) {
+            try { cloudDb = JSON.parse(repo.licensesFile.text); } catch (_) {}
+        }
+        if (!cloudDb.records) cloudDb.records = {};
+
+        const devicesMap = {};
+        for (const e of (repo.devicesDir?.entries || [])) {
+            if (e.name.endsWith('.json') && e.object?.text) {
+                try {
+                    const d = JSON.parse(e.object.text);
+                    if (d && d.hwid) devicesMap[normalizeHwid(d.hwid)] = d;
+                } catch (_) {}
+            }
+        }
+
+        const allHwids = new Set([...Object.keys(devicesMap), ...Object.keys(cloudDb.records || {})]);
+        const now = Date.now();
+        const items = [];
+        for (const hwid of allHwids) {
+            const dev = devicesMap[hwid] || {};
+            const rec = cloudDb.records[hwid] || null;
+            const expireTs = rec?.expireTimestamp ? Number(rec.expireTimestamp) : (dev.expire_at ? new Date(dev.expire_at).getTime() : 0);
+            const daysLeft = expireTs > now ? Math.ceil((expireTs - now) / 86400000) : 0;
+            const isLifetime = daysLeft > 3650 || Boolean(dev.is_lifetime);
+            const isLocked = Boolean(rec?.locked || rec?.status === 'revoked' || dev.is_revoked);
+            const isTrial = rec ? (rec.status === 'trial') : (dev.is_trial !== false);
+            const isActivePaid = !isLocked && !isTrial && expireTs > now;
+            const lastSeenMs = dev.last_seen_at ? new Date(dev.last_seen_at).getTime() : (rec?.updated_at ? new Date(rec.updated_at).getTime() : 0);
+
+            items.push({
+                hwid,
+                hostname: dev.hostname || 'Chưa mở App',
+                os_user: dev.os_user || '',
+                customer_name: rec?.customer_name || dev.customer_name || '',
+                customer_phone: rec?.customer_phone || dev.customer_phone || '',
+                note: rec?.note || '',
+                status: isLocked ? 'revoked' : (isActivePaid ? 'active' : (isTrial && expireTs > now ? 'trial' : 'expired')),
+                is_active: isActivePaid,
+                is_revoked: isLocked,
+                is_lifetime: isLifetime,
+                days_left: isLifetime ? 99999 : daysLeft,
+                expire_at: expireTs,
+                requested_activation: Boolean(dev.requested_activation && !isActivePaid),
+                last_seen_at: lastSeenMs
+            });
+        }
+
+        items.sort((a, b) => {
+            if (a.requested_activation !== b.requested_activation) return a.requested_activation ? -1 : 1;
+            return (b.last_seen_at || 0) - (a.last_seen_at || 0);
+        });
+
+        window.cloudState.items = items;
+        window.cloudState.pre_approvals = Object.values(cloudDb.pre_approvals || {}).map(p => ({
+            ...p,
+            claimed_hwids: p.bound_hwids || p.claimed_hwids || []
+        }));
+
+        const pendingCount = items.filter(i => i.requested_activation).length;
+        document.getElementById('stTotal').textContent = items.length;
+        document.getElementById('stPending').textContent = pendingCount;
+        document.getElementById('stActive').textContent = items.filter(i => i.is_active).length;
+
+        const navBadge = document.getElementById('navPendingBadge');
+        if (navBadge) {
+            navBadge.style.display = pendingCount > 0 ? 'inline-block' : 'none';
+            navBadge.textContent = pendingCount;
+        }
+
+        const timeStr = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        document.getElementById('syncTimeLabel').textContent = `🟢 Đồng bộ lúc ${timeStr}`;
+
+        renderPreApprovals();
+        renderDevices();
+        if (notify) showMsg('✅ Đã cập nhật dữ liệu mới nhất!');
+    } catch (e) {
+        if (notify) showMsg('❌ Lỗi kết nối: ' + e.message, true);
+    } finally {
+        if (btn) btn.textContent = '🔄 Làm mới';
+    }
+}
+
+function formatTimeAgo(ms) {
+    if (!ms) return 'Chưa rõ';
+    const diffSec = Math.max(0, Math.floor((Date.now() - ms) / 1000));
+    if (diffSec < 90) return '🟢 Online vừa xong';
+    if (diffSec < 3600) return `🟢 ${Math.floor(diffSec / 60)} phút trước`;
+    if (diffSec < 86400) return `🕒 ${Math.floor(diffSec / 3600)} giờ trước`;
+    return `📅 ${Math.floor(diffSec / 86400)} ngày trước`;
+}
+
+function renderDevices() {
+    const wrap = document.getElementById('devicesList');
+    const q = (document.getElementById('searchBox')?.value || '').trim().toLowerCase();
+    const f = window.curFilter || 'all';
+
+    const list = (window.cloudState.items || []).filter(item => {
+        if (f === 'pending' && !item.requested_activation) return false;
+        if (f === 'trial' && !(item.status === 'trial' && !item.is_active)) return false;
+        if (f === 'active' && !item.is_active) return false;
+        if (f === 'expired' && (item.is_active || item.status === 'trial')) return false;
+        if (q) {
+            const hay = `${item.hwid} ${item.customer_name} ${item.customer_phone} ${item.hostname} ${item.os_user} ${item.note}`.toLowerCase();
+            if (!hay.includes(q)) return false;
+        }
+        return true;
+    });
+
+    if (!list.length) {
+        wrap.innerHTML = `<div style="text-align:center;padding:32px 16px;color:#64748b;background:var(--card);border-radius:14px;">Không có máy khách nào trong mục này.</div>`;
+        return;
+    }
+
+    wrap.innerHTML = list.map(i => {
+        let badge = '';
+        if (i.is_revoked) {
+            badge = `<span style="background:rgba(239,68,68,0.25);border:1px solid #ef4444;color:#fca5a5;padding:3px 9px;border-radius:10px;font-size:11px;font-weight:800;">🚫 ĐÃ KHÓA</span>`;
+        } else if (i.requested_activation) {
+            badge = `<span style="background:linear-gradient(135deg,#ef4444,#f59e0b);color:#fff;padding:4px 10px;border-radius:10px;font-size:11px;font-weight:900;">🔔 CHỜ DUYỆT</span>`;
+        } else if (i.is_active) {
+            badge = i.is_lifetime
+                ? `<span style="background:rgba(245,158,11,0.22);border:1px solid #f59e0b;color:#fde047;padding:3px 9px;border-radius:10px;font-size:11px;font-weight:800;">👑 VIP TRỌN ĐỜI</span>`
+                : `<span style="background:rgba(16,185,129,0.2);border:1px solid #10b981;color:#6ee7b7;padding:3px 9px;border-radius:10px;font-size:11px;font-weight:800;">⭐ VIP (${i.days_left} ngày)</span>`;
+        } else if (i.status === 'trial') {
+            badge = `<span style="background:rgba(56,189,248,0.18);border:1px solid #38bdf8;color:#7dd3fc;padding:3px 9px;border-radius:10px;font-size:11px;font-weight:700;">⏳ Dùng thử (${i.days_left} ngày)</span>`;
+        } else {
+            badge = `<span style="background:rgba(148,163,184,0.15);color:#cbd5e1;padding:3px 9px;border-radius:10px;font-size:11px;font-weight:700;">❌ Hết hạn</span>`;
+        }
+
+        const safeName = (i.customer_name || '').replace(/'/g, "\\'");
+        const safePhone = (i.customer_phone || '').replace(/'/g, "\\'");
+
+        return `<div class="dev-card ${i.requested_activation ? 'pending' : ''}">
+            <div class="dev-top">
+                <div>
+                    <div class="cust-name">
+                        <span>👤 ${i.customer_name || 'Máy khách'}</span>
+                        ${i.customer_phone ? `<a href="tel:${i.customer_phone}" style="color:#38bdf8;text-decoration:none;">📞 ${i.customer_phone}</a>` : ''}
+                    </div>
+                    <div class="pc-info">🖥️ ${i.hostname} (${i.os_user || 'PC'}) • ${formatTimeAgo(i.last_seen_at)}</div>
+                </div>
+                ${badge}
+            </div>
+
+            <div class="hwid-row">
+                <span class="hwid-code">${i.hwid}</span>
+                <div style="display:flex;gap:6px;">
+                    <button class="btn btn-del" style="padding:4px 8px;" onclick="editCustomerMobile('${i.hwid}', '${safeName}', '${safePhone}')">✏️ Sửa tên</button>
+                    <button class="btn btn-del" style="padding:4px 8px;" onclick="navigator.clipboard.writeText('${i.hwid}');showMsg('📋 Đã copy ${i.hwid}')">📋 Copy</button>
+                </div>
+            </div>
+
+            <div class="action-grid">
+                <button class="btn btn-m1" onclick="grantHwid('${i.hwid}', 'grant', 30)">+1 Tháng</button>
+                <button class="btn btn-m3" onclick="grantHwid('${i.hwid}', 'grant', 90)">+3 Tháng</button>
+                <button class="btn btn-y1" onclick="grantHwid('${i.hwid}', 'grant', 365)">⭐ +1 Năm</button>
+                <button class="btn btn-life" onclick="grantHwid('${i.hwid}', 'grant', 36500)">👑 Trọn Đời</button>
+            </div>
+            <div class="action-grid-2">
+                <button class="btn btn-trial" onclick="grantHwid('${i.hwid}', 'trial', 3)">⏳ +3 Ngày Thử</button>
+                ${i.is_revoked
+                    ? `<button class="btn btn-y1" style="padding:8px 6px;font-size:11px;" onclick="grantHwid('${i.hwid}', 'unlock', 30)">🔓 Mở Khóa</button>`
+                    : `<button class="btn btn-lock" onclick="grantHwid('${i.hwid}', 'lock', 0)">🔒 Khóa Máy</button>`
+                }
+                <button class="btn btn-del" onclick="deleteDeviceMobile('${i.hwid}')">🗑️ Xóa</button>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function renderPreApprovals() {
+    const wrap = document.getElementById('preListWrap');
+    const list = window.cloudState.pre_approvals || [];
+    if (!list.length) {
+        wrap.innerHTML = `<div style="color:#64748b;font-size:12.5px;text-align:center;padding:12px;">Chưa có SĐT nào được cấp trước.</div>`;
+        return;
+    }
+    wrap.innerHTML = list.map(p => {
+        const used = (p.claimed_hwids || []).length;
+        const max = p.max_devices || 1;
+        const dLabel = p.days > 5000 ? '👑 Vĩnh viễn' : `${p.days} ngày`;
+        return `<div style="background:#070b14;border:1px solid rgba(16,185,129,0.35);border-radius:10px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+            <div>
+                <div style="font-weight:800;color:#34d399;font-size:14px;">📱 ${p.phone} <span style="color:#fde047;font-size:12px;">(${dLabel})</span></div>
+                <div style="font-size:11.5px;color:#94a3b8;margin-top:2px;">${p.customer_name || 'Khách hàng'} • Đã kích hoạt: ${used}/${max} máy</div>
+            </div>
+            <button class="btn btn-lock" style="padding:6px 10px;" onclick="deletePrePhone('${p.phone}')">✕ Xóa</button>
+        </div>`;
+    }).join('');
+}
+
+async function grantHwid(hwid, action, days, extraName = '', extraPhone = '') {
+    showMsg(`☁️ Đang xử lý ${hwid}...`);
+    const cur = await readCloudJson('licenses/cloud_licenses.json');
+    const db = cur.json || { updated_at: new Date().toISOString(), records: {}, pre_approvals: {} };
+    if (!db.records) db.records = {};
+    const targetHwid = normalizeHwid(hwid);
+    const existing = db.records[targetHwid] || {};
+    const now = Date.now();
+    let status = existing.status || 'active';
+    let expireTimestamp = Number(existing.expireTimestamp || now);
+    let locked = Boolean(existing.locked);
+
+    if (action === 'lock') {
+        locked = true;
+        status = 'revoked';
+    } else if (action === 'unlock') {
+        locked = false;
+        status = 'active';
+        if (expireTimestamp <= now) expireTimestamp = now + (days || 30) * 86400000;
+    } else if (action === 'trial') {
+        locked = false;
+        status = 'trial';
+        expireTimestamp = now + Number(days || 3) * 86400000;
+    } else if (action === 'update_info') {
+        // Giữ nguyên thời hạn
+    } else {
+        locked = false;
+        status = 'active';
+        if (Number(days) >= 9999) {
+            expireTimestamp = 4102444800000;
+        } else {
+            const base = (expireTimestamp > now && existing.status === 'active') ? expireTimestamp : now;
+            expireTimestamp = base + Number(days || 365) * 86400000;
+        }
+    }
+
+    const sig = await signRecord(targetHwid, expireTimestamp, status, locked);
+    const licKey = status === 'trial' ? 'TRIAL-CLOUD' : await createOfflineKey(targetHwid, expireTimestamp, 'vip');
+
+    db.records[targetHwid] = {
+        ...existing,
+        hwid: targetHwid,
+        status,
+        plan: 'vip',
+        days: Number(days || existing.days || 365),
+        expireTimestamp,
+        expire_at: new Date(expireTimestamp).toISOString(),
+        license_key: licKey,
+        locked,
+        customer_name: extraName !== '' ? extraName : (existing.customer_name || ''),
+        customer_phone: extraPhone !== '' ? extraPhone : (existing.customer_phone || ''),
+        updated_at: new Date().toISOString(),
+        sig
+    };
+    db.updated_at = new Date().toISOString();
+    await writeCloudJson('licenses/cloud_licenses.json', db, `Mobile Admin ${action} ${targetHwid}`, cur.sha);
+    showMsg(`🎉 Đã cập nhật thành công cho ${targetHwid}!`);
+    loadCloudData(false);
+}
+
+async function editCustomerMobile(hwid, curName, curPhone) {
+    const name = prompt('Nhập Tên khách hàng:', curName || '');
+    if (name === null) return;
+    const phone = prompt('Nhập SĐT Zalo khách hàng:', curPhone || '');
+    if (phone === null) return;
+    await grantHwid(hwid, 'update_info', 0, name.trim(), normalizePhone(phone));
+}
+
+async function deleteDeviceMobile(hwid) {
+    if (!confirm(`Xóa máy ${hwid} khỏi danh sách?`)) return;
+    showMsg(`🗑️ Đang xóa ${hwid}...`);
+    const cur = await readCloudJson('licenses/cloud_licenses.json');
+    if (cur.exists && cur.json?.records?.[hwid]) {
+        delete cur.json.records[hwid];
+        await writeCloudJson('licenses/cloud_licenses.json', cur.json, `Delete ${hwid}`, cur.sha);
+    }
+    const devFile = await ghReq('GET', `/repos/${CLOUD_OWNER}/${CLOUD_REPO}/contents/devices/${hwid}.json`);
+    if (devFile.status === 200 && devFile.data?.sha) {
+        await ghReq('DELETE', `/repos/${CLOUD_OWNER}/${CLOUD_REPO}/contents/devices/${hwid}.json`, {
+            message: `Delete device ${hwid}`,
+            sha: devFile.data.sha
+        });
+    }
+    showMsg(`✅ Đã xóa ${hwid}!`);
+    loadCloudData(false);
+}
+
+async function createPhonePreApproval() {
+    const phone = normalizePhone(document.getElementById('prePhone').value);
+    const name = document.getElementById('preName').value.trim();
+    const days = Number(document.getElementById('preDays').value || 365);
+    const max = Number(document.getElementById('preMax').value || 1);
+    if (!phone || phone.length < 8) return showMsg('⚠️ Vui lòng nhập SĐT Zalo hợp lệ!', true);
+
+    showMsg(`☁️ Đang cấp quyền SĐT ${phone}...`);
+    const cur = await readCloudJson('licenses/cloud_licenses.json');
+    const db = cur.json || { updated_at: new Date().toISOString(), records: {}, pre_approvals: {} };
+    if (!db.pre_approvals) db.pre_approvals = {};
+    db.pre_approvals[phone] = {
+        phone,
+        customer_name: name,
+        days,
+        plan: 'vip',
+        max_devices: max,
+        bound_hwids: db.pre_approvals[phone]?.bound_hwids || [],
+        created_at: new Date().toISOString()
+    };
+    await writeCloudJson('licenses/cloud_licenses.json', db, `Mobile Pre-approve ${phone}`, cur.sha);
+    document.getElementById('prePhone').value = '';
+    document.getElementById('preName').value = '';
+    showMsg(`🎉 Đã cấp quyền trước cho SĐT ${phone}!`);
+    loadCloudData(false);
+}
+
+async function deletePrePhone(phone) {
+    if (!confirm(`Xóa cấp quyền của SĐT ${phone}?`)) return;
+    const cur = await readCloudJson('licenses/cloud_licenses.json');
+    if (cur.exists && cur.json?.pre_approvals?.[phone]) {
+        delete cur.json.pre_approvals[phone];
+        await writeCloudJson('licenses/cloud_licenses.json', cur.json, `Delete phone ${phone}`, cur.sha);
+        showMsg(`🗑️ Đã xóa SĐT ${phone}`);
+        loadCloudData(false);
+    }
+}
+
+async function manualGrantHwid() {
+    const hwid = document.getElementById('manHwid').value.trim();
+    const name = document.getElementById('manName').value.trim();
+    const days = Number(document.getElementById('manDays').value || 365);
+    if (!hwid || hwid.length < 8) return showMsg('⚠️ Vui lòng nhập mã HWID!', true);
+    await grantHwid(hwid, 'grant', days, name);
+}
+
+async function generateOfflineKeyMobile() {
+    const hwid = document.getElementById('manHwid').value.trim();
+    const days = Number(document.getElementById('manDays').value || 365);
+    if (!hwid || hwid.length < 8) return showMsg('⚠️ Vui lòng nhập mã HWID trước!', true);
+    const expTs = days >= 9999 ? 4102444800000 : (Date.now() + days * 86400000);
+    const key = await createOfflineKey(hwid, expTs, 'vip');
+    await navigator.clipboard.writeText(key);
+    showMsg(`📋 Đã Copy Key:\n${key}`);
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    const saved = localStorage.getItem('jin_admin_pin6');
+    if (saved) unlockApp(saved);
+    setInterval(() => { if (ACTIVE_TOKEN) loadCloudData(false); }, 25000);
+});
+</script>
+</body>
+</html>
