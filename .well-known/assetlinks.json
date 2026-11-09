@@ -3,6 +3,6 @@
       "target": {
         "namespace": "android_app",
         "package_name": "com.hoanghai.jinadmin",
-        "sha256_cert_fingerprints": ["29:15:89:4B:95:5D:E1:EB:11:55:CA:C5:A9:EE:B9:D9:0C:4A:41:27:DA:E3:8A:8C:DE:06:76:26:68:9A:D6:FB"]
+        "sha256_cert_fingerprints": ["B5:2E:C7:B4:F0:3C:CD:17:15:A1:59:56:70:17:C0:00:DF:3C:E7:8E:CC:A4:76:E0:43:F2:D5:FD:79:7C:C3:FF"]
       }
     }]
