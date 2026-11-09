@@ -260,6 +260,8 @@
                 <div>
                     <label class="form-label">⏳ Gói thời hạn:</label>
                     <select id="preDays" class="form-select" style="color:#fde047;font-weight:800;">
+                        <option value="3">⏳ 3 Ngày (Dùng thử / Trải nghiệm)</option>
+                        <option value="7">⏳ 7 Ngày (1 Tuần)</option>
                         <option value="30">⭐ 1 Tháng (30 ngày)</option>
                         <option value="90">⭐ 3 Tháng (90 ngày)</option>
                         <option value="180">⭐ 6 Tháng (180 ngày)</option>
@@ -310,9 +312,12 @@
             <div>
                 <label class="form-label">⏳ Gói thời hạn:</label>
                 <select id="manDays" class="form-select" style="color:#fde047;font-weight:800;">
-                    <option value="30">1 Tháng (30 ngày)</option>
-                    <option value="90">3 Tháng (90 ngày)</option>
-                    <option value="365" selected>1 Năm (365 ngày)</option>
+                    <option value="3">⏳ 3 Ngày (Dùng thử / Trải nghiệm)</option>
+                    <option value="7">⏳ 7 Ngày (1 Tuần)</option>
+                    <option value="30">⭐ 1 Tháng (30 ngày)</option>
+                    <option value="90">⭐ 3 Tháng (90 ngày)</option>
+                    <option value="180">⭐ 6 Tháng (180 ngày)</option>
+                    <option value="365" selected>⭐ 1 Năm (365 ngày)</option>
                     <option value="36500">👑 VĨNH VIỄN (Trọn đời)</option>
                 </select>
             </div>
@@ -757,9 +762,10 @@ function renderDevices() {
                 </div>
             </div>
 
-            <div class="action-grid">
+            <div class="action-grid" style="grid-template-columns: repeat(5, 1fr);">
                 <button class="btn btn-m1" onclick="grantHwid('${i.hwid}', 'grant', 30)">+1 Tháng</button>
                 <button class="btn btn-m3" onclick="grantHwid('${i.hwid}', 'grant', 90)">+3 Tháng</button>
+                <button class="btn" style="background:rgba(236,72,153,0.25);border:1px solid rgba(236,72,153,0.55);color:#f9a8d4;" onclick="grantHwid('${i.hwid}', 'grant', 180)">+6 Tháng</button>
                 <button class="btn btn-y1" onclick="grantHwid('${i.hwid}', 'grant', 365)">⭐ +1 Năm</button>
                 <button class="btn btn-life" onclick="grantHwid('${i.hwid}', 'grant', 36500)">👑 Trọn Đời</button>
             </div>
@@ -926,7 +932,7 @@ async function manualGrantHwid() {
     const name = document.getElementById('manName').value.trim();
     const days = Number(document.getElementById('manDays').value || 365);
     if (!hwid || hwid.length < 8) return showMsg('⚠️ Vui lòng nhập mã HWID!', true);
-    await grantHwid(hwid, 'grant', days, name);
+    await grantHwid(hwid, days === 3 ? 'trial' : 'grant', days, name);
 }
 
 async function generateOfflineKeyMobile() {
