@@ -1,8 +1,26 @@
-[{
-      "relation": ["delegate_permission/common.handle_all_urls"],
-      "target": {
-        "namespace": "android_app",
-        "package_name": "com.hoanghai.jinadmin",
-        "sha256_cert_fingerprints": ["B5:2E:C7:B4:F0:3C:CD:17:15:A1:59:56:70:17:C0:00:DF:3C:E7:8E:CC:A4:76:E0:43:F2:D5:FD:79:7C:C3:FF"]
-      }
-    }]
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.hoanghai.jinmotion",
+      "sha256_cert_fingerprints": [
+        "48:29:BE:07:EE:65:D1:BC:E6:90:E7:D8:07:E6:E8:70:E8:AB:F5:79:AD:79:35:7C:70:85:4E:6D:7A:EF:C0:91"
+      ]
+    }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.hoanghai.jinadmin",
+      "sha256_cert_fingerprints": [
+        "B5:2E:C7:B4:F0:3C:CD:17:15:A1:59:56:70:17:C0:00:DF:3C:E7:8E:CC:A4:76:E0:43:F2:D5:FD:79:7C:C3:FF"
+      ]
+    }
+  }
+]
