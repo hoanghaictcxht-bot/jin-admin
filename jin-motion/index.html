@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#060913" />
+    <title>JIN MOTION PRO - Android App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        :root {
+            --bg-dark: #060913;
+            --card-bg: rgba(15, 22, 38, 0.92);
+            --card-border: rgba(236, 72, 153, 0.28);
+            --pink: #EC4899;
+            --purple: #8B5CF6;
+            --cyan: #38BDF8;
+            --emerald: #10B981;
+            --amber: #F59E0B;
+            --text-main: #F8FAFC;
+            --text-sub: #94A3B8;
+        }
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle at 50% 0%, #1a103c 0%, #060913 60%);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh;
+            padding-bottom: 84px;
+            overflow-x: hidden;
+        }
+        .app-shell {
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 12px 14px 24px;
+        }
+        .app-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(6, 9, 19, 0.92);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .brand-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .brand-logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 1.5px solid var(--pink);
+            box-shadow: 0 0 12px rgba(236, 72, 153, 0.45);
+        }
+        .brand-title {
+            font-size: 1rem;
+            font-weight: 900;
+            letter-spacing: 0.4px;
+            background: linear-gradient(90deg, #F472B6, #38BDF8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.15;
+        }
+        .brand-sub {
+            font-size: 0.68rem;
+            color: var(--text-sub);
+            font-weight: 600;
+        }
+        .conn-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            background: rgba(16, 185, 129, 0.16);
+            color: #34D399;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            cursor: pointer;
+        }
+        .conn-pill.disconnected {
+            background: rgba(239, 68, 68, 0.18);
+            color: #F87171;
+            border-color: rgba(239, 68, 68, 0.45);
+        }
+        .m-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 14px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+        }
+        .m-card-title {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: #F472B6;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+        }
+        .step-badge {
+            background: linear-gradient(135deg, #EC4899, #8B5CF6);
+            color: #fff;
+            font-size: 0.68rem;
+            font-weight: 900;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        .mode-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .mode-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            padding: 10px 6px;
+            text-align: center;
+            color: #CBD5E1;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        .mode-btn i {
+            font-size: 1.25rem;
+            color: #94A3B8;
+        }
+        .mode-btn .m-name {
+            font-size: 0.74rem;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+        .mode-btn .m-desc {
+            font-size: 0.63rem;
+            color: #64748B;
+            line-height: 1.15;
+        }
+        .mode-btn.active {
+            background: linear-gradient(145deg, rgba(236, 72, 153, 0.22), rgba(139, 92, 246, 0.22));
+            border-color: #EC4899;
+            color: #fff;
+            box-shadow: 0 0 14px rgba(236, 72, 153, 0.3);
+        }
+        .mode-btn.active i {
+            color: #F472B6;
+        }
+        .mode-btn.active .m-desc {
+            color: #E2E8F0;
+        }
+        .input-group {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        .m-input {
+            flex: 1;
+            background: rgba(6, 9, 19, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 11px;
+            padding: 11px 12px;
+            color: #fff;
+            font-size: 0.84rem;
+            outline: none;
+        }
+        .m-input:focus {
+            border-color: var(--pink);
+        }
+        .paste-btn {
+            background: rgba(56, 189, 248, 0.15);
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            color: #38BDF8;
+            border-radius: 11px;
+            padding: 0 12px;
+            font-size: 0.78rem;
+            font-weight: 800;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .upload-zone {
+            border: 1.5px dashed rgba(56, 189, 248, 0.45);
+            background: rgba(56, 189, 248, 0.06);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .upload-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .img-preview-box {
+            width: 100%;
+            height: 155px;
+            border-radius: 10px;
+            background: #050811;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+        .img-preview-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .img-preview-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 8px;
+            text-align: center;
+        }
+        .img-preview-placeholder i {
+            font-size: 1.5rem;
+            color: #38BDF8;
+        }
+        .img-badge-overlay {
+            position: absolute;
+            bottom: 6px;
+            left: 6px;
+            right: 6px;
+            background: rgba(6, 9, 19, 0.82);
+            color: #34D399;
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 3px 6px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        .run-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #EC4899 0%, #8B5CF6 55%, #3B82F6 100%);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            padding: 15px 16px;
+            font-size: 0.96rem;
+            font-weight: 900;
+            letter-spacing: 0.4px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(236, 72, 153, 0.45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .run-btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+        .stop-btn {
+            width: 100%;
+            margin-top: 8px;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.55);
+            color: #F87171;
+            border-radius: 12px;
+            padding: 11px;
+            font-size: 0.84rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: none;
+        }
+        .prog-track {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 99px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .prog-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #EC4899, #8B5CF6, #38BDF8);
+            transition: width 0.4s ease;
+        }
+        .seg-card {
+            background: rgba(6, 9, 19, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        .seg-videos {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .seg-videos video {
+            width: 100%;
+            height: 180px;
+            object-fit: contain;
+            background: #02040a;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(8, 12, 24, 0.96);
+            backdrop-filter: blur(14px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+        }
+        .nav-tab {
+            background: none;
+            border: none;
+            color: #64748B;
+            font-size: 0.72rem;
+            font-weight: 700;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            padding: 4px 16px;
+        }
+        .nav-tab i {
+            font-size: 1.15rem;
+        }
+        .nav-tab.active {
+            color: #F472B6;
+        }
+        #mobileToast {
+            position: fixed;
+            top: 66px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            background: rgba(15, 23, 42, 0.96);
+            border: 1px solid var(--pink);
+            color: #fff;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            display: none;
+            max-width: 92vw;
+            text-align: center;
+        }
+    </style>
+    <link rel="manifest" href="manifest.json" />
+</head>
+<body>
+    <div class="app-header">
+        <div class="brand-wrap">
+            <img src="icon.png" alt="JIN MOTION" class="brand-logo" />
+            <div>
+                <div class="brand-title">JIN MOTION PRO</div>
+                <div class="brand-sub">Android App v2.7.1 • Veo 3.1</div>
+            </div>
+        </div>
+        <div id="connStatusPill" class="conn-pill" onclick="switchMobileTab('connect')">
+            <i class="fas fa-link"></i>
+            <span id="connStatusText">Đang tìm PC...</span>
+        </div>
+    </div>
+
+    <div id="mobileToast"></div>
+
+    <div class="app-shell">
+        <!-- TAB 1: TẠO VIDEO -->
+        <div id="tabCreate" class="tab-pane">
+            <div class="m-card">
+                <div class="m-card-title">
+                    <span><i class="fas fa-wand-magic-sparkles"></i> 1. CHỌN CHẾ ĐỘ JIN MOTION</span>
+                    <span class="step-badge">CONTRACT v14</span>
+                </div>
+                <div class="mode-grid">
+                    <div class="mode-btn active" id="modeBtn_character" onclick="selectJinMode('character')">
+                        <i class="fas fa-user-astronaut"></i>
+                        <div class="m-name">Thay KOC</div>
+                        <div class="m-desc">Đổi nhân vật theo chuyển động mẫu</div>
+                    </div>
+                    <div class="mode-btn" id="modeBtn_koc_product" onclick="selectJinMode('koc_product')">
+                        <i class="fas fa-shirt"></i>
+                        <div class="m-name">KOC + Sản Phẩm</div>
+                        <div class="m-desc">Thay KOC & mặc đồ mới</div>
+                    </div>
+                    <div class="mode-btn" id="modeBtn_product" onclick="selectJinMode('product')">
+                        <i class="fas fa-box-open"></i>
+                        <div class="m-name">Làm Mới SP</div>
+                        <div class="m-desc">Khóa sản phẩm & nhãn mác</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="m-card">
+                <div class="m-card-title">
+                    <span><i class="fas fa-video"></i> 2. VIDEO CHUYỂN ĐỘNG MẪU</span>
+                    <span style="font-size:0.7rem;color:#38BDF8;">TikTok / Video máy</span>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="mobTiktokUrl" class="m-input" placeholder="Dán link TikTok / Douyin / Reels vào đây..." />
+                    <button type="button" class="paste-btn" onclick="pasteClipboardUrl()">
+                        <i class="fas fa-paste"></i> Dán
+                    </button>
+                </div>
+
+                <input type="file" id="mobVideoFileInput" accept="video/mp4,video/quicktime,video/*" style="display:none;" onchange="handleMobileVideoUpload(this)" />
+                <div class="upload-zone" onclick="document.getElementById('mobVideoFileInput').click()">
+                    <div id="mobVideoUploadLabel" style="font-size:0.8rem;font-weight:700;color:#38BDF8;">
+                        <i class="fas fa-cloud-arrow-up"></i> Hoặc chạm để chọn Video từ Điện Thoại (.MP4)
+                    </div>
+                    <video id="mobSourceVideoPreview" controls playsinline muted style="display:none;width:100%;max-height:190px;margin-top:8px;border-radius:8px;background:#000;"></video>
+                </div>
+            </div>
+
+            <div class="m-card">
+                <div class="m-card-title">
+                    <span><i class="fas fa-images"></i> 3. ẢNH THAM CHIẾU (KOC / SẢN PHẨM)</span>
+                    <span style="font-size:0.7rem;color:#34D399;">Tự cắt 3 góc</span>
+                </div>
+
+                <input type="file" id="mobKocFileInput" accept="image/*" style="display:none;" onchange="handleMobileImageUpload(this, 'koc')" />
+                <input type="file" id="mobProdFileInput" accept="image/*" style="display:none;" onchange="handleMobileImageUpload(this, 'product')" />
+
+                <div class="upload-grid-2">
+                    <div id="mobKocUploadWrap">
+                        <div class="img-preview-box" onclick="document.getElementById('mobKocFileInput').click()">
+                            <img id="mobKocPreviewImg" src="" style="display:none;" />
+                            <div id="mobKocPlaceholder" class="img-preview-placeholder">
+                                <i class="fas fa-camera-retro"></i>
+                                <div style="font-size:0.76rem;font-weight:800;color:#E2E8F0;">1. Ảnh KOC Mẫu</div>
+                                <div style="font-size:0.65rem;color:#94A3B8;">Chạm chọn ảnh từ máy</div>
+                            </div>
+                            <div id="mobKocBadge" class="img-badge-overlay" style="display:none;">✅ Đã nạp Ảnh KOC</div>
+                        </div>
+                    </div>
+
+                    <div id="mobProdUploadWrap">
+                        <div class="img-preview-box" onclick="document.getElementById('mobProdFileInput').click()">
+                            <img id="mobProdPreviewImg" src="" style="display:none;" />
+                            <div id="mobProdPlaceholder" class="img-preview-placeholder">
+                                <i class="fas fa-bag-shopping" style="color:#F472B6;"></i>
+                                <div style="font-size:0.76rem;font-weight:800;color:#E2E8F0;">2. Ảnh Sản Phẩm</div>
+                                <div style="font-size:0.65rem;color:#94A3B8;">Trang phục / Đồ vật mới</div>
+                            </div>
+                            <div id="mobProdBadge" class="img-badge-overlay" style="display:none;">✅ Đã nạp Sản Phẩm</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;">
+                    <div>
+                        <label style="font-size:0.7rem;color:#94A3B8;font-weight:700;display:block;margin-bottom:4px;">Khung hình</label>
+                        <select id="mobAspectRatio" class="m-input" style="width:100%;padding:9px 10px;font-size:0.78rem;">
+                            <option value="9:16" selected>📱 9:16 Dọc (TikTok/Reels)</option>
+                            <option value="16:9">🖥️ 16:9 Ngang (YouTube)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size:0.7rem;color:#94A3B8;font-weight:700;display:block;margin-bottom:4px;">Độ dài mỗi đoạn</label>
+                        <select id="mobSegmentDuration" class="m-input" style="width:100%;padding:9px 10px;font-size:0.78rem;">
+                            <option value="10" selected>⚡ 10 giây / đoạn (Vids)</option>
+                            <option value="8">🎬 8 giây / đoạn</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="margin-top:8px;">
+                    <input type="text" id="mobIdentityNotes" class="m-input" style="width:100%;padding:9px 12px;font-size:0.78rem;" placeholder="Ghi chú thêm (VD: Áo khoác thể thao đen, giữ nguyên bối cảnh...)" />
+                </div>
+            </div>
+
+            <button type="button" id="mobRunBtn" class="run-btn" onclick="submitMobileJinMotion()">
+                <i class="fas fa-bolt"></i> TẠO VIDEO JIN MOTION PRO
+            </button>
+            <button type="button" id="mobStopBtn" class="stop-btn" onclick="stopCurrentMobileJob()">
+                <i class="fas fa-stop-circle"></i> Dừng tiến trình đang chạy
+            </button>
+
+            <div id="mobLiveProgressCard" class="m-card" style="display:none;margin-top:14px;border-color:rgba(56,189,248,0.45);">
+                <div class="m-card-title" style="color:#38BDF8;">
+                    <span id="mobStepHeaderTitle"><i class="fas fa-spinner fa-spin"></i> Đang xử lý tự động...</span>
+                    <span id="mobQueueBadge" class="step-badge" style="display:none;">Hàng đợi #1</span>
+                </div>
+                <div style="font-size:0.72rem;color:#34D399;margin-bottom:6px;">
+                    <i class="fas fa-shield-halved"></i> Chạy tự động 100% trên máy chủ — Tắt màn hình điện thoại video vẫn tự chạy xong!
+                </div>
+                <div class="prog-track">
+                    <div id="mobProgressBarFill" class="prog-fill" style="width:10%;"></div>
+                </div>
+
+                <div id="mobRefPackBox" style="display:none;margin-top:8px;padding:8px;background:rgba(6,9,19,0.75);border-radius:10px;border:1px solid rgba(56,189,248,0.25);">
+                    <div style="font-size:0.72rem;font-weight:800;color:#38BDF8;margin-bottom:6px;">
+                        <i class="fas fa-layer-group"></i> Gói 3 ảnh tham chiếu JIN MOTION PRO tự tạo:
+                    </div>
+                    <div id="mobRefPackThumbs" style="display:flex;gap:8px;overflow-x:auto;"></div>
+                </div>
+
+                <div id="mobFinalResultBox" style="display:none;margin-top:12px;padding:12px;background:linear-gradient(145deg,rgba(16,185,129,0.16),rgba(6,9,19,0.92));border:1.5px solid #10B981;border-radius:14px;">
+                    <div style="font-size:0.88rem;font-weight:900;color:#34D399;margin-bottom:8px;">
+                        🎉 VIDEO JIN MOTION HOÀN CHỈNH (ĐÃ XÓA LOGO & LỒNG NHẠC)
+                    </div>
+                    <video id="mobFinalVideoPlayer" controls playsinline style="width:100%;max-height:380px;background:#000;border-radius:10px;border:1px solid rgba(16,185,129,0.5);"></video>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;">
+                        <button type="button" onclick="downloadFinalVideoToPhone()" style="background:#10B981;color:#04130e;border:none;font-weight:900;font-size:0.8rem;padding:12px 10px;border-radius:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">
+                            <i class="fas fa-download"></i> Tải Về Máy
+                        </button>
+                        <button type="button" onclick="shareFinalVideoToTikTok()" style="background:linear-gradient(135deg,#EC4899,#8B5CF6);color:#fff;border:none;font-weight:900;font-size:0.8rem;padding:12px 10px;border-radius:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">
+                            <i class="fas fa-share-nodes"></i> Mở / Chia Sẻ
+                        </button>
+                    </div>
+                </div>
+
+                <div id="mobSegmentsList" style="margin-top:10px;"></div>
+            </div>
+        </div>
+
+        <!-- TAB 2: LỊCH SỬ -->
+        <div id="tabHistory" class="tab-pane" style="display:none;">
+            <div class="m-card">
+                <div class="m-card-title">
+                    <span><i class="fas fa-clock-rotate-left"></i> LỊCH SỬ VIDEO JIN MOTION</span>
+                    <button type="button" onclick="loadMobileHistory()" style="background:rgba(56,189,248,0.15);border:1px solid rgba(56,189,248,0.4);color:#38BDF8;border-radius:8px;padding:4px 10px;font-size:0.72rem;font-weight:800;cursor:pointer;">
+                        <i class="fas fa-rotate"></i> Làm mới
+                    </button>
+                </div>
+                <div id="mobHistoryContainer" style="font-size:0.8rem;color:#94A3B8;">
+                    Đang tải lịch sử dự án...
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: KẾT NỐI 1A / 1B -->
+        <div id="tabConnect" class="tab-pane" style="display:none;">
+            <div class="m-card">
+                <div class="m-card-title">
+                    <span><i class="fas fa-plug-circle-check"></i> CẤU HÌNH KẾT NỐI (CÁCH 1A & 1B)</span>
+                    <button type="button" onclick="autoDiscoverCloudEndpoint(false)" style="background:rgba(16,185,129,0.18);border:1px solid rgba(16,185,129,0.45);color:#34D399;border-radius:8px;padding:4px 10px;font-size:0.7rem;font-weight:800;cursor:pointer;">
+                        <i class="fas fa-satellite-dish"></i> Tự tìm máy chủ
+                    </button>
+                </div>
+
+                <label style="font-size:0.74rem;font-weight:800;color:#94A3B8;display:block;margin-bottom:5px;">
+                    1. Địa chỉ Máy chủ (WiFi LAN hoặc 4G Cloud Tunnel):
+                </label>
+                <div class="input-group">
+                    <input type="text" id="mobServerUrlInput" class="m-input" placeholder="VD: http://192.168.1.7:3002 hoặc https://xxx.trycloudflare.com" />
+                </div>
+
+                <label style="font-size:0.74rem;font-weight:800;color:#94A3B8;display:block;margin-bottom:5px;">
+                    2. Mã Kết Nối PC (1A: JINPC-...) hoặc Mã VIP Cloud (1B: JINVIP-...):
+                </label>
+                <div class="input-group">
+                    <input type="text" id="mobAuthTokenInput" class="m-input" placeholder="Nhập mã JINPC-xxxx hoặc JINVIP-xxxx..." style="text-transform:uppercase;font-weight:800;" />
+                    <button type="button" class="paste-btn" onclick="verifyAndSaveMobileToken(false)" style="background:linear-gradient(135deg,#10B981,#059669);color:#fff;border:none;">
+                        <i class="fas fa-check"></i> Lưu & Kết nối
+                    </button>
+                </div>
+
+                <div id="mobAuthInfoCard" style="margin-top:10px;padding:12px;border-radius:12px;background:rgba(6,9,19,0.85);border:1px solid rgba(255,255,255,0.12);font-size:0.8rem;">
+                    Đang tự động tìm máy chủ JIN AI Studio...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <button type="button" class="nav-tab active" id="navTab_create" onclick="switchMobileTab('create')">
+            <i class="fas fa-wand-magic-sparkles"></i>
+            <span>Tạo Video</span>
+        </button>
+        <button type="button" class="nav-tab" id="navTab_history" onclick="switchMobileTab('history')">
+            <i class="fas fa-film"></i>
+            <span>Lịch Sử</span>
+        </button>
+        <button type="button" class="nav-tab" id="navTab_connect" onclick="switchMobileTab('connect')">
+            <i class="fas fa-qrcode"></i>
+            <span>Kết Nối 1A/1B</span>
+        </button>
+    </div>
+
+    <script>
+        const CLOUD_DISCOVERY_URL = 'https://raw.githubusercontent.com/hoanghaictcxht-bot/jin-ai-studio-releases/main/jin_motion_endpoint.json';
+        const DEFAULT_FALLBACK_TUNNEL = 'https://distance-offices-settings-assist.trycloudflare.com';
+        const DEFAULT_FALLBACK_LAN = 'http://192.168.1.7:3002';
+        const DEFAULT_FALLBACK_TOKEN = 'JINPC-254P-37YM';
+
+        let mobileState = {
+            serverBaseUrl: localStorage.getItem('jin_motion_server_url') || DEFAULT_FALLBACK_TUNNEL,
+            token: localStorage.getItem('jin_motion_mobile_token') || DEFAULT_FALLBACK_TOKEN,
+            jinMode: 'character',
+            sourceVideoPath: '',
+            sourceVideoUrl: '',
+            kocImagePath: '',
+            kocImageUrl: '',
+            productImagePath: '',
+            productImageUrl: '',
+            activeJobId: localStorage.getItem('jin_motion_active_job_id') || '',
+            currentFinalVideoUrl: '',
+            pollTimer: null
+        };
+
+        function resolveServerUrl(relOrAbs) {
+            if (!relOrAbs) return '';
+            if (relOrAbs.startsWith('http://') || relOrAbs.startsWith('https://')) return relOrAbs;
+            const base = (mobileState.serverBaseUrl || '').replace(/\/+$/, '');
+            return base + (relOrAbs.startsWith('/') ? relOrAbs : ('/' + relOrAbs));
+        }
+
+        function showMobileToast(msg, duration = 3500) {
+            const el = document.getElementById('mobileToast');
+            if (!el) return;
+            el.textContent = msg;
+            el.style.display = 'block';
+            clearTimeout(window._mobToastTimer);
+            window._mobToastTimer = setTimeout(() => {
+                el.style.display = 'none';
+            }, duration);
+        }
+
+        function switchMobileTab(tab) {
+            ['create', 'history', 'connect'].forEach(t => {
+                const pane = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
+                const nav = document.getElementById('navTab_' + t);
+                if (pane) pane.style.display = (t === tab) ? 'block' : 'none';
+                if (nav) nav.classList.toggle('active', t === tab);
+            });
+            if (tab === 'history') loadMobileHistory();
+        }
+
+        function selectJinMode(mode) {
+            mobileState.jinMode = mode;
+            ['character', 'koc_product', 'product'].forEach(m => {
+                const btn = document.getElementById('modeBtn_' + m);
+                if (btn) btn.classList.toggle('active', m === mode);
+            });
+        }
+
+        async function pasteClipboardUrl() {
+            try {
+                if (window.AndroidBridge && typeof window.AndroidBridge.readFromClipboard === 'function') {
+                    const clip = window.AndroidBridge.readFromClipboard();
+                    if (clip) {
+                        document.getElementById('mobTiktokUrl').value = clip.trim();
+                        showMobileToast('✅ Đã dán link video!');
+                        return;
+                    }
+                }
+                const text = await navigator.clipboard.readText();
+                if (text) {
+                    document.getElementById('mobTiktokUrl').value = text.trim();
+                    showMobileToast('✅ Đã dán link video!');
+                }
+            } catch (_) {
+                showMobileToast('Vui lòng chạm giữ ô nhập để dán link.');
+            }
+        }
+
+        async function probeServerReachable(baseUrl, timeoutMs = 2800) {
+            if (!baseUrl) return false;
+            const clean = baseUrl.replace(/\/+$/, '');
+            const ctrl = new AbortController();
+            const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+            try {
+                const r = await fetch(`${clean}/api/health?_t=${Date.now()}`, { signal: ctrl.signal });
+                clearTimeout(timer);
+                return r.ok;
+            } catch (_) {
+                clearTimeout(timer);
+                return false;
+            }
+        }
+
+        async function autoDiscoverCloudEndpoint(silent = true) {
+            if (!silent) showMobileToast('🛰️ Đang tự động tìm máy chủ JIN AI Studio...');
+            let cloudData = null;
+            try {
+                const r = await fetch(`${CLOUD_DISCOVERY_URL}?_t=${Date.now()}`);
+                if (r.ok) cloudData = await r.json();
+            } catch (_) {}
+
+            const candidateLan = (cloudData && cloudData.lanUrl) || DEFAULT_FALLBACK_LAN;
+            const candidateTunnel = (cloudData && cloudData.tunnelUrl) || DEFAULT_FALLBACK_TUNNEL;
+            const candidateToken = (cloudData && cloudData.defaultToken) || mobileState.token || DEFAULT_FALLBACK_TOKEN;
+
+            // Ưu tiên kiểm tra mạng WiFi LAN trước (tốc độ nội bộ siêu nhanh), nếu không cùng WiFi thì dùng đường truyền 4G Tunnel
+            let chosenUrl = '';
+            if (await probeServerReachable(candidateLan, 1800)) {
+                chosenUrl = candidateLan;
+            } else if (await probeServerReachable(candidateTunnel, 4500)) {
+                chosenUrl = candidateTunnel;
+            } else if (mobileState.serverBaseUrl && await probeServerReachable(mobileState.serverBaseUrl, 3500)) {
+                chosenUrl = mobileState.serverBaseUrl;
+            } else {
+                chosenUrl = candidateTunnel || candidateLan;
+            }
+
+            mobileState.serverBaseUrl = chosenUrl.replace(/\/+$/, '');
+            if (!localStorage.getItem('jin_motion_mobile_token') || mobileState.token === DEFAULT_FALLBACK_TOKEN) {
+                mobileState.token = candidateToken;
+            }
+            localStorage.setItem('jin_motion_server_url', mobileState.serverBaseUrl);
+            localStorage.setItem('jin_motion_mobile_token', mobileState.token);
+
+            document.getElementById('mobServerUrlInput').value = mobileState.serverBaseUrl;
+            document.getElementById('mobAuthTokenInput').value = mobileState.token;
+
+            await verifyAndSaveMobileToken(silent);
+        }
+
+        async function verifyAndSaveMobileToken(silent = false) {
+            const srvInput = document.getElementById('mobServerUrlInput');
+            const tokInput = document.getElementById('mobAuthTokenInput');
+            if (srvInput && srvInput.value.trim()) {
+                mobileState.serverBaseUrl = srvInput.value.trim().replace(/\/+$/, '');
+                localStorage.setItem('jin_motion_server_url', mobileState.serverBaseUrl);
+            }
+            if (tokInput && tokInput.value.trim()) {
+                mobileState.token = tokInput.value.trim().toUpperCase();
+                localStorage.setItem('jin_motion_mobile_token', mobileState.token);
+            }
+
+            const pill = document.getElementById('connStatusPill');
+            const pillText = document.getElementById('connStatusText');
+            const infoCard = document.getElementById('mobAuthInfoCard');
+
+            try {
+                const res = await fetch(resolveServerUrl('/api/jin-motion-mobile/verify'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: mobileState.token })
+                }).then(r => r.json());
+
+                if (!res || !res.valid) {
+                    pill.classList.add('disconnected');
+                    pillText.textContent = 'Mã chưa đúng';
+                    infoCard.innerHTML = `<span style="color:#F87171;font-weight:800;">❌ ${res?.message || 'Mã kết nối không hợp lệ'}</span>`;
+                    if (!silent) showMobileToast('❌ ' + (res?.message || 'Mã không hợp lệ'));
+                    return false;
+                }
+
+                pill.classList.remove('disconnected');
+                const isLan = mobileState.serverBaseUrl.includes('192.168.') || mobileState.serverBaseUrl.includes('10.');
+                if (res.mode === '1A') {
+                    pillText.textContent = isLan ? '1A: WiFi PC' : '1A: 4G PC';
+                    infoCard.innerHTML = `
+                        <div style="color:#34D399;font-weight:900;margin-bottom:4px;">✅ Đã kết nối Máy Tính Cá Nhân (Cách 1A • ${isLan ? 'WiFi LAN' : '4G Internet'})</div>
+                        <div style="color:#CBD5E1;font-size:0.76rem;">Máy chủ: <b>${mobileState.serverBaseUrl}</b><br/>Mã ghép đôi: <b>${res.token}</b> • Số lượt: <b>Không giới hạn</b></div>
+                    `;
+                } else {
+                    pillText.textContent = `1B: Còn ${res.creditsLeft} lượt`;
+                    const expText = res.expiresAt ? new Date(res.expiresAt).toLocaleDateString('vi-VN') : 'Không giới hạn';
+                    infoCard.innerHTML = `
+                        <div style="color:#34D399;font-weight:900;margin-bottom:4px;">💎 Tài khoản VIP Cloud Server (Cách 1B)</div>
+                        <div style="color:#CBD5E1;font-size:0.76rem;">
+                            Khách hàng: <b>${res.customerName}</b><br/>
+                            Số lượt còn lại: <b style="color:#38BDF8;">${res.creditsLeft}/${res.totalCredits} video</b> • Hạn dùng: <b>${expText}</b>
+                        </div>
+                    `;
+                }
+                if (!silent) showMobileToast(`✅ Đã kết nối thành công (${res.label})!`);
+                return true;
+            } catch (e) {
+                pill.classList.add('disconnected');
+                pillText.textContent = 'Chưa kết nối PC';
+                infoCard.innerHTML = `<span style="color:#F87171;">⚠️ Không kết nối được tới <b>${mobileState.serverBaseUrl}</b>. Hãy đảm bảo máy tính đang bật JIN AI Studio hoặc bấm "Tự tìm máy chủ".</span>`;
+                if (!silent) showMobileToast('⚠️ Chưa kết nối được máy chủ.');
+                return false;
+            }
+        }
+
+        async function handleMobileVideoUpload(input) {
+            const file = input.files && input.files[0];
+            if (!file) return;
+            const label = document.getElementById('mobVideoUploadLabel');
+            label.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải video lên máy chủ...';
+            try {
+                const fd = new FormData();
+                fd.append('sourceVideo', file);
+                const res = await fetch(resolveServerUrl('/api/fashion/upload-source-video'), { method: 'POST', body: fd }).then(r => r.json());
+                if (!res || !res.success) throw new Error(res?.message || 'Lỗi tải video');
+                mobileState.sourceVideoPath = res.filePath;
+                mobileState.sourceVideoUrl = resolveServerUrl(res.fileUrl);
+                label.innerHTML = `<span style="color:#34D399;">✅ Đã nạp video: ${res.fileName}</span>`;
+                const vid = document.getElementById('mobSourceVideoPreview');
+                vid.src = mobileState.sourceVideoUrl;
+                vid.style.display = 'block';
+                showMobileToast('✅ Đã tải video nguồn thành công!');
+            } catch (e) {
+                label.innerHTML = '<i class="fas fa-triangle-exclamation" style="color:#F87171;"></i> Lỗi tải video, chạm để thử lại';
+                showMobileToast('❌ ' + e.message);
+            }
+        }
+
+        async function handleMobileImageUpload(input, type) {
+            const file = input.files && input.files[0];
+            if (!file) return;
+            showMobileToast(`⏳ Đang tải ảnh ${type === 'koc' ? 'KOC' : 'Sản phẩm'}...`);
+            try {
+                const fd = new FormData();
+                if (type === 'koc') {
+                    fd.append('customModel', file);
+                    const res = await fetch(resolveServerUrl('/api/fashion/upload-model'), { method: 'POST', body: fd }).then(r => r.json());
+                    if (!res || !res.success) throw new Error(res?.message || 'Lỗi tải ảnh KOC');
+                    mobileState.kocImagePath = res.filePath;
+                    mobileState.kocImageUrl = res.fileUrl;
+                    const img = document.getElementById('mobKocPreviewImg');
+                    img.src = resolveServerUrl(res.fileUrl);
+                    img.style.display = 'block';
+                    document.getElementById('mobKocPlaceholder').style.display = 'none';
+                    document.getElementById('mobKocBadge').style.display = 'block';
+                } else {
+                    fd.append('image', file);
+                    const res = await fetch(resolveServerUrl('/api/jin-motion-mobile/upload-image'), { method: 'POST', body: fd }).then(r => r.json());
+                    if (!res || !res.success) throw new Error(res?.message || 'Lỗi tải ảnh sản phẩm');
+                    mobileState.productImagePath = res.filePath;
+                    mobileState.productImageUrl = res.fileUrl;
+                    const img = document.getElementById('mobProdPreviewImg');
+                    img.src = resolveServerUrl(res.fileUrl);
+                    img.style.display = 'block';
+                    document.getElementById('mobProdPlaceholder').style.display = 'none';
+                    document.getElementById('mobProdBadge').style.display = 'block';
+                }
+                showMobileToast('✅ Đã nạp ảnh thành công!');
+            } catch (e) {
+                showMobileToast('❌ ' + e.message);
+            }
+        }
+
+        async function submitMobileJinMotion() {
+            const ok = await verifyAndSaveMobileToken(true);
+            if (!ok) {
+                showMobileToast('⚠️ Chưa kết nối được máy chủ! Vui lòng kiểm tra ở tab Kết Nối.');
+                switchMobileTab('connect');
+                return;
+            }
+
+            const url = document.getElementById('mobTiktokUrl').value.trim();
+            if (!url && !mobileState.sourceVideoPath) {
+                showMobileToast('⚠️ Vui lòng dán link TikTok hoặc chọn video từ điện thoại ở mục 2!');
+                return;
+            }
+
+            if (mobileState.jinMode === 'character' && !mobileState.kocImagePath) {
+                showMobileToast('⚠️ Vui lòng chọn Ảnh KOC Mẫu ở mục 3!');
+                return;
+            }
+            if (mobileState.jinMode === 'product' && !mobileState.productImagePath) {
+                showMobileToast('⚠️ Vui lòng chọn Ảnh Sản Phẩm ở mục 3!');
+                return;
+            }
+            if (mobileState.jinMode === 'koc_product' && (!mobileState.kocImagePath || !mobileState.productImagePath)) {
+                showMobileToast('⚠️ Chế độ KOC + Sản Phẩm cần chọn đủ cả 2 ảnh ở mục 3!');
+                return;
+            }
+
+            const runBtn = document.getElementById('mobRunBtn');
+            const stopBtn = document.getElementById('mobStopBtn');
+            runBtn.disabled = true;
+            runBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang gửi yêu cầu lên máy chủ...';
+
+            try {
+                const res = await fetch(resolveServerUrl('/api/jin-motion-mobile/submit'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        token: mobileState.token,
+                        jinMode: mobileState.jinMode,
+                        url,
+                        sourceVideoPath: mobileState.sourceVideoPath,
+                        kocImagePath: mobileState.kocImagePath,
+                        kocImageUrl: mobileState.kocImageUrl,
+                        productImagePath: mobileState.productImagePath,
+                        productImageUrl: mobileState.productImageUrl,
+                        aspectRatio: document.getElementById('mobAspectRatio').value,
+                        segmentDuration: Number(document.getElementById('mobSegmentDuration').value) || 10,
+                        identityNotes: document.getElementById('mobIdentityNotes').value.trim()
+                    })
+                }).then(r => r.json());
+
+                if (!res || !res.success || !res.job) {
+                    throw new Error(res?.message || 'Không thể tạo tiến trình');
+                }
+
+                mobileState.activeJobId = res.job.jobId;
+                localStorage.setItem('jin_motion_active_job_id', res.job.jobId);
+                stopBtn.style.display = 'block';
+                document.getElementById('mobLiveProgressCard').style.display = 'block';
+                document.getElementById('mobFinalResultBox').style.display = 'none';
+                renderMobileJobState(res.job);
+                startPollingMobileJob(res.job.jobId);
+                showMobileToast('🚀 Đã bắt đầu tạo video tự động trên máy chủ!');
+            } catch (e) {
+                runBtn.disabled = false;
+                runBtn.innerHTML = '<i class="fas fa-bolt"></i> TẠO VIDEO JIN MOTION PRO';
+                showMobileToast('❌ ' + e.message, 4500);
+            }
+        }
+
+        function startPollingMobileJob(jobId) {
+            if (mobileState.pollTimer) clearInterval(mobileState.pollTimer);
+            mobileState.pollTimer = setInterval(async () => {
+                try {
+                    const res = await fetch(resolveServerUrl(`/api/jin-motion-mobile/job/${encodeURIComponent(jobId)}?_t=${Date.now()}`)).then(r => r.json());
+                    if (!res || !res.success || !res.job) return;
+                    renderMobileJobState(res.job);
+                    if (['completed', 'error', 'stopped'].includes(res.job.status)) {
+                        clearInterval(mobileState.pollTimer);
+                        mobileState.pollTimer = null;
+                        verifyAndSaveMobileToken(true);
+                    }
+                } catch (_) {}
+            }, 3500);
+        }
+
+        function renderMobileJobState(job) {
+            const card = document.getElementById('mobLiveProgressCard');
+            const titleEl = document.getElementById('mobStepHeaderTitle');
+            const qBadge = document.getElementById('mobQueueBadge');
+            const fillEl = document.getElementById('mobProgressBarFill');
+            const runBtn = document.getElementById('mobRunBtn');
+            const stopBtn = document.getElementById('mobStopBtn');
+            const refBox = document.getElementById('mobRefPackBox');
+            const refThumbs = document.getElementById('mobRefPackThumbs');
+            const segList = document.getElementById('mobSegmentsList');
+            const finalBox = document.getElementById('mobFinalResultBox');
+
+            card.style.display = 'block';
+            titleEl.textContent = job.stepTitle || 'Đang xử lý...';
+            fillEl.style.width = `${job.progressPct || 10}%`;
+
+            if (job.queuePosition && job.queuePosition > 1 && job.status === 'queued') {
+                qBadge.style.display = 'inline-block';
+                qBadge.textContent = `Hàng đợi #${job.queuePosition}`;
+            } else {
+                qBadge.style.display = 'none';
+            }
+
+            if (Array.isArray(job.jinReferenceUrls) && job.jinReferenceUrls.length > 0) {
+                refBox.style.display = 'block';
+                refThumbs.innerHTML = job.jinReferenceUrls.map((u, idx) => `
+                    <div style="flex:0 0 auto;display:flex;align-items:center;gap:5px;background:rgba(255,255,255,0.05);padding:4px 8px;border-radius:8px;">
+                        <img src="${resolveServerUrl(u)}" style="width:38px;height:38px;object-fit:cover;border-radius:6px;border:1px solid #38BDF8;" />
+                        <span style="font-size:0.68rem;font-weight:800;color:#E2E8F0;">Ref #${idx + 1}</span>
+                    </div>
+                `).join('');
+            }
+
+            if (Array.isArray(job.segments) && job.segments.length > 0) {
+                segList.innerHTML = job.segments.map((seg) => {
+                    const isDone = seg.status === 'done' && seg.aiVideoUrl;
+                    const isErr = ['error', 'content_error', 'failed'].includes(seg.status);
+                    const isGen = ['generating', 'running'].includes(seg.status);
+                    const statusBadge = isDone
+                        ? '<span style="color:#34D399;font-size:0.72rem;font-weight:800;">✅ Đã xong</span>'
+                        : (isGen
+                            ? '<span style="color:#F472B6;font-size:0.72rem;font-weight:800;"><i class="fas fa-spinner fa-spin"></i> Đang tạo AI...</span>'
+                            : (isErr
+                                ? `<button onclick="retryMobileSeg('${job.jobId}', ${seg.scene_id})" style="background:#EF4444;color:#fff;border:none;border-radius:6px;padding:3px 8px;font-size:0.7rem;font-weight:800;cursor:pointer;">🔄 Tạo lại đoạn này</button>`
+                                : '<span style="color:#FBBF24;font-size:0.72rem;">⏳ Chờ tới lượt</span>'));
+                    return `
+                        <div class="seg-card" style="border-color:${isDone ? 'rgba(16,185,129,0.5)' : (isGen ? '#EC4899' : 'rgba(255,255,255,0.12)')}">
+                            <div style="display:flex;justify-content:space-between;align-items:center;">
+                                <span style="font-size:0.78rem;font-weight:800;color:#F472B6;">🎬 Đoạn ${String(seg.scene_id).padStart(3, '0')} (${seg.timestamp})</span>
+                                ${statusBadge}
+                            </div>
+                            <div class="seg-videos">
+                                <div>
+                                    <video src="${resolveServerUrl(seg.sourceClipUrl)}" controls preload="metadata" muted playsinline></video>
+                                    <div style="font-size:0.66rem;color:#38BDF8;text-align:center;margin-top:3px;font-weight:700;">Video gốc #${seg.scene_id}</div>
+                                </div>
+                                <div>
+                                    ${isDone
+                                        ? `<video src="${resolveServerUrl(seg.aiVideoUrl)}" controls preload="metadata" playsinline style="border-color:#10B981;"></video>
+                                           <div style="font-size:0.66rem;color:#34D399;text-align:center;margin-top:3px;font-weight:800;">✨ Video AI #${seg.scene_id} <span onclick="retryMobileSeg('${job.jobId}', ${seg.scene_id})" style="color:#F472B6;text-decoration:underline;cursor:pointer;margin-left:4px;">(Tạo lại)</span></div>`
+                                        : `<div style="height:180px;border-radius:8px;background:#03050a;border:1px dashed rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:0.72rem;color:#64748B;text-align:center;padding:8px;">
+                                            ${isGen ? '⚡ Veo 3.1 đang dựng đoạn này...' : 'Đang chờ tạo AI'}
+                                           </div>`
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            if (job.status === 'completed' && job.finalVideoUrl) {
+                const fullFinalUrl = resolveServerUrl(job.finalVideoUrl);
+                mobileState.currentFinalVideoUrl = fullFinalUrl;
+                finalBox.style.display = 'block';
+                const player = document.getElementById('mobFinalVideoPlayer');
+                if (player.getAttribute('data-src') !== fullFinalUrl) {
+                    player.setAttribute('data-src', fullFinalUrl);
+                    player.src = fullFinalUrl;
+                }
+                runBtn.disabled = false;
+                runBtn.innerHTML = '<i class="fas fa-bolt"></i> TẠO VIDEO JIN MOTION MỚI';
+                stopBtn.style.display = 'none';
+            } else if (['error', 'stopped'].includes(job.status)) {
+                runBtn.disabled = false;
+                runBtn.innerHTML = '<i class="fas fa-bolt"></i> THỬ LẠI TẠO VIDEO JIN MOTION';
+                stopBtn.style.display = 'none';
+            } else {
+                runBtn.disabled = true;
+                runBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${job.stepTitle || 'Đang xử lý...'}`;
+                stopBtn.style.display = 'block';
+            }
+        }
+
+        function downloadFinalVideoToPhone() {
+            const url = mobileState.currentFinalVideoUrl;
+            if (!url) return;
+            const fileName = `jin_motion_${Date.now()}.mp4`;
+            if (window.AndroidBridge && typeof window.AndroidBridge.downloadVideo === 'function') {
+                window.AndroidBridge.downloadVideo(url, fileName);
+                return;
+            }
+            window.open(url, '_blank');
+        }
+
+        async function stopCurrentMobileJob() {
+            if (!mobileState.activeJobId) return;
+            await fetch(resolveServerUrl(`/api/jin-motion-mobile/job/${encodeURIComponent(mobileState.activeJobId)}/stop`), { method: 'POST' });
+            showMobileToast('🛑 Đã gửi lệnh dừng.');
+        }
+
+        async function retryMobileSeg(jobId, sceneId) {
+            try {
+                showMobileToast(`🔄 Đang yêu cầu tạo lại Đoạn ${sceneId}...`);
+                const res = await fetch(resolveServerUrl(`/api/jin-motion-mobile/job/${encodeURIComponent(jobId)}/retry-segment`), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sceneId })
+                }).then(r => r.json());
+                if (!res || !res.success) throw new Error(res?.message || 'Lỗi tạo lại');
+                renderMobileJobState(res.job);
+                startPollingMobileJob(jobId);
+            } catch (e) {
+                showMobileToast('❌ ' + e.message);
+            }
+        }
+
+        async function shareFinalVideoToTikTok() {
+            const url = mobileState.currentFinalVideoUrl;
+            if (!url) return;
+            downloadFinalVideoToPhone();
+        }
+
+        async function loadMobileHistory() {
+            const box = document.getElementById('mobHistoryContainer');
+            try {
+                const res = await fetch(resolveServerUrl(`/api/jin-motion-mobile/jobs?token=${encodeURIComponent(mobileState.token)}&_t=${Date.now()}`)).then(r => r.json());
+                const jobs = res?.jobs || [];
+                if (jobs.length === 0) {
+                    box.innerHTML = 'Chưa có video nào được tạo.';
+                    return;
+                }
+                box.innerHTML = jobs.map(j => {
+                    const fUrl = j.finalVideoUrl ? resolveServerUrl(j.finalVideoUrl) : '';
+                    return `
+                        <div style="background:rgba(6,9,19,0.85);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:10px;margin-bottom:10px;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;">
+                                <span style="font-weight:800;color:#F472B6;">${j.productName || j.jobId} (${j.numSegments || 1} đoạn)</span>
+                                <span style="font-size:0.72rem;color:${j.status === 'completed' ? '#34D399' : '#38BDF8'};font-weight:800;">${j.status.toUpperCase()}</span>
+                            </div>
+                            <div style="font-size:0.72rem;color:#94A3B8;margin-top:4px;">${j.stepTitle || ''}</div>
+                            ${fUrl ? `
+                                <video src="${fUrl}" controls preload="metadata" playsinline style="width:100%;max-height:220px;margin-top:8px;border-radius:8px;background:#000;"></video>
+                                <div style="display:flex;gap:8px;margin-top:6px;">
+                                    <button onclick="window.AndroidBridge ? window.AndroidBridge.downloadVideo('${fUrl}', '${j.product}.mp4') : window.open('${fUrl}')" style="flex:1;background:#10B981;color:#04130e;border:none;padding:8px;border-radius:8px;font-weight:800;font-size:0.76rem;cursor:pointer;"><i class="fas fa-download"></i> Tải về máy</button>
+                                    <button onclick="openJobInCreateTab('${j.jobId}')" style="flex:1;background:rgba(56,189,248,0.15);border:1px solid rgba(56,189,248,0.4);color:#38BDF8;padding:8px;border-radius:8px;font-weight:800;font-size:0.76rem;cursor:pointer;">Chi tiết</button>
+                                </div>
+                            ` : `
+                                <button onclick="openJobInCreateTab('${j.jobId}')" style="margin-top:8px;width:100%;background:rgba(236,72,153,0.18);border:1px solid #EC4899;color:#F472B6;padding:8px;border-radius:8px;font-weight:800;font-size:0.76rem;cursor:pointer;">Xem tiến độ trực tiếp</button>
+                            `}
+                        </div>
+                    `;
+                }).join('');
+            } catch (e) {
+                box.innerHTML = 'Lỗi tải lịch sử: ' + e.message;
+            }
+        }
+
+        async function openJobInCreateTab(jobId) {
+            mobileState.activeJobId = jobId;
+            localStorage.setItem('jin_motion_active_job_id', jobId);
+            switchMobileTab('create');
+            const res = await fetch(resolveServerUrl(`/api/jin-motion-mobile/job/${encodeURIComponent(jobId)}`)).then(r => r.json());
+            if (res && res.success && res.job) {
+                renderMobileJobState(res.job);
+                if (!['completed', 'error', 'stopped'].includes(res.job.status)) {
+                    startPollingMobileJob(jobId);
+                }
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            await autoDiscoverCloudEndpoint(true);
+            if (mobileState.activeJobId) {
+                try {
+                    const res = await fetch(resolveServerUrl(`/api/jin-motion-mobile/job/${encodeURIComponent(mobileState.activeJobId)}`)).then(r => r.json());
+                    if (res && res.success && res.job) {
+                        renderMobileJobState(res.job);
+                        if (!['completed', 'error', 'stopped'].includes(res.job.status)) {
+                            startPollingMobileJob(mobileState.activeJobId);
+                        }
+                    }
+                } catch (_) {}
+            }
+        });
+    </script>
+</body>
+</html>
