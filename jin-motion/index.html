@@ -382,12 +382,12 @@
             <img src="icon.png" alt="JIN MOTION" class="brand-logo" />
             <div>
                 <div class="brand-title">JIN MOTION PRO</div>
-                <div class="brand-sub">Android App v2.7.7 • Veo 3.1</div>
+                <div class="brand-sub">Android App v2.8.0 • Veo 3.1</div>
             </div>
         </div>
         <div style="display:flex;align-items:center;gap:6px;">
-            <a id="headerDownloadApkBtn" href="https://hoanghaictcxht-bot.github.io/jin-admin/JIN_Motion_Pro_v277.apk" onclick="return downloadApkSmart(event)" style="display:none;text-decoration:none;background:linear-gradient(135deg,#EC4899,#8B5CF6);color:#fff;font-size:0.7rem;font-weight:900;padding:6px 10px;border-radius:99px;white-space:nowrap;box-shadow:0 2px 10px rgba(236,72,153,0.45);">
-                <i class="fas fa-download"></i> Tải APK
+            <a id="headerDownloadApkBtn" href="https://hoanghaictcxht-bot.github.io/jin-admin/JIN_Motion_Pro_v280.apk" onclick="return downloadApkSmart(event)" style="display:none;text-decoration:none;background:linear-gradient(135deg,#EC4899,#8B5CF6);color:#fff;font-size:0.7rem;font-weight:900;padding:6px 10px;border-radius:99px;white-space:nowrap;box-shadow:0 2px 10px rgba(236,72,153,0.45);">
+                <i class="fas fa-download"></i> Tải APK v2.8
             </a>
             <div id="connStatusPill" class="conn-pill" onclick="switchMobileTab('connect')">
                 <i class="fas fa-link"></i>
@@ -397,12 +397,12 @@
     </div>
     <script>
         function downloadApkSmart(e) {
-            var apkUrl = 'https://hoanghaictcxht-bot.github.io/jin-admin/JIN_Motion_Pro_v277.apk';
+            var apkUrl = 'https://hoanghaictcxht-bot.github.io/jin-admin/JIN_Motion_Pro_v280.apk';
             var ua = navigator.userAgent || '';
             // Nếu khách đang mở trong Zalo WebView, tự động gọi Android Intent mở bằng Chrome để tải file .apk chuẩn không bị Zalo báo lỗi định dạng
             if (/Zalo/i.test(ua) && /Android/i.test(ua)) {
                 if (e) e.preventDefault();
-                window.location.href = 'intent://hoanghaictcxht-bot.github.io/jin-admin/JIN_Motion_Pro_v277.apk#Intent;scheme=https;package=com.android.chrome;action=android.intent.action.VIEW;end';
+                window.location.href = 'intent://hoanghaictcxht-bot.github.io/jin-admin/JIN_Motion_Pro_v280.apk#Intent;scheme=https;package=com.android.chrome;action=android.intent.action.VIEW;end';
                 return false;
             }
             return true;
@@ -466,26 +466,29 @@
             <div class="m-card">
                 <div class="m-card-title">
                     <span><i class="fas fa-video"></i> 2. VIDEO CHUYỂN ĐỘNG MẪU</span>
-                    <span style="font-size:0.7rem;color:#38BDF8;">TikTok / Video máy</span>
+                    <span style="font-size:0.7rem;color:#38BDF8;">TikTok / File .MP4</span>
                 </div>
                 <div class="input-group">
                     <input type="text" id="mobTiktokUrl" class="m-input" oninput="onMobileTiktokUrlChanged(this.value)" placeholder="Dán link TikTok / Douyin / Reels vào đây..." />
                     <button type="button" class="paste-btn" onclick="pasteClipboardUrl()">
                         <i class="fas fa-paste"></i> Dán
                     </button>
+                    <button type="button" onclick="clearMobileTiktokUrl()" style="background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.5);color:#FCA5A5;border-radius:10px;padding:0 11px;font-size:0.74rem;font-weight:800;cursor:pointer;white-space:nowrap;">
+                        <i class="fas fa-trash"></i> Xóa
+                    </button>
                 </div>
 
                 <input type="file" id="mobVideoFileInput" accept="video/mp4,video/quicktime,video/*" style="display:none;" onchange="handleMobileVideoUpload(this)" />
-                <div class="upload-zone" style="cursor:default;">
-                    <div style="display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;">
-                        <button type="button" onclick="document.getElementById('mobVideoFileInput').click()" style="background:linear-gradient(135deg,#0284C7,#2563EB);color:#fff;border:none;border-radius:10px;padding:9px 14px;font-size:0.78rem;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 3px 10px rgba(37,99,235,0.35);">
-                            <i class="fas fa-file-video"></i> Chọn / Tải File Video .MP4 Từ Máy
+                <div class="upload-zone" style="cursor:default;padding:12px;">
+                    <div style="display:grid;grid-template-columns:1.35fr 0.85fr;gap:8px;align-items:center;">
+                        <button type="button" onclick="document.getElementById('mobVideoFileInput').click()" style="background:linear-gradient(135deg,#0284C7,#2563EB);color:#fff;border:none;border-radius:10px;padding:10px 10px;font-size:0.78rem;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 3px 10px rgba(37,99,235,0.35);">
+                            <i class="fas fa-cloud-arrow-up"></i> Tải Video .MP4 Lên
                         </button>
-                        <button type="button" id="btnClearMobSourceVideo" onclick="clearMobileSourceVideo()" style="display:none;background:rgba(239,68,68,0.18);border:1px solid rgba(239,68,68,0.45);color:#FCA5A5;border-radius:10px;padding:9px 11px;font-size:0.74rem;font-weight:800;cursor:pointer;">
-                            <i class="fas fa-trash"></i> Bỏ file máy
+                        <button type="button" id="btnClearMobSourceVideo" onclick="clearMobileSourceVideo()" style="background:rgba(239,68,68,0.22);border:1px solid rgba(239,68,68,0.55);color:#FCA5A5;border-radius:10px;padding:10px 10px;font-size:0.76rem;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;">
+                            <i class="fas fa-trash"></i> Xóa Video
                         </button>
                     </div>
-                    <div id="mobVideoUploadLabel" style="font-size:0.74rem;font-weight:700;color:#94A3B8;margin-top:6px;">
+                    <div id="mobVideoUploadLabel" style="font-size:0.74rem;font-weight:700;color:#94A3B8;margin-top:8px;">
                         Chưa chọn file .MP4 từ máy (Hoặc dán link TikTok ở ô trên)
                     </div>
                     <video id="mobSourceVideoPreview" controls playsinline muted style="display:none;width:100%;max-height:190px;margin-top:8px;border-radius:8px;background:#000;"></video>
@@ -513,6 +516,14 @@
                             </div>
                             <div id="mobKocBadge" class="img-badge-overlay" style="display:none;">✅ Đã nạp Ảnh KOC</div>
                         </div>
+                        <div style="display:grid;grid-template-columns:1fr auto;gap:5px;margin-top:5px;">
+                            <button type="button" onclick="document.getElementById('mobKocFileInput').click()" style="background:rgba(56,189,248,0.16);border:1px solid rgba(56,189,248,0.45);color:#38BDF8;border-radius:8px;padding:6px;font-size:0.7rem;font-weight:800;cursor:pointer;">
+                                <i class="fas fa-upload"></i> Tải Ảnh KOC
+                            </button>
+                            <button type="button" onclick="clearMobileRefImg('koc')" style="background:rgba(239,68,68,0.18);border:1px solid rgba(239,68,68,0.45);color:#FCA5A5;border-radius:8px;padding:6px 9px;font-size:0.7rem;font-weight:800;cursor:pointer;">
+                                <i class="fas fa-trash"></i> Xóa
+                            </button>
+                        </div>
                     </div>
 
                     <div id="mobProdUploadWrap">
@@ -524,6 +535,14 @@
                                 <div style="font-size:0.65rem;color:#94A3B8;">Trang phục / Đồ vật mới</div>
                             </div>
                             <div id="mobProdBadge" class="img-badge-overlay" style="display:none;">✅ Đã nạp Sản Phẩm</div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr auto;gap:5px;margin-top:5px;">
+                            <button type="button" onclick="document.getElementById('mobProdFileInput').click()" style="background:rgba(236,72,153,0.16);border:1px solid rgba(236,72,153,0.45);color:#F472B6;border-radius:8px;padding:6px;font-size:0.7rem;font-weight:800;cursor:pointer;">
+                                <i class="fas fa-upload"></i> Tải Ảnh SP
+                            </button>
+                            <button type="button" onclick="clearMobileRefImg('product')" style="background:rgba(239,68,68,0.18);border:1px solid rgba(239,68,68,0.45);color:#FCA5A5;border-radius:8px;padding:6px 9px;font-size:0.7rem;font-weight:800;cursor:pointer;">
+                                <i class="fas fa-trash"></i> Xóa
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1106,6 +1125,40 @@
             showMobileToast('🖼️ Đã bỏ ảnh phối cảnh riêng (Sẽ lấy nền của Ảnh số 1)');
         }
 
+        function clearMobileTiktokUrl() {
+            const urlEl = document.getElementById('mobTiktokUrl');
+            if (urlEl) urlEl.value = '';
+            showMobileToast('🗑️ Đã xóa link video TikTok.');
+        }
+
+        function clearMobileRefImg(type) {
+            if (type === 'koc') {
+                mobileState.kocImagePath = '';
+                mobileState.kocImageUrl = '';
+                const inp = document.getElementById('mobKocFileInput');
+                if (inp) inp.value = '';
+                const img = document.getElementById('mobKocPreviewImg');
+                if (img) { img.src = ''; img.style.display = 'none'; }
+                const ph = document.getElementById('mobKocPlaceholder');
+                if (ph) ph.style.display = 'flex';
+                const bg = document.getElementById('mobKocBadge');
+                if (bg) bg.style.display = 'none';
+                showMobileToast('🗑️ Đã xóa Ảnh KOC Mẫu.');
+            } else if (type === 'product') {
+                mobileState.productImagePath = '';
+                mobileState.productImageUrl = '';
+                const inp = document.getElementById('mobProdFileInput');
+                if (inp) inp.value = '';
+                const img = document.getElementById('mobProdPreviewImg');
+                if (img) { img.src = ''; img.style.display = 'none'; }
+                const ph = document.getElementById('mobProdPlaceholder');
+                if (ph) ph.style.display = 'flex';
+                const bg = document.getElementById('mobProdBadge');
+                if (bg) bg.style.display = 'none';
+                showMobileToast('🗑️ Đã xóa Ảnh Sản Phẩm.');
+            }
+        }
+
         function clearMobileSourceVideo(silent = false) {
             mobileState.sourceVideoPath = '';
             mobileState.sourceVideoUrl = '';
@@ -1116,13 +1169,11 @@
                 vid.src = '';
                 vid.style.display = 'none';
             }
-            const btnClr = document.getElementById('btnClearMobSourceVideo');
-            if (btnClr) btnClr.style.display = 'none';
             const label = document.getElementById('mobVideoUploadLabel');
             if (label) {
                 label.innerHTML = 'Chưa chọn file .MP4 từ máy (Hoặc dán link TikTok ở ô trên)';
             }
-            if (!silent) showMobileToast('🗑️ Đã bỏ file video máy (Sẽ dùng link TikTok nếu có).');
+            if (!silent) showMobileToast('🗑️ Đã xóa file video .MP4 (Sẽ dùng link TikTok ở ô trên).');
         }
 
         function onMobileTiktokUrlChanged(val) {
