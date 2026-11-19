@@ -1,8 +1,8 @@
 {
-  "name": "JIN MOTION PRO",
+  "name": "JIN MOTION PRO - Veo 3.1",
   "short_name": "JIN MOTION",
-  "description": "Ứng dụng Android JIN MOTION PRO: Thay KOC, Mặc Sản Phẩm Mới & Sao chép Chuyển Động TikTok chuẩn Veo 3.1",
-  "start_url": "/jin-admin/jin-motion/index.html",
+  "description": "Hệ thống Tạo Video AI, Thay KOC & Đồng Bộ Chuyển Động Veo 3.1 trên iPhone & Android",
+  "start_url": "/jin-admin/jin-motion/",
   "scope": "/jin-admin/jin-motion/",
   "display": "standalone",
   "orientation": "portrait",
@@ -10,7 +10,13 @@
   "theme_color": "#060913",
   "icons": [
     {
-      "src": "https://hoanghaictcxht-bot.github.io/jin-admin/jin-motion/icon.png",
+      "src": "https://hoanghaictcxht-bot.github.io/jin-admin/icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://hoanghaictcxht-bot.github.io/jin-admin/icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
