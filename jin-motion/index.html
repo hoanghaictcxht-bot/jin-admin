@@ -382,27 +382,27 @@
             <img src="icon.png" alt="JIN MOTION" class="brand-logo" />
             <div>
                 <div class="brand-title">JIN MOTION PRO</div>
-                <div class="brand-sub">Android App v2.8.0 • Veo 3.1</div>
+                <div class="brand-sub">Android App v2.8.1 • Veo 3.1</div>
             </div>
         </div>
         <div style="display:flex;align-items:center;gap:6px;">
-            <a id="headerDownloadApkBtn" href="https://hoanghaictcxht-bot.github.io/jin-admin/JIN_Motion_Pro_v280.apk" onclick="return downloadApkSmart(event)" style="display:none;text-decoration:none;background:linear-gradient(135deg,#EC4899,#8B5CF6);color:#fff;font-size:0.7rem;font-weight:900;padding:6px 10px;border-radius:99px;white-space:nowrap;box-shadow:0 2px 10px rgba(236,72,153,0.45);">
-                <i class="fas fa-download"></i> Tải APK v2.8
+            <a id="headerDownloadApkBtn" href="https://hoanghaictcxht-bot.github.io/jin-admin/JIN_Motion_Pro_v281.apk" onclick="return downloadApkSmart(event)" style="display:none;text-decoration:none;background:linear-gradient(135deg,#EC4899,#8B5CF6);color:#fff;font-size:0.7rem;font-weight:900;padding:6px 10px;border-radius:99px;white-space:nowrap;box-shadow:0 2px 10px rgba(236,72,153,0.45);">
+                <i class="fas fa-download"></i> Tải APK v2.8.1
             </a>
             <div id="connStatusPill" class="conn-pill" onclick="switchMobileTab('connect')">
-                <i class="fas fa-link"></i>
-                <span id="connStatusText">Đang tìm PC...</span>
+                <i class="fas fa-key"></i>
+                <span id="connStatusText">Nhập Mã VIP</span>
             </div>
         </div>
     </div>
     <script>
         function downloadApkSmart(e) {
-            var apkUrl = 'https://hoanghaictcxht-bot.github.io/jin-admin/JIN_Motion_Pro_v280.apk';
+            var apkUrl = 'https://hoanghaictcxht-bot.github.io/jin-admin/JIN_Motion_Pro_v281.apk';
             var ua = navigator.userAgent || '';
             // Nếu khách đang mở trong Zalo WebView, tự động gọi Android Intent mở bằng Chrome để tải file .apk chuẩn không bị Zalo báo lỗi định dạng
             if (/Zalo/i.test(ua) && /Android/i.test(ua)) {
                 if (e) e.preventDefault();
-                window.location.href = 'intent://hoanghaictcxht-bot.github.io/jin-admin/JIN_Motion_Pro_v280.apk#Intent;scheme=https;package=com.android.chrome;action=android.intent.action.VIEW;end';
+                window.location.href = 'intent://hoanghaictcxht-bot.github.io/jin-admin/JIN_Motion_Pro_v281.apk#Intent;scheme=https;package=com.android.chrome;action=android.intent.action.VIEW;end';
                 return false;
             }
             return true;
@@ -741,7 +741,7 @@
                         Mã Ghép Đôi Máy Tính (Hiển thị trên màn hình PC của bạn):
                     </label>
                     <div class="input-group">
-                        <input type="text" id="mobPcTokenInput" class="m-input" placeholder="VD: JINPC-254P-37YM" style="text-transform:uppercase;font-weight:900;color:#38BDF8;" />
+                        <input type="text" id="mobPcTokenInput" class="m-input" placeholder="Nhập Mã Ghép Đôi PC của bạn (VD: JINPC-...)" style="text-transform:uppercase;font-weight:900;color:#38BDF8;" />
                         <button type="button" class="paste-btn" onclick="applySelectedConnectionMode(false)" style="background:linear-gradient(135deg,#0284C7,#2563EB);color:#fff;border:none;">
                             <i class="fas fa-link"></i> Kết nối PC
                         </button>
@@ -753,19 +753,17 @@
                         <i class="fas fa-crown"></i> KÍCH HOẠT TÀI KHOẢN MÁY CHỦ ĐÁM MÂY JIN CLOUD:
                     </div>
                     <label style="font-size:0.72rem;font-weight:800;color:#94A3B8;display:block;margin-bottom:4px;">
-                        Nhập Mã VIP JIN Cloud (Do Admin Hoàng Hải cấp):
+                        Nhập Mã VIP JIN Cloud (Do Admin Hoàng Hải cấp riêng cho bạn):
                     </label>
                     <div class="input-group">
-                        <input type="text" id="mobCloudVipInput" class="m-input" placeholder="VD: JINVIP-DEMO-9999" style="text-transform:uppercase;font-weight:900;color:#FBBF24;" />
+                        <input type="text" id="mobCloudVipInput" class="m-input" placeholder="Nhập Mã VIP của bạn (VD: JINVIP-...)" style="text-transform:uppercase;font-weight:900;color:#FBBF24;" />
                         <button type="button" class="paste-btn" onclick="applySelectedConnectionMode(false)" style="background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;border:none;">
                             <i class="fas fa-check-circle"></i> Kích hoạt VIP
                         </button>
                     </div>
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
-                        <button type="button" onclick="fillDemoVipKey()" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.4);color:#FBBF24;border-radius:7px;padding:5px 10px;font-size:0.7rem;font-weight:800;cursor:pointer;">
-                            🎁 Dùng mã VIP mẫu (JINVIP-DEMO-9999)
-                        </button>
-                        <span style="font-size:0.68rem;color:#94A3B8;">Zalo hỗ trợ: <b style="color:#34D399;">0913.227.766</b></span>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+                        <span style="font-size:0.7rem;color:#FBBF24;font-weight:800;">🔑 Mỗi khách hàng sử dụng 1 Mã VIP riêng biệt</span>
+                        <span style="font-size:0.68rem;color:#94A3B8;">Zalo cấp mã: <b style="color:#34D399;">0913.227.766</b></span>
                     </div>
                 </div>
 
@@ -813,19 +811,41 @@
         const CLOUD_DISCOVERY_ADMIN_API_URL = 'https://api.github.com/repos/hoanghaictcxht-bot/jin-admin/contents/jin_motion_endpoint.json';
         const CLOUD_DISCOVERY_API_URL = 'https://api.github.com/repos/hoanghaictcxht-bot/jin-ai-studio-releases/contents/jin_motion_endpoint.json';
         const CLOUD_DISCOVERY_URL = 'https://raw.githubusercontent.com/hoanghaictcxht-bot/jin-ai-studio-releases/main/jin_motion_endpoint.json';
-        const DEFAULT_FALLBACK_TUNNEL = 'https://statement-nearest-drag-bugs.trycloudflare.com';
+        const DEFAULT_FALLBACK_TUNNEL = 'https://slim-expanding-fathers-containing.trycloudflare.com';
         const DEFAULT_FALLBACK_LAN = 'http://192.168.1.7:3002';
-        const DEFAULT_FALLBACK_PC_TOKEN = 'JINPC-254P-37YM';
-        const DEFAULT_FALLBACK_CLOUD_VIP = 'JINVIP-DEMO-9999';
+        const DEFAULT_FALLBACK_PC_TOKEN = '';
+        const DEFAULT_FALLBACK_CLOUD_VIP = '';
+        const REVOKED_TOKENS = ['JINPC-254P-37YM', 'JINVIP-DEMO-9999', 'PROTECTED'];
+
+        // Tự động thu hồi và xóa bỏ mọi mã mặc định cũ từng lưu trên trình duyệt của khách hàng
+        (function purgeLeakedDefaultTokens() {
+            ['jin_motion_pc_token', 'jin_motion_cloud_vip_key', 'jin_motion_mobile_token'].forEach(k => {
+                const v = (localStorage.getItem(k) || '').trim().toUpperCase();
+                if (REVOKED_TOKENS.includes(v)) {
+                    localStorage.removeItem(k);
+                    localStorage.removeItem('jin_motion_active_job_id');
+                }
+            });
+        })();
+
+        function getOrCreateDeviceId() {
+            let id = localStorage.getItem('jin_motion_device_id') || '';
+            if (!id) {
+                id = 'jdev_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10);
+                localStorage.setItem('jin_motion_device_id', id);
+            }
+            return id;
+        }
 
         let mobileState = {
-            connMode: localStorage.getItem('jin_motion_conn_mode') || 'pc', // 'pc' | 'cloud'
+            deviceId: getOrCreateDeviceId(),
+            connMode: localStorage.getItem('jin_motion_conn_mode') || 'cloud', // Mặc định khách mở lên ở chế độ JIN Cloud (nhập mã VIP)
             serverBaseUrl: localStorage.getItem('jin_motion_server_url') || DEFAULT_FALLBACK_TUNNEL,
             discoveredLanUrl: DEFAULT_FALLBACK_LAN,
             discoveredTunnelUrl: DEFAULT_FALLBACK_TUNNEL,
-            pcToken: localStorage.getItem('jin_motion_pc_token') || DEFAULT_FALLBACK_PC_TOKEN,
-            cloudVipKey: localStorage.getItem('jin_motion_cloud_vip_key') || DEFAULT_FALLBACK_CLOUD_VIP,
-            token: localStorage.getItem('jin_motion_mobile_token') || DEFAULT_FALLBACK_PC_TOKEN,
+            pcToken: localStorage.getItem('jin_motion_pc_token') || '',
+            cloudVipKey: localStorage.getItem('jin_motion_cloud_vip_key') || '',
+            token: localStorage.getItem('jin_motion_mobile_token') || '',
             jinMode: 'character',
             perspective: 'source',
             sourceVideoPath: '',
@@ -947,18 +967,25 @@
 
             const pcInput = document.getElementById('mobPcTokenInput');
             const vipInput = document.getElementById('mobCloudVipInput');
-            if (pcInput && !pcInput.value) pcInput.value = mobileState.pcToken || DEFAULT_FALLBACK_PC_TOKEN;
-            if (vipInput && !vipInput.value) vipInput.value = mobileState.cloudVipKey || DEFAULT_FALLBACK_CLOUD_VIP;
+            if (pcInput && !pcInput.value) pcInput.value = mobileState.pcToken || '';
+            if (vipInput && !vipInput.value) vipInput.value = mobileState.cloudVipKey || '';
 
             mobileState.token = (mobileState.connMode === 'pc')
-                ? ((pcInput && pcInput.value.trim().toUpperCase()) || mobileState.pcToken || DEFAULT_FALLBACK_PC_TOKEN)
-                : ((vipInput && vipInput.value.trim().toUpperCase()) || mobileState.cloudVipKey || DEFAULT_FALLBACK_CLOUD_VIP);
+                ? ((pcInput && pcInput.value.trim().toUpperCase()) || mobileState.pcToken || '')
+                : ((vipInput && vipInput.value.trim().toUpperCase()) || mobileState.cloudVipKey || '');
 
             document.getElementById('mobAuthTokenInput').value = mobileState.token;
             updateConnectionModeCardsUI();
 
             if (autoApply) {
-                await verifyAndSaveMobileToken(false);
+                if (!mobileState.token) {
+                    switchMobileTab('connect');
+                    showMobileToast(mobileState.connMode === 'cloud'
+                        ? '👑 Vui lòng nhập Mã VIP JIN Cloud (JINVIP-...) của bạn để kích hoạt!'
+                        : '💻 Vui lòng nhập Mã Ghép Đôi PC (JINPC-...) trên màn hình máy tính của bạn!');
+                } else {
+                    await verifyAndSaveMobileToken(false);
+                }
             }
         }
 
@@ -972,23 +999,17 @@
                 localStorage.setItem('jin_motion_custom_server_saved', '1');
             }
             if (mobileState.connMode === 'pc') {
-                mobileState.pcToken = (pcInput && pcInput.value.trim().toUpperCase()) || DEFAULT_FALLBACK_PC_TOKEN;
+                mobileState.pcToken = (pcInput && pcInput.value.trim().toUpperCase()) || '';
                 localStorage.setItem('jin_motion_pc_token', mobileState.pcToken);
                 localStorage.setItem('jin_motion_custom_server_saved', '1');
                 mobileState.token = mobileState.pcToken;
             } else {
-                mobileState.cloudVipKey = (vipInput && vipInput.value.trim().toUpperCase()) || DEFAULT_FALLBACK_CLOUD_VIP;
+                mobileState.cloudVipKey = (vipInput && vipInput.value.trim().toUpperCase()) || '';
                 localStorage.setItem('jin_motion_cloud_vip_key', mobileState.cloudVipKey);
                 mobileState.token = mobileState.cloudVipKey;
             }
             document.getElementById('mobAuthTokenInput').value = mobileState.token;
             return await verifyAndSaveMobileToken(silent);
-        }
-
-        function fillDemoVipKey() {
-            const vipInput = document.getElementById('mobCloudVipInput');
-            if (vipInput) vipInput.value = 'JINVIP-DEMO-9999';
-            selectConnectionMode('cloud', true);
         }
 
         async function fetchLatestCloudDiscoveryData() {
@@ -1235,7 +1256,8 @@
             // 1. Nếu khách quét mã QR mở trực tiếp từ máy tính của khách (http://192.168.x.x:3002 hoặc https://xxx.trycloudflare.com)
             const isDirectHost = window.location.protocol.startsWith('http') && !window.location.hostname.includes('github.io');
             const urlParams = new URLSearchParams(window.location.search || '');
-            const urlToken = (urlParams.get('token') || urlParams.get('key') || '').trim().toUpperCase();
+            const rawUrlToken = (urlParams.get('token') || urlParams.get('key') || '').trim().toUpperCase();
+            const urlToken = REVOKED_TOKENS.includes(rawUrlToken) ? '' : rawUrlToken;
 
             if (isDirectHost) {
                 mobileState.serverBaseUrl = window.location.origin.replace(/\/+$/, '');
@@ -1245,7 +1267,12 @@
                     if (localInfo) {
                         if (localInfo.lanAddresses && localInfo.lanAddresses[0]) mobileState.discoveredLanUrl = localInfo.lanAddresses[0].url;
                         if (localInfo.rawTunnelBaseUrl) mobileState.discoveredTunnelUrl = localInfo.rawTunnelBaseUrl;
-                        if (localInfo.pcPairingToken) mobileState.pcToken = localInfo.pcPairingToken;
+                        // Chỉ nhận pcPairingToken nếu truy cập trực tiếp trên chính màn hình localhost của PC (không phải 'PROTECTED')
+                        const srvTok = String(localInfo.pcPairingToken || '').trim().toUpperCase();
+                        if (srvTok && !REVOKED_TOKENS.includes(srvTok)) {
+                            mobileState.pcToken = srvTok;
+                            localStorage.setItem('jin_motion_pc_token', srvTok);
+                        }
                     }
                 } catch (_) {}
                 if (urlToken) {
@@ -1258,37 +1285,45 @@
                         mobileState.pcToken = urlToken;
                         localStorage.setItem('jin_motion_pc_token', urlToken);
                     }
+                    localStorage.setItem('jin_motion_conn_mode', mobileState.connMode);
                 }
                 const pcInput = document.getElementById('mobPcTokenInput');
                 const vipInput = document.getElementById('mobCloudVipInput');
-                if (pcInput) pcInput.value = mobileState.pcToken;
-                if (vipInput) vipInput.value = mobileState.cloudVipKey || DEFAULT_FALLBACK_CLOUD_VIP;
-                mobileState.token = (mobileState.connMode === 'cloud') ? mobileState.cloudVipKey : mobileState.pcToken;
+                if (pcInput) pcInput.value = mobileState.pcToken || '';
+                if (vipInput) vipInput.value = mobileState.cloudVipKey || '';
+                mobileState.token = (mobileState.connMode === 'cloud') ? (mobileState.cloudVipKey || '') : (mobileState.pcToken || '');
                 document.getElementById('mobServerUrlInput').value = mobileState.serverBaseUrl;
                 document.getElementById('mobAuthTokenInput').value = mobileState.token;
                 updateConnectionModeCardsUI();
-                await verifyAndSaveMobileToken(silent, true);
-                return;
+                return await verifyAndSaveMobileToken(silent, true);
             }
 
             // 2. Tự động lấy địa chỉ JIN Cloud Server từ GitHub Pages (Fastly CDN) & GitHub API (Zero-Cache)
+            // TUYỆT ĐỐI KHÔNG tự nạp mã PC từ GitHub để khách hàng quét mã QR bắt buộc phải nhập Mã VIP riêng!
             const cloudData = await fetchLatestCloudDiscoveryData();
 
             const candidateLan = (cloudData && cloudData.lanUrl) || DEFAULT_FALLBACK_LAN;
             const candidateTunnel = (cloudData && cloudData.tunnelUrl) || DEFAULT_FALLBACK_TUNNEL;
-            const candidatePcToken = (cloudData && cloudData.defaultToken) || mobileState.pcToken || DEFAULT_FALLBACK_PC_TOKEN;
 
             mobileState.discoveredLanUrl = candidateLan;
             mobileState.discoveredTunnelUrl = candidateTunnel;
-            if (!mobileState.pcToken || mobileState.pcToken === DEFAULT_FALLBACK_PC_TOKEN) {
-                mobileState.pcToken = candidatePcToken;
-                localStorage.setItem('jin_motion_pc_token', candidatePcToken);
+
+            if (urlToken) {
+                if (urlToken.startsWith('JINVIP')) {
+                    mobileState.connMode = 'cloud';
+                    mobileState.cloudVipKey = urlToken;
+                    localStorage.setItem('jin_motion_cloud_vip_key', urlToken);
+                } else {
+                    mobileState.connMode = 'pc';
+                    mobileState.pcToken = urlToken;
+                    localStorage.setItem('jin_motion_pc_token', urlToken);
+                }
+                localStorage.setItem('jin_motion_conn_mode', mobileState.connMode);
             }
 
             let chosenUrl = '';
             // Nếu đang ở ngoài mạng WiFi nhà (VD: ở công ty hoặc 4G), probeServerReachable sẽ xác thực đúng JIN AI Studio server
             if (await probeServerReachable(candidateTunnel, 4500)) {
-                // Nếu cả WiFi Nhà cũng thông thật sự (cùng lớp mạng và đúng pcPairingToken) thì ưu tiên WiFi Nhà nhanh hơn
                 if (await probeServerReachable(candidateLan, 1200)) {
                     chosenUrl = candidateLan;
                 } else {
@@ -1307,18 +1342,18 @@
 
             const pcInput = document.getElementById('mobPcTokenInput');
             const vipInput = document.getElementById('mobCloudVipInput');
-            if (pcInput) pcInput.value = mobileState.pcToken;
-            if (vipInput) vipInput.value = mobileState.cloudVipKey || DEFAULT_FALLBACK_CLOUD_VIP;
+            if (pcInput) pcInput.value = mobileState.pcToken || '';
+            if (vipInput) vipInput.value = mobileState.cloudVipKey || '';
 
             mobileState.token = (mobileState.connMode === 'cloud')
-                ? (mobileState.cloudVipKey || DEFAULT_FALLBACK_CLOUD_VIP)
-                : mobileState.pcToken;
+                ? (mobileState.cloudVipKey || '')
+                : (mobileState.pcToken || '');
 
             document.getElementById('mobServerUrlInput').value = mobileState.serverBaseUrl;
             document.getElementById('mobAuthTokenInput').value = mobileState.token;
             updateConnectionModeCardsUI();
 
-            await verifyAndSaveMobileToken(silent, true);
+            return await verifyAndSaveMobileToken(silent, true);
         }
 
         async function verifyAndSaveMobileToken(silent = false, isRetry = false) {
@@ -1330,14 +1365,17 @@
 
             const pcInput = document.getElementById('mobPcTokenInput');
             const vipInput = document.getElementById('mobCloudVipInput');
-            if (mobileState.connMode === 'pc' && pcInput && pcInput.value.trim()) {
+            if (mobileState.connMode === 'pc' && pcInput) {
                 mobileState.pcToken = pcInput.value.trim().toUpperCase();
                 localStorage.setItem('jin_motion_pc_token', mobileState.pcToken);
                 mobileState.token = mobileState.pcToken;
-            } else if (mobileState.connMode === 'cloud' && vipInput && vipInput.value.trim()) {
+            } else if (mobileState.connMode === 'cloud' && vipInput) {
                 mobileState.cloudVipKey = vipInput.value.trim().toUpperCase();
                 localStorage.setItem('jin_motion_cloud_vip_key', mobileState.cloudVipKey);
                 mobileState.token = mobileState.cloudVipKey;
+            }
+            if (REVOKED_TOKENS.includes(mobileState.token)) {
+                mobileState.token = '';
             }
             localStorage.setItem('jin_motion_mobile_token', mobileState.token);
 
@@ -1346,6 +1384,23 @@
             const infoCard = document.getElementById('mobAuthInfoCard');
             const qSubPc = document.getElementById('quickConnSub_pc');
             const qSubCloud = document.getElementById('quickConnSub_cloud');
+
+            if (!mobileState.token) {
+                pill.classList.add('disconnected');
+                pillText.textContent = '🔑 Nhập Mã VIP';
+                if (qSubCloud) qSubCloud.innerHTML = `<span style="color:#FBBF24;">🔑 Chạm để nhập Mã VIP</span>`;
+                if (qSubPc) qSubPc.textContent = 'Tự chủ PC • Nhập mã PC';
+                infoCard.innerHTML = `
+                    <div style="color:#FBBF24;font-weight:900;margin-bottom:4px;">🔑 Chưa kích hoạt mã tạo video</div>
+                    <div style="color:#CBD5E1;font-size:0.75rem;">
+                        Vui lòng nhập <b>Mã VIP JIN Cloud (JINVIP-...)</b> do Admin Hoàng Hải cấp (hoặc chọn <b>Máy Tính Cá Nhân</b> để nhập Mã Ghép Đôi PC của bạn).
+                    </div>
+                `;
+                if (!silent) {
+                    showMobileToast('🔑 Vui lòng nhập Mã VIP JIN Cloud hoặc Mã Ghép Đôi PC để kích hoạt!');
+                }
+                return false;
+            }
 
             try {
                 const res = await fetch(resolveServerUrl('/api/jin-motion-mobile/verify'), {
@@ -1394,8 +1449,7 @@
             } catch (e) {
                 if (!isRetry) {
                     // Tự động dò lại đường truyền 4G/Cloud mới nhất nếu địa chỉ cũ đã đổi
-                    await autoDiscoverCloudEndpoint(silent, true);
-                    return true;
+                    return await autoDiscoverCloudEndpoint(silent, true);
                 }
                 pill.classList.add('disconnected');
                 pillText.textContent = 'Chưa kết nối';
@@ -1485,8 +1539,10 @@
         async function submitMobileJinMotion() {
             const ok = await verifyAndSaveMobileToken(true);
             if (!ok) {
-                showMobileToast('⚠️ Chưa kết nối được máy chủ! Vui lòng kiểm tra ở tab Kết Nối.');
+                showMobileToast('🔑 Vui lòng nhập Mã VIP JIN Cloud (hoặc Mã Ghép Đôi PC) ở mục Nguồn Kết Nối trước khi tạo video!', 4500);
                 switchMobileTab('connect');
+                const focusEl = document.getElementById(mobileState.connMode === 'pc' ? 'mobPcTokenInput' : 'mobCloudVipInput');
+                if (focusEl) setTimeout(() => focusEl.focus(), 150);
                 return;
             }
 
@@ -1520,6 +1576,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         token: mobileState.token,
+                        deviceId: mobileState.deviceId,
                         jinMode: mobileState.jinMode,
                         perspective: mobileState.perspective || 'source',
                         scenePreset: document.getElementById('mobScenePresetSelect')?.value || 'reference_image',
@@ -1792,27 +1849,23 @@
 
         async function restoreLatestJobFromServer() {
             try {
-                const res = await fetch(resolveServerUrl(`/api/jin-motion-mobile/jobs?token=${encodeURIComponent(mobileState.token)}&_t=${Date.now()}`)).then(r => r.json());
+                if (!mobileState.token) return;
+                const res = await fetch(resolveServerUrl(`/api/jin-motion-mobile/jobs?token=${encodeURIComponent(mobileState.token)}&deviceId=${encodeURIComponent(mobileState.deviceId)}&_t=${Date.now()}`)).then(r => r.json());
                 const jobs = res?.jobs || [];
                 if (jobs.length === 0) return;
 
-                let targetJob = null;
-                if (mobileState.activeJobId) {
-                    targetJob = jobs.find(j => j.jobId === mobileState.activeJobId);
-                }
-                if (!targetJob) {
-                    targetJob = jobs[0];
-                }
-                if (!targetJob) return;
+                // TUYỆT ĐỐI KHÔNG tự động nạp lại form (Link TikTok, Ảnh KOC, Ảnh SP) của video đã xong khi mới mở ứng dụng!
+                // Form tạo video mới luôn mở ra sạch sẽ 100%. Chỉ tiếp tục theo dõi nếu chính thiết bị này đang có 1 video ĐANG CHẠY / XẾP HÀNG.
+                const runningJob = jobs.find(j =>
+                    ['queued', 'cutting', 'generating', 'merging'].includes(j.status) &&
+                    (!j.deviceId || j.deviceId === mobileState.deviceId)
+                );
+                if (!runningJob) return;
 
-                mobileState.activeJobId = targetJob.jobId;
-                localStorage.setItem('jin_motion_active_job_id', targetJob.jobId);
-                restoreJobInputsToForm(targetJob);
-                renderMobileJobState(targetJob);
-
-                if (['queued', 'cutting', 'generating', 'merging'].includes(targetJob.status)) {
-                    startPollingMobileJob(targetJob.jobId);
-                }
+                mobileState.activeJobId = runningJob.jobId;
+                localStorage.setItem('jin_motion_active_job_id', runningJob.jobId);
+                renderMobileJobState(runningJob);
+                startPollingMobileJob(runningJob.jobId);
             } catch (_) {}
         }
 
@@ -1907,10 +1960,16 @@
 
         async function loadMobileHistory() {
             const box = document.getElementById('mobHistoryContainer');
+            if (!mobileState.token) {
+                if (box) {
+                    box.innerHTML = '<div style="padding:16px;text-align:center;color:#FBBF24;font-weight:700;">🔑 Vui lòng kích hoạt Mã VIP JIN Cloud (hoặc Mã Ghép Đôi PC) ở tab Nguồn Kết Nối để xem lịch sử video của riêng bạn!</div>';
+                }
+                return;
+            }
             if (box) box.innerHTML = '<div style="padding:12px;text-align:center;color:#38BDF8;"><i class="fas fa-spinner fa-spin"></i> Đang đồng bộ lịch sử video từ máy chủ...</div>';
 
             async function fetchHistoryOnce() {
-                const r = await fetch(resolveServerUrl(`/api/jin-motion-mobile/jobs?token=${encodeURIComponent(mobileState.token)}&_t=${Date.now()}`));
+                const r = await fetch(resolveServerUrl(`/api/jin-motion-mobile/jobs?token=${encodeURIComponent(mobileState.token)}&deviceId=${encodeURIComponent(mobileState.deviceId)}&_t=${Date.now()}`));
                 if (!r.ok) throw new Error('HTTP ' + r.status);
                 return await r.json();
             }
