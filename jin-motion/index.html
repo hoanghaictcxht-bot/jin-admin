@@ -794,7 +794,7 @@
         const CLOUD_DISCOVERY_ADMIN_API_URL = 'https://api.github.com/repos/hoanghaictcxht-bot/jin-admin/contents/jin_motion_endpoint.json';
         const CLOUD_DISCOVERY_API_URL = 'https://api.github.com/repos/hoanghaictcxht-bot/jin-ai-studio-releases/contents/jin_motion_endpoint.json';
         const CLOUD_DISCOVERY_URL = 'https://raw.githubusercontent.com/hoanghaictcxht-bot/jin-ai-studio-releases/main/jin_motion_endpoint.json';
-        const DEFAULT_FALLBACK_TUNNEL = 'https://solid-thing-sin-how.trycloudflare.com';
+        const DEFAULT_FALLBACK_TUNNEL = 'https://statement-nearest-drag-bugs.trycloudflare.com';
         const DEFAULT_FALLBACK_LAN = 'http://192.168.1.7:3002';
         const DEFAULT_FALLBACK_PC_TOKEN = 'JINPC-254P-37YM';
         const DEFAULT_FALLBACK_CLOUD_VIP = 'JINVIP-DEMO-9999';
@@ -973,51 +973,61 @@
         }
 
         async function fetchLatestCloudDiscoveryData() {
-            // 1. Ưu tiên GitHub Pages (Fastly CDN - không bao giờ bị chặn ở Việt Nam hay bị giới hạn rate limit)
-            try {
-                const r = await fetch(`${CLOUD_DISCOVERY_PAGES_URL}?_t=${Date.now()}`, { cache: 'no-store' });
-                if (r.ok) {
-                    const d = await r.json();
-                    if (d && d.tunnelUrl) return d;
-                }
-            } catch (_) {}
-            // 2. Dự phòng GitHub API repo jin-admin
-            try {
-                const apiRes = await fetch(`${CLOUD_DISCOVERY_ADMIN_API_URL}?_t=${Date.now()}`, {
-                    headers: { 'Accept': 'application/vnd.github+json' },
-                    cache: 'no-store'
-                });
-                if (apiRes.ok) {
-                    const meta = await apiRes.json();
-                    if (meta && meta.content) {
-                        const d = JSON.parse(atob(meta.content.replace(/\s/g, '')));
-                        if (d && d.tunnelUrl) return d;
+            const candidates = [];
+            const fetchApiRepo = async (apiUrl) => {
+                try {
+                    const r = await fetch(`${apiUrl}?_t=${Date.now()}`, {
+                        headers: { 'Accept': 'application/vnd.github+json' },
+                        cache: 'no-store'
+                    });
+                    if (r.ok) {
+                        const meta = await r.json();
+                        if (meta && meta.content) {
+                            const d = JSON.parse(atob(meta.content.replace(/\s/g, '')));
+                            if (d && d.tunnelUrl) candidates.push(d);
+                        }
                     }
-                }
-            } catch (_) {}
-            // 3. Dự phòng GitHub API repo jin-ai-studio-releases
-            try {
-                const apiRes = await fetch(`${CLOUD_DISCOVERY_API_URL}?_t=${Date.now()}`, {
-                    headers: { 'Accept': 'application/vnd.github+json' },
-                    cache: 'no-store'
-                });
-                if (apiRes.ok) {
-                    const meta = await apiRes.json();
-                    if (meta && meta.content) {
-                        const d = JSON.parse(atob(meta.content.replace(/\s/g, '')));
-                        if (d && d.tunnelUrl) return d;
+                } catch (_) {}
+            };
+            const fetchJsonDirect = async (url) => {
+                try {
+                    const r = await fetch(`${url}?_t=${Date.now()}`, { cache: 'no-store' });
+                    if (r.ok) {
+                        const d = await r.json();
+                        if (d && d.tunnelUrl) candidates.push(d);
                     }
+                } catch (_) {}
+            };
+
+            // Truy vấn đồng thời cả GitHub API (Zero-Cache 0 giây) và GitHub Pages CDN để luôn lấy được link mới nhất
+            await Promise.all([
+                fetchApiRepo(CLOUD_DISCOVERY_ADMIN_API_URL),
+                fetchApiRepo(CLOUD_DISCOVERY_API_URL),
+                fetchJsonDirect(CLOUD_DISCOVERY_PAGES_URL)
+            ]);
+
+            if (candidates.length === 0) {
+                await fetchJsonDirect(CLOUD_DISCOVERY_URL);
+            }
+            if (candidates.length === 0) return null;
+
+            // Sắp xếp theo thời điểm updatedAt mới nhất lên đầu (tránh lấy nhầm bản cache cũ 10 phút của GitHub Pages)
+            candidates.sort((a, b) => {
+                const ta = a.updatedAt ? new Date(a.updatedAt).getTime() : 0;
+                const tb = b.updatedAt ? new Date(b.updatedAt).getTime() : 0;
+                return tb - ta;
+            });
+
+            // Ưu tiên link mới nhất đang phản hồi sống 100%
+            const seenUrls = new Set();
+            for (const c of candidates) {
+                if (!c.tunnelUrl || seenUrls.has(c.tunnelUrl)) continue;
+                seenUrls.add(c.tunnelUrl);
+                if (await probeServerReachable(c.tunnelUrl, 3200)) {
+                    return c;
                 }
-            } catch (_) {}
-            // 4. Dự phòng raw.githubusercontent.com
-            try {
-                const r = await fetch(`${CLOUD_DISCOVERY_URL}?_t=${Date.now()}`, { cache: 'no-store' });
-                if (r.ok) {
-                    const d = await r.json();
-                    if (d && d.tunnelUrl) return d;
-                }
-            } catch (_) {}
-            return null;
+            }
+            return candidates[0];
         }
 
         async function switchServerNetworkType(type) {
