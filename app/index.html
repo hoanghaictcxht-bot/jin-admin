@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>JIN MOTION PRO - Cài Đặt & Mở Ứng Dụng</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: radial-gradient(circle at top, #1E1B4B 0%, #090D16 70%);
+            color: #F8FAFC;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+        }
+        .card {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(15, 23, 42, 0.92);
+            border: 1.5px solid rgba(236, 72, 153, 0.45);
+            border-radius: 22px;
+            padding: 24px 20px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+        }
+        .logo {
+            width: 78px;
+            height: 78px;
+            border-radius: 20px;
+            border: 2px solid #38BDF8;
+            box-shadow: 0 0 24px rgba(56, 189, 248, 0.4);
+            margin-bottom: 12px;
+        }
+        h1 {
+            font-size: 1.35rem;
+            font-weight: 900;
+            background: linear-gradient(90deg, #F472B6, #38BDF8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+        }
+        .sub {
+            font-size: 0.78rem;
+            color: #94A3B8;
+            margin-bottom: 18px;
+        }
+        .btn-web {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 15px 16px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: #04130e;
+            font-size: 0.95rem;
+            font-weight: 900;
+            text-decoration: none;
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.35);
+            margin-bottom: 12px;
+        }
+        .btn-apk {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #EC4899, #8B5CF6);
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 900;
+            text-decoration: none;
+            box-shadow: 0 8px 24px rgba(236, 72, 153, 0.35);
+            margin-bottom: 14px;
+            cursor: pointer;
+            border: none;
+        }
+        .zalo-tip {
+            display: none;
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.5);
+            color: #FDE68A;
+            padding: 11px 12px;
+            border-radius: 12px;
+            font-size: 0.76rem;
+            line-height: 1.45;
+            text-align: left;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <img src="../icon.png" alt="JIN MOTION PRO" class="logo" />
+        <h1>JIN MOTION PRO</h1>
+        <div class="sub">Hệ Thống Tạo Video AI &amp; Thay KOC Tự Động (v2.7.7)</div>
+
+        <!-- CÁCH 1: MỞ DÙNG LUÔN KHÔNG CẦN CÀI APK (CHẠY ĐƯỢC NGAY TRONG ZALO, CHROME, IPHONE, ANDROID) -->
+        <a href="https://hoanghaictcxht-bot.github.io/jin-admin/jin-motion/" class="btn-web">
+            ⚡ MỞ ỨNG DỤNG DÙNG LUÔN (KHÔNG CẦN CÀI)
+        </a>
+
+        <!-- CÁCH 2: TẢI FILE APK CÀI ĐẶT TRÊN ANDROID (TỰ ĐỘNG CHUYỂN SANG CHROME NẾU QUÉT BẰNG ZALO) -->
+        <button type="button" onclick="downloadApkClean()" class="btn-apk">
+            📥 TẢI FILE CÀI ĐẶT ANDROID (.APK)
+        </button>
+
+        <div id="zaloTipBox" class="zalo-tip">
+            💡 <b>Lưu ý khi quét mã từ Zalo:</b><br/>
+            • Bạn có thể bấm nút màu xanh lá <b>"⚡ MỞ ỨNG DỤNG DÙNG LUÔN"</b> ở trên để tạo video ngay lập tức mà không cần tải file `.apk`!<br/>
+            • Nếu muốn cài file `.apk`, hệ thống sẽ tự mở sang trình duyệt <b>Chrome</b> (hoặc bạn bấm dấu <b>⋯</b> ở góc phải trên cùng của Zalo &rarr; chọn <b>"Mở bằng trình duyệt"</b>).
+        </div>
+    </div>
+
+    <script>
+        var APK_CLEAN_URL = 'https://hoanghaictcxht-bot.github.io/jin-admin/JIN_Motion_Pro_v277.apk';
+        var ua = navigator.userAgent || '';
+        var isZalo = /Zalo/i.test(ua);
+        var isAndroid = /Android/i.test(ua);
+
+        if (isZalo) {
+            document.getElementById('zaloTipBox').style.display = 'block';
+        }
+
+        function downloadApkClean() {
+            if (isZalo && isAndroid) {
+                // Tự động thoát khỏi Zalo WebView và mở trình duyệt Chrome hệ thống để tải file .apk chuẩn (không bao giờ bị Zalo báo "Định dạng tập tin không được hỗ trợ")
+                window.location.href = 'intent://hoanghaictcxht-bot.github.io/jin-admin/JIN_Motion_Pro_v277.apk#Intent;scheme=https;package=com.android.chrome;action=android.intent.action.VIEW;end';
+                setTimeout(function() {
+                    window.location.href = 'intent://hoanghaictcxht-bot.github.io/jin-admin/JIN_Motion_Pro_v277.apk#Intent;scheme=https;action=android.intent.action.VIEW;end';
+                }, 1200);
+                return;
+            }
+            window.location.href = APK_CLEAN_URL;
+        }
+    </script>
+</body>
+</html>
