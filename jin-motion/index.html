@@ -375,7 +375,6 @@
             text-align: center;
         }
     </style>
-    <link rel="manifest" href="manifest.json" />
 </head>
 <body>
     <div class="app-header">
@@ -383,18 +382,50 @@
             <img src="icon.png" alt="JIN MOTION" class="brand-logo" />
             <div>
                 <div class="brand-title">JIN MOTION PRO</div>
-                <div class="brand-sub">Android App v2.7.1 • Veo 3.1</div>
+                <div class="brand-sub">Android App v2.7.7 • Veo 3.1</div>
             </div>
         </div>
-        <div id="connStatusPill" class="conn-pill" onclick="switchMobileTab('connect')">
-            <i class="fas fa-link"></i>
-            <span id="connStatusText">Đang tìm PC...</span>
+        <div style="display:flex;align-items:center;gap:6px;">
+            <a id="headerDownloadApkBtn" href="https://hoanghaictcxht-bot.github.io/jin-admin/JIN_Motion_Pro.apk?v=277" download="JIN_Motion_Pro.apk" style="display:none;text-decoration:none;background:linear-gradient(135deg,#EC4899,#8B5CF6);color:#fff;font-size:0.7rem;font-weight:900;padding:6px 10px;border-radius:99px;white-space:nowrap;box-shadow:0 2px 10px rgba(236,72,153,0.45);">
+                <i class="fas fa-download"></i> Tải APK
+            </a>
+            <div id="connStatusPill" class="conn-pill" onclick="switchMobileTab('connect')">
+                <i class="fas fa-link"></i>
+                <span id="connStatusText">Đang tìm PC...</span>
+            </div>
         </div>
     </div>
+    <script>
+        (function() {
+            // Hiển thị nút Tải APK nếu khách đang mở qua trình duyệt Web khi quét mã QR (Ẩn đi nếu đang ở trong App APK đã cài)
+            if (window.location.protocol.startsWith('http') && !window.AndroidBridge) {
+                var btn = document.getElementById('headerDownloadApkBtn');
+                if (btn) btn.style.display = 'inline-flex';
+            }
+        })();
+    </script>
 
     <div id="mobileToast"></div>
 
     <div class="app-shell">
+        <!-- THANH CHỌN NHANH NGUỒN XỬ LÝ: MÁY TÍNH CÁ NHÂN vs MÁY CHỦ JIN CLOUD -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+            <div id="quickConnCard_pc" onclick="selectConnectionMode('pc', true)" style="background:linear-gradient(145deg,rgba(56,189,248,0.22),rgba(15,23,42,0.92));border:1.5px solid #38BDF8;border-radius:13px;padding:9px 10px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.2s;">
+                <i class="fas fa-desktop" style="font-size:1.15rem;color:#38BDF8;"></i>
+                <div style="min-width:0;">
+                    <div style="font-size:0.74rem;font-weight:900;color:#F8FAFC;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">💻 Máy Tính Cá Nhân</div>
+                    <div id="quickConnSub_pc" style="font-size:0.63rem;color:#38BDF8;font-weight:700;">Tự chủ PC • Không giới hạn</div>
+                </div>
+            </div>
+            <div id="quickConnCard_cloud" onclick="selectConnectionMode('cloud', true)" style="background:rgba(15,22,38,0.85);border:1.5px solid rgba(255,255,255,0.12);border-radius:13px;padding:9px 10px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.2s;">
+                <i class="fas fa-cloud-bolt" style="font-size:1.15rem;color:#F59E0B;"></i>
+                <div style="min-width:0;">
+                    <div style="font-size:0.74rem;font-weight:900;color:#F8FAFC;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">☁️ Máy Chủ JIN Cloud</div>
+                    <div id="quickConnSub_cloud" style="font-size:0.63rem;color:#94A3B8;font-weight:700;">Không cần PC • Theo lượt</div>
+                </div>
+            </div>
+        </div>
+
         <!-- TAB 1: TẠO VIDEO -->
         <div id="tabCreate" class="tab-pane">
             <div class="m-card">
@@ -444,12 +475,13 @@
 
             <div class="m-card">
                 <div class="m-card-title">
-                    <span><i class="fas fa-images"></i> 3. ẢNH THAM CHIẾU (KOC / SẢN PHẨM)</span>
+                    <span><i class="fas fa-images"></i> 3. ẢNH THAM CHIẾU &amp; PHỐI CẢNH</span>
                     <span style="font-size:0.7rem;color:#34D399;">Tự cắt 3 góc</span>
                 </div>
 
                 <input type="file" id="mobKocFileInput" accept="image/*" style="display:none;" onchange="handleMobileImageUpload(this, 'koc')" />
                 <input type="file" id="mobProdFileInput" accept="image/*" style="display:none;" onchange="handleMobileImageUpload(this, 'product')" />
+                <input type="file" id="mobSceneFileInput" accept="image/*" style="display:none;" onchange="handleMobileImageUpload(this, 'scene')" />
 
                 <div class="upload-grid-2">
                     <div id="mobKocUploadWrap">
@@ -473,6 +505,55 @@
                                 <div style="font-size:0.65rem;color:#94A3B8;">Trang phục / Đồ vật mới</div>
                             </div>
                             <div id="mobProdBadge" class="img-badge-overlay" style="display:none;">✅ Đã nạp Sản Phẩm</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CHỌN CHẾ ĐỘ PHỐI CẢNH (THEO VIDEO GỐC vs THEO ẢNH THAM CHIẾU / BỐI CẢNH MỚI) -->
+                <div style="margin-top:12px;padding:10px;border-radius:12px;background:rgba(6,9,19,0.72);border:1px solid rgba(56,189,248,0.32);">
+                    <div style="font-size:0.74rem;font-weight:900;color:#38BDF8;margin-bottom:7px;display:flex;align-items:center;justify-content:space-between;">
+                        <span><i class="fas fa-panorama"></i> TÙY CHỌN PHỐI CẢNH &amp; BỐI CẢNH NỀN:</span>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                        <button type="button" id="mobPerspBtn_source" onclick="selectMobilePerspective('source')" style="padding:9px 8px;border-radius:10px;border:1.5px solid #38BDF8;background:rgba(56,189,248,0.22);color:#fff;font-size:0.73rem;font-weight:800;cursor:pointer;text-align:center;">
+                            📹 Theo Video Gốc<br/><span style="font-size:0.62rem;font-weight:600;color:#BAE6FD;">Giữ 100% góc máy &amp; nền gốc</span>
+                        </button>
+                        <button type="button" id="mobPerspBtn_reference" onclick="selectMobilePerspective('reference')" style="padding:9px 8px;border-radius:10px;border:1.5px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.04);color:#CBD5E1;font-size:0.73rem;font-weight:800;cursor:pointer;text-align:center;">
+                            🖼️ Theo Ảnh Phối Cảnh<br/><span style="font-size:0.62rem;font-weight:600;color:#94A3B8;">Thay nền / không gian mới</span>
+                        </button>
+                    </div>
+
+                    <!-- Khung tải Ảnh Phối Cảnh & Bối Cảnh (Hiện khi chọn "Theo Ảnh Phối Cảnh") -->
+                    <div id="mobSceneRefPanel" style="display:none;margin-top:10px;padding-top:10px;border-top:1px dashed rgba(56,189,248,0.3);">
+                        <div style="display:grid;grid-template-columns:115px 1fr;gap:10px;align-items:center;">
+                            <div class="img-preview-box" style="height:125px;border-color:rgba(56,189,248,0.5);" onclick="document.getElementById('mobSceneFileInput').click()">
+                                <img id="mobScenePreviewImg" src="" style="display:none;" />
+                                <div id="mobScenePlaceholder" class="img-preview-placeholder" style="padding:4px;">
+                                    <i class="fas fa-panorama" style="font-size:1.3rem;color:#38BDF8;"></i>
+                                    <div style="font-size:0.7rem;font-weight:800;color:#E2E8F0;">3. Ảnh Phối Cảnh</div>
+                                    <div style="font-size:0.58rem;color:#93C5FD;">(Trống = Lấy nền Ảnh 1)</div>
+                                </div>
+                                <div id="mobSceneBadge" class="img-badge-overlay" style="display:none;font-size:0.62rem;">✅ Ảnh Phối Cảnh</div>
+                            </div>
+                            <div style="display:flex;flex-direction:column;gap:6px;">
+                                <div style="display:flex;justify-content:space-between;align-items:center;">
+                                    <label style="font-size:0.68rem;color:#BAE6FD;font-weight:800;">Bối cảnh &amp; Không gian:</label>
+                                    <button type="button" id="btnClearMobScene" onclick="clearMobileSceneRef()" style="display:none;background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.45);color:#FCA5A5;border-radius:6px;padding:2px 7px;font-size:0.64rem;font-weight:800;cursor:pointer;">
+                                        × Bỏ ảnh riêng
+                                    </button>
+                                </div>
+                                <select id="mobScenePresetSelect" class="m-input" style="width:100%;padding:8px;font-size:0.74rem;">
+                                    <option value="reference_image" selected>🖼️ Theo ảnh tham chiếu (Ảnh 3 hoặc nền Ảnh 1)</option>
+                                    <option value="cafe">☕ Quán cà phê ấm cúng</option>
+                                    <option value="studio">💡 Studio sáng chuyên nghiệp</option>
+                                    <option value="showroom">🏛️ Showroom trưng bày cao cấp</option>
+                                    <option value="custom">✍️ Tự mô tả bối cảnh riêng bên dưới</option>
+                                </select>
+                                <input type="text" id="mobSceneDescInput" class="m-input" style="width:100%;padding:8px 10px;font-size:0.74rem;" placeholder="Mô tả bối cảnh (VD: Phòng khách sang trọng, bàn gỗ...)" />
+                            </div>
+                        </div>
+                        <div style="margin-top:7px;font-size:0.66rem;color:#BAE6FD;line-height:1.35;background:rgba(56,189,248,0.1);padding:6px 8px;border-radius:7px;">
+                            💡 <b>Cơ chế Phối cảnh:</b> Nếu để trống Ảnh 3, AI tự động lấy nền &amp; ánh sáng từ <b>Ảnh 1 (KOC/Sản phẩm)</b>. Nếu tải Ảnh 3, AI sẽ thay toàn bộ nền video sang không gian của Ảnh 3!
                         </div>
                     </div>
                 </div>
@@ -502,8 +583,8 @@
             <button type="button" id="mobRunBtn" class="run-btn" onclick="submitMobileJinMotion()">
                 <i class="fas fa-bolt"></i> TẠO VIDEO JIN MOTION PRO
             </button>
-            <button type="button" id="mobStopBtn" class="stop-btn" onclick="stopCurrentMobileJob()">
-                <i class="fas fa-stop-circle"></i> Dừng tiến trình đang chạy
+            <button type="button" id="mobStopBtn" class="stop-btn" style="display:flex;align-items:center;justify-content:center;gap:6px;" onclick="stopCurrentMobileJob()">
+                <i class="fas fa-stop-circle"></i> BUỘC DỪNG TẤT CẢ &amp; MỞ KHÓA TIẾN TRÌNH
             </button>
 
             <div id="mobLiveProgressCard" class="m-card" style="display:none;margin-top:14px;border-color:rgba(56,189,248,0.45);">
@@ -517,6 +598,9 @@
                 <div class="prog-track">
                     <div id="mobProgressBarFill" class="prog-fill" style="width:10%;"></div>
                 </div>
+
+                <!-- BẢNG HIỂN THỊ TRỰC QUAN LƯỢT ĐỢI CỦA KHÁCH HÀNG TRÊN JIN CLOUD -->
+                <div id="mobQueueDetailBanner" style="display:none;margin-top:10px;padding:10px 12px;border-radius:11px;background:linear-gradient(145deg,rgba(245,158,11,0.16),rgba(15,23,42,0.92));border:1.5px solid rgba(245,158,11,0.5);font-size:0.76rem;line-height:1.45;"></div>
 
                 <div id="mobRefPackBox" style="display:none;margin-top:8px;padding:8px;background:rgba(6,9,19,0.75);border-radius:10px;border:1px solid rgba(56,189,248,0.25);">
                     <div style="font-size:0.72rem;font-weight:800;color:#38BDF8;margin-bottom:6px;">
@@ -559,31 +643,109 @@
             </div>
         </div>
 
-        <!-- TAB 3: KẾT NỐI 1A / 1B -->
+        <!-- TAB 3: CHỌN CHẾ ĐỘ KẾT NỐI (MÁY TÍNH CÁ NHÂN vs MÁY CHỦ JIN CLOUD) -->
         <div id="tabConnect" class="tab-pane" style="display:none;">
             <div class="m-card">
                 <div class="m-card-title">
-                    <span><i class="fas fa-plug-circle-check"></i> CẤU HÌNH KẾT NỐI (CÁCH 1A & 1B)</span>
+                    <span><i class="fas fa-sliders"></i> CHỌN NGUỒN XỬ LÝ VIDEO</span>
                     <button type="button" onclick="autoDiscoverCloudEndpoint(false)" style="background:rgba(16,185,129,0.18);border:1px solid rgba(16,185,129,0.45);color:#34D399;border-radius:8px;padding:4px 10px;font-size:0.7rem;font-weight:800;cursor:pointer;">
-                        <i class="fas fa-satellite-dish"></i> Tự tìm máy chủ
+                        <i class="fas fa-satellite-dish"></i> Tự dò máy chủ
                     </button>
                 </div>
 
-                <label style="font-size:0.74rem;font-weight:800;color:#94A3B8;display:block;margin-bottom:5px;">
-                    1. Địa chỉ Máy chủ (WiFi LAN hoặc 4G Cloud Tunnel):
-                </label>
-                <div class="input-group">
-                    <input type="text" id="mobServerUrlInput" class="m-input" placeholder="VD: http://192.168.1.7:3002 hoặc https://xxx.trycloudflare.com" />
+                <!-- 2 THẺ LỰA CHỌN TRỰC QUAN CHO KHÁCH HÀNG -->
+                <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;">
+                    <!-- Lựa chọn 1: Kết nối Máy Tính Cá Nhân -->
+                    <div id="connModeCard_pc" onclick="selectConnectionMode('pc', false)" style="background:linear-gradient(145deg,rgba(56,189,248,0.22),rgba(15,23,42,0.95));border:2px solid #38BDF8;border-radius:14px;padding:12px 14px;cursor:pointer;transition:all 0.2s;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <span style="width:36px;height:36px;border-radius:10px;background:rgba(56,189,248,0.2);border:1px solid rgba(56,189,248,0.5);display:flex;align-items:center;justify-content:center;color:#38BDF8;font-size:1.1rem;">
+                                    <i class="fas fa-desktop"></i>
+                                </span>
+                                <div>
+                                    <div style="font-size:0.86rem;font-weight:900;color:#F8FAFC;">1. Kết Nối Máy Tính Cá Nhân (PC Tại Nhà)</div>
+                                    <div style="font-size:0.7rem;color:#38BDF8;font-weight:700;">Tạo video miễn phí • Không giới hạn số lượt</div>
+                                </div>
+                            </div>
+                            <span id="connModeBadge_pc" style="background:#10B981;color:#04130e;font-size:0.66rem;font-weight:900;padding:3px 8px;border-radius:99px;white-space:nowrap;">✅ Đang chọn</span>
+                        </div>
+                        <div style="font-size:0.72rem;color:#CBD5E1;margin-top:8px;line-height:1.4;">
+                            Dành cho khách hàng đã cài phần mềm <b>JIN AI Studio</b> trên máy tính ở nhà. Điện thoại sẽ điều khiển máy tính của bạn tự tạo video qua WiFi hoặc 4G.
+                        </div>
+                    </div>
+
+                    <!-- Lựa chọn 2: Máy Chủ Đám Mây JIN Cloud (Không cần PC) -->
+                    <div id="connModeCard_cloud" onclick="selectConnectionMode('cloud', false)" style="background:rgba(15,22,38,0.85);border:1.5px solid rgba(255,255,255,0.14);border-radius:14px;padding:12px 14px;cursor:pointer;transition:all 0.2s;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <span style="width:36px;height:36px;border-radius:10px;background:rgba(245,158,11,0.2);border:1px solid rgba(245,158,11,0.5);display:flex;align-items:center;justify-content:center;color:#FBBF24;font-size:1.1rem;">
+                                    <i class="fas fa-cloud-bolt"></i>
+                                </span>
+                                <div>
+                                    <div style="font-size:0.86rem;font-weight:900;color:#F8FAFC;">2. Máy Chủ Đám Mây JIN Cloud (Không Cần PC)</div>
+                                    <div style="font-size:0.7rem;color:#FBBF24;font-weight:700;">Chỉ cần Điện thoại • Dùng Mã VIP theo gói lượt</div>
+                                </div>
+                            </div>
+                            <span id="connModeBadge_cloud" style="background:rgba(255,255,255,0.08);color:#94A3B8;font-size:0.66rem;font-weight:800;padding:3px 8px;border-radius:99px;white-space:nowrap;">Chạm để chọn</span>
+                        </div>
+                        <div style="font-size:0.72rem;color:#CBD5E1;margin-top:8px;line-height:1.4;">
+                            Dành cho khách hàng <b>không có máy tính</b>. Video được xử lý trực tiếp trên dàn máy chủ trung tâm tốc độ cao của JIN AI bằng Mã VIP.
+                        </div>
+                    </div>
                 </div>
 
-                <label style="font-size:0.74rem;font-weight:800;color:#94A3B8;display:block;margin-bottom:5px;">
-                    2. Mã Kết Nối PC (1A: JINPC-...) hoặc Mã VIP Cloud (1B: JINVIP-...):
-                </label>
-                <div class="input-group">
-                    <input type="text" id="mobAuthTokenInput" class="m-input" placeholder="Nhập mã JINPC-xxxx hoặc JINVIP-xxxx..." style="text-transform:uppercase;font-weight:800;" />
-                    <button type="button" class="paste-btn" onclick="verifyAndSaveMobileToken(false)" style="background:linear-gradient(135deg,#10B981,#059669);color:#fff;border:none;">
-                        <i class="fas fa-check"></i> Lưu & Kết nối
-                    </button>
+                <!-- KHUNG CẤU HÌNH CHI TIẾT THEO CHẾ ĐỘ ĐANG CHỌN -->
+                <div id="connFormBox_pc" style="padding:12px;border-radius:12px;background:rgba(6,9,19,0.75);border:1px solid rgba(56,189,248,0.35);">
+                    <div style="font-size:0.78rem;font-weight:900;color:#38BDF8;margin-bottom:8px;">
+                        <i class="fas fa-laptop-code"></i> CÀI ĐẶT KẾT NỐI MÁY TÍNH CÁ NHÂN:
+                    </div>
+                    <label style="font-size:0.72rem;font-weight:800;color:#94A3B8;display:block;margin-bottom:4px;">
+                        Mã Ghép Đôi Máy Tính (Hiển thị trên màn hình PC của bạn):
+                    </label>
+                    <div class="input-group">
+                        <input type="text" id="mobPcTokenInput" class="m-input" placeholder="VD: JINPC-254P-37YM" style="text-transform:uppercase;font-weight:900;color:#38BDF8;" />
+                        <button type="button" class="paste-btn" onclick="applySelectedConnectionMode(false)" style="background:linear-gradient(135deg,#0284C7,#2563EB);color:#fff;border:none;">
+                            <i class="fas fa-link"></i> Kết nối PC
+                        </button>
+                    </div>
+                </div>
+
+                <div id="connFormBox_cloud" style="display:none;padding:12px;border-radius:12px;background:rgba(6,9,19,0.75);border:1px solid rgba(245,158,11,0.4);">
+                    <div style="font-size:0.78rem;font-weight:900;color:#FBBF24;margin-bottom:8px;">
+                        <i class="fas fa-crown"></i> KÍCH HOẠT TÀI KHOẢN MÁY CHỦ ĐÁM MÂY JIN CLOUD:
+                    </div>
+                    <label style="font-size:0.72rem;font-weight:800;color:#94A3B8;display:block;margin-bottom:4px;">
+                        Nhập Mã VIP JIN Cloud (Do Admin Hoàng Hải cấp):
+                    </label>
+                    <div class="input-group">
+                        <input type="text" id="mobCloudVipInput" class="m-input" placeholder="VD: JINVIP-DEMO-9999" style="text-transform:uppercase;font-weight:900;color:#FBBF24;" />
+                        <button type="button" class="paste-btn" onclick="applySelectedConnectionMode(false)" style="background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;border:none;">
+                            <i class="fas fa-check-circle"></i> Kích hoạt VIP
+                        </button>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
+                        <button type="button" onclick="fillDemoVipKey()" style="background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.4);color:#FBBF24;border-radius:7px;padding:5px 10px;font-size:0.7rem;font-weight:800;cursor:pointer;">
+                            🎁 Dùng mã VIP mẫu (JINVIP-DEMO-9999)
+                        </button>
+                        <span style="font-size:0.68rem;color:#94A3B8;">Zalo hỗ trợ: <b style="color:#34D399;">0913.227.766</b></span>
+                    </div>
+                </div>
+
+                <!-- Địa chỉ máy chủ nâng cao (Tự động điền) -->
+                <div style="margin-top:10px;">
+                    <label style="font-size:0.68rem;font-weight:700;color:#64748B;display:block;margin-bottom:4px;">
+                        Địa chỉ đường truyền Máy chủ (Tự động nhận diện WiFi / 4G):
+                    </label>
+                    <div style="display:flex;gap:6px;margin-bottom:6px;">
+                        <button type="button" onclick="switchServerNetworkType('lan')" style="flex:1;background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.35);color:#38BDF8;border-radius:8px;padding:6px;font-size:0.7rem;font-weight:800;cursor:pointer;">
+                            📶 Dùng WiFi Nhà (Nhanh nhất)
+                        </button>
+                        <button type="button" onclick="switchServerNetworkType('tunnel')" style="flex:1;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.35);color:#34D399;border-radius:8px;padding:6px;font-size:0.7rem;font-weight:800;cursor:pointer;">
+                            🌐 Dùng Mạng 4G Từ Xa
+                        </button>
+                    </div>
+                    <input type="text" id="mobServerUrlInput" class="m-input" style="width:100%;font-size:0.74rem;padding:8px 10px;color:#94A3B8;" placeholder="Địa chỉ máy chủ..." />
+                    <input type="hidden" id="mobAuthTokenInput" />
                 </div>
 
                 <div id="mobAuthInfoCard" style="margin-top:10px;padding:12px;border-radius:12px;background:rgba(6,9,19,0.85);border:1px solid rgba(255,255,255,0.12);font-size:0.8rem;">
@@ -603,27 +765,39 @@
             <span>Lịch Sử</span>
         </button>
         <button type="button" class="nav-tab" id="navTab_connect" onclick="switchMobileTab('connect')">
-            <i class="fas fa-qrcode"></i>
-            <span>Kết Nối 1A/1B</span>
+            <i class="fas fa-sliders"></i>
+            <span>Nguồn Kết Nối</span>
         </button>
     </div>
 
     <script>
+        const CLOUD_DISCOVERY_PAGES_URL = 'https://hoanghaictcxht-bot.github.io/jin-admin/jin_motion_endpoint.json';
+        const CLOUD_DISCOVERY_ADMIN_API_URL = 'https://api.github.com/repos/hoanghaictcxht-bot/jin-admin/contents/jin_motion_endpoint.json';
+        const CLOUD_DISCOVERY_API_URL = 'https://api.github.com/repos/hoanghaictcxht-bot/jin-ai-studio-releases/contents/jin_motion_endpoint.json';
         const CLOUD_DISCOVERY_URL = 'https://raw.githubusercontent.com/hoanghaictcxht-bot/jin-ai-studio-releases/main/jin_motion_endpoint.json';
-        const DEFAULT_FALLBACK_TUNNEL = 'https://distance-offices-settings-assist.trycloudflare.com';
+        const DEFAULT_FALLBACK_TUNNEL = 'https://solid-thing-sin-how.trycloudflare.com';
         const DEFAULT_FALLBACK_LAN = 'http://192.168.1.7:3002';
-        const DEFAULT_FALLBACK_TOKEN = 'JINPC-254P-37YM';
+        const DEFAULT_FALLBACK_PC_TOKEN = 'JINPC-254P-37YM';
+        const DEFAULT_FALLBACK_CLOUD_VIP = 'JINVIP-DEMO-9999';
 
         let mobileState = {
+            connMode: localStorage.getItem('jin_motion_conn_mode') || 'pc', // 'pc' | 'cloud'
             serverBaseUrl: localStorage.getItem('jin_motion_server_url') || DEFAULT_FALLBACK_TUNNEL,
-            token: localStorage.getItem('jin_motion_mobile_token') || DEFAULT_FALLBACK_TOKEN,
+            discoveredLanUrl: DEFAULT_FALLBACK_LAN,
+            discoveredTunnelUrl: DEFAULT_FALLBACK_TUNNEL,
+            pcToken: localStorage.getItem('jin_motion_pc_token') || DEFAULT_FALLBACK_PC_TOKEN,
+            cloudVipKey: localStorage.getItem('jin_motion_cloud_vip_key') || DEFAULT_FALLBACK_CLOUD_VIP,
+            token: localStorage.getItem('jin_motion_mobile_token') || DEFAULT_FALLBACK_PC_TOKEN,
             jinMode: 'character',
+            perspective: 'source',
             sourceVideoPath: '',
             sourceVideoUrl: '',
             kocImagePath: '',
             kocImageUrl: '',
             productImagePath: '',
             productImageUrl: '',
+            sceneImagePath: '',
+            sceneImageUrl: '',
             activeJobId: localStorage.getItem('jin_motion_active_job_id') || '',
             currentFinalVideoUrl: '',
             pollTimer: null
@@ -657,12 +831,250 @@
             if (tab === 'history') loadMobileHistory();
         }
 
+        function updateConnectionModeCardsUI() {
+            const isPc = mobileState.connMode === 'pc';
+            const cardPc = document.getElementById('connModeCard_pc');
+            const cardCloud = document.getElementById('connModeCard_cloud');
+            const badgePc = document.getElementById('connModeBadge_pc');
+            const badgeCloud = document.getElementById('connModeBadge_cloud');
+            const formPc = document.getElementById('connFormBox_pc');
+            const formCloud = document.getElementById('connFormBox_cloud');
+            const qPc = document.getElementById('quickConnCard_pc');
+            const qCloud = document.getElementById('quickConnCard_cloud');
+
+            if (isPc) {
+                if (cardPc) {
+                    cardPc.style.background = 'linear-gradient(145deg,rgba(56,189,248,0.22),rgba(15,23,42,0.95))';
+                    cardPc.style.border = '2px solid #38BDF8';
+                }
+                if (cardCloud) {
+                    cardCloud.style.background = 'rgba(15,22,38,0.85)';
+                    cardCloud.style.border = '1.5px solid rgba(255,255,255,0.14)';
+                }
+                if (badgePc) {
+                    badgePc.textContent = '✅ Đang chọn';
+                    badgePc.style.background = '#10B981';
+                    badgePc.style.color = '#04130e';
+                }
+                if (badgeCloud) {
+                    badgeCloud.textContent = 'Chạm để chọn';
+                    badgeCloud.style.background = 'rgba(255,255,255,0.08)';
+                    badgeCloud.style.color = '#94A3B8';
+                }
+                if (formPc) formPc.style.display = 'block';
+                if (formCloud) formCloud.style.display = 'none';
+                if (qPc) {
+                    qPc.style.background = 'linear-gradient(145deg,rgba(56,189,248,0.24),rgba(15,23,42,0.95))';
+                    qPc.style.borderColor = '#38BDF8';
+                }
+                if (qCloud) {
+                    qCloud.style.background = 'rgba(15,22,38,0.85)';
+                    qCloud.style.borderColor = 'rgba(255,255,255,0.12)';
+                }
+            } else {
+                if (cardCloud) {
+                    cardCloud.style.background = 'linear-gradient(145deg,rgba(245,158,11,0.22),rgba(15,23,42,0.95))';
+                    cardCloud.style.border = '2px solid #F59E0B';
+                }
+                if (cardPc) {
+                    cardPc.style.background = 'rgba(15,22,38,0.85)';
+                    cardPc.style.border = '1.5px solid rgba(255,255,255,0.14)';
+                }
+                if (badgeCloud) {
+                    badgeCloud.textContent = '👑 Đang chọn';
+                    badgeCloud.style.background = '#F59E0B';
+                    badgeCloud.style.color = '#04130e';
+                }
+                if (badgePc) {
+                    badgePc.textContent = 'Chạm để chọn';
+                    badgePc.style.background = 'rgba(255,255,255,0.08)';
+                    badgePc.style.color = '#94A3B8';
+                }
+                if (formPc) formPc.style.display = 'none';
+                if (formCloud) formCloud.style.display = 'block';
+                if (qCloud) {
+                    qCloud.style.background = 'linear-gradient(145deg,rgba(245,158,11,0.24),rgba(15,23,42,0.95))';
+                    qCloud.style.borderColor = '#F59E0B';
+                }
+                if (qPc) {
+                    qPc.style.background = 'rgba(15,22,38,0.85)';
+                    qPc.style.borderColor = 'rgba(255,255,255,0.12)';
+                }
+            }
+        }
+
+        async function selectConnectionMode(mode, autoApply = true) {
+            mobileState.connMode = (mode === 'cloud') ? 'cloud' : 'pc';
+            localStorage.setItem('jin_motion_conn_mode', mobileState.connMode);
+
+            const pcInput = document.getElementById('mobPcTokenInput');
+            const vipInput = document.getElementById('mobCloudVipInput');
+            if (pcInput && !pcInput.value) pcInput.value = mobileState.pcToken || DEFAULT_FALLBACK_PC_TOKEN;
+            if (vipInput && !vipInput.value) vipInput.value = mobileState.cloudVipKey || DEFAULT_FALLBACK_CLOUD_VIP;
+
+            mobileState.token = (mobileState.connMode === 'pc')
+                ? ((pcInput && pcInput.value.trim().toUpperCase()) || mobileState.pcToken || DEFAULT_FALLBACK_PC_TOKEN)
+                : ((vipInput && vipInput.value.trim().toUpperCase()) || mobileState.cloudVipKey || DEFAULT_FALLBACK_CLOUD_VIP);
+
+            document.getElementById('mobAuthTokenInput').value = mobileState.token;
+            updateConnectionModeCardsUI();
+
+            if (autoApply) {
+                await verifyAndSaveMobileToken(false);
+            }
+        }
+
+        async function applySelectedConnectionMode(silent = false) {
+            const pcInput = document.getElementById('mobPcTokenInput');
+            const vipInput = document.getElementById('mobCloudVipInput');
+            const srvInput = document.getElementById('mobServerUrlInput');
+            if (srvInput && srvInput.value.trim()) {
+                mobileState.serverBaseUrl = srvInput.value.trim().replace(/\/+$/, '');
+                localStorage.setItem('jin_motion_server_url', mobileState.serverBaseUrl);
+                localStorage.setItem('jin_motion_custom_server_saved', '1');
+            }
+            if (mobileState.connMode === 'pc') {
+                mobileState.pcToken = (pcInput && pcInput.value.trim().toUpperCase()) || DEFAULT_FALLBACK_PC_TOKEN;
+                localStorage.setItem('jin_motion_pc_token', mobileState.pcToken);
+                localStorage.setItem('jin_motion_custom_server_saved', '1');
+                mobileState.token = mobileState.pcToken;
+            } else {
+                mobileState.cloudVipKey = (vipInput && vipInput.value.trim().toUpperCase()) || DEFAULT_FALLBACK_CLOUD_VIP;
+                localStorage.setItem('jin_motion_cloud_vip_key', mobileState.cloudVipKey);
+                mobileState.token = mobileState.cloudVipKey;
+            }
+            document.getElementById('mobAuthTokenInput').value = mobileState.token;
+            return await verifyAndSaveMobileToken(silent);
+        }
+
+        function fillDemoVipKey() {
+            const vipInput = document.getElementById('mobCloudVipInput');
+            if (vipInput) vipInput.value = 'JINVIP-DEMO-9999';
+            selectConnectionMode('cloud', true);
+        }
+
+        async function fetchLatestCloudDiscoveryData() {
+            // 1. Ưu tiên GitHub Pages (Fastly CDN - không bao giờ bị chặn ở Việt Nam hay bị giới hạn rate limit)
+            try {
+                const r = await fetch(`${CLOUD_DISCOVERY_PAGES_URL}?_t=${Date.now()}`, { cache: 'no-store' });
+                if (r.ok) {
+                    const d = await r.json();
+                    if (d && d.tunnelUrl) return d;
+                }
+            } catch (_) {}
+            // 2. Dự phòng GitHub API repo jin-admin
+            try {
+                const apiRes = await fetch(`${CLOUD_DISCOVERY_ADMIN_API_URL}?_t=${Date.now()}`, {
+                    headers: { 'Accept': 'application/vnd.github+json' },
+                    cache: 'no-store'
+                });
+                if (apiRes.ok) {
+                    const meta = await apiRes.json();
+                    if (meta && meta.content) {
+                        const d = JSON.parse(atob(meta.content.replace(/\s/g, '')));
+                        if (d && d.tunnelUrl) return d;
+                    }
+                }
+            } catch (_) {}
+            // 3. Dự phòng GitHub API repo jin-ai-studio-releases
+            try {
+                const apiRes = await fetch(`${CLOUD_DISCOVERY_API_URL}?_t=${Date.now()}`, {
+                    headers: { 'Accept': 'application/vnd.github+json' },
+                    cache: 'no-store'
+                });
+                if (apiRes.ok) {
+                    const meta = await apiRes.json();
+                    if (meta && meta.content) {
+                        const d = JSON.parse(atob(meta.content.replace(/\s/g, '')));
+                        if (d && d.tunnelUrl) return d;
+                    }
+                }
+            } catch (_) {}
+            // 4. Dự phòng raw.githubusercontent.com
+            try {
+                const r = await fetch(`${CLOUD_DISCOVERY_URL}?_t=${Date.now()}`, { cache: 'no-store' });
+                if (r.ok) {
+                    const d = await r.json();
+                    if (d && d.tunnelUrl) return d;
+                }
+            } catch (_) {}
+            return null;
+        }
+
+        async function switchServerNetworkType(type) {
+            if (type === 'lan') {
+                mobileState.serverBaseUrl = mobileState.discoveredLanUrl || DEFAULT_FALLBACK_LAN;
+                showMobileToast('📶 Đã chuyển sang đường truyền WiFi Nhà: ' + mobileState.serverBaseUrl);
+            } else {
+                showMobileToast('🌐 Đang đồng bộ đường truyền 4G/Internet mới nhất...');
+                const cloudData = await fetchLatestCloudDiscoveryData();
+                if (cloudData && cloudData.tunnelUrl) {
+                    mobileState.discoveredTunnelUrl = cloudData.tunnelUrl;
+                    if (cloudData.lanUrl) mobileState.discoveredLanUrl = cloudData.lanUrl;
+                }
+                mobileState.serverBaseUrl = mobileState.discoveredTunnelUrl || DEFAULT_FALLBACK_TUNNEL;
+                showMobileToast('🌐 Đã chuyển sang đường truyền 4G Từ Xa: ' + mobileState.serverBaseUrl);
+            }
+            document.getElementById('mobServerUrlInput').value = mobileState.serverBaseUrl;
+            localStorage.setItem('jin_motion_server_url', mobileState.serverBaseUrl);
+            await verifyAndSaveMobileToken(false, true);
+        }
+
         function selectJinMode(mode) {
             mobileState.jinMode = mode;
             ['character', 'koc_product', 'product'].forEach(m => {
                 const btn = document.getElementById('modeBtn_' + m);
                 if (btn) btn.classList.toggle('active', m === mode);
             });
+        }
+
+        function selectMobilePerspective(persp) {
+            mobileState.perspective = (persp === 'reference') ? 'reference' : 'source';
+            const btnSrc = document.getElementById('mobPerspBtn_source');
+            const btnRef = document.getElementById('mobPerspBtn_reference');
+            const panel = document.getElementById('mobSceneRefPanel');
+            if (mobileState.perspective === 'reference') {
+                if (btnRef) {
+                    btnRef.style.border = '1.5px solid #38BDF8';
+                    btnRef.style.background = 'rgba(56,189,248,0.22)';
+                    btnRef.style.color = '#fff';
+                }
+                if (btnSrc) {
+                    btnSrc.style.border = '1.5px solid rgba(255,255,255,0.14)';
+                    btnSrc.style.background = 'rgba(255,255,255,0.04)';
+                    btnSrc.style.color = '#CBD5E1';
+                }
+                if (panel) panel.style.display = 'block';
+            } else {
+                if (btnSrc) {
+                    btnSrc.style.border = '1.5px solid #38BDF8';
+                    btnSrc.style.background = 'rgba(56,189,248,0.22)';
+                    btnSrc.style.color = '#fff';
+                }
+                if (btnRef) {
+                    btnRef.style.border = '1.5px solid rgba(255,255,255,0.14)';
+                    btnRef.style.background = 'rgba(255,255,255,0.04)';
+                    btnRef.style.color = '#CBD5E1';
+                }
+                if (panel) panel.style.display = 'none';
+            }
+        }
+
+        function clearMobileSceneRef() {
+            mobileState.sceneImagePath = '';
+            mobileState.sceneImageUrl = '';
+            const img = document.getElementById('mobScenePreviewImg');
+            if (img) {
+                img.src = '';
+                img.style.display = 'none';
+            }
+            const ph = document.getElementById('mobScenePlaceholder');
+            if (ph) ph.style.display = 'flex';
+            const bg = document.getElementById('mobSceneBadge');
+            if (bg) bg.style.display = 'none';
+            const btnClear = document.getElementById('btnClearMobScene');
+            if (btnClear) btnClear.style.display = 'none';
+            showMobileToast('🖼️ Đã bỏ ảnh phối cảnh riêng (Sẽ lấy nền của Ảnh số 1)');
         }
 
         async function pasteClipboardUrl() {
@@ -691,67 +1103,134 @@
             const ctrl = new AbortController();
             const timer = setTimeout(() => ctrl.abort(), timeoutMs);
             try {
-                const r = await fetch(`${clean}/api/health?_t=${Date.now()}`, { signal: ctrl.signal });
+                const r = await fetch(`${clean}/api/jin-motion-mobile/connection-info?_t=${Date.now()}`, { signal: ctrl.signal, cache: 'no-store' });
                 clearTimeout(timer);
-                return r.ok;
+                if (!r.ok) return false;
+                const d = await r.json().catch(() => null);
+                return Boolean(d && d.success && d.pcPairingToken);
             } catch (_) {
                 clearTimeout(timer);
                 return false;
             }
         }
 
-        async function autoDiscoverCloudEndpoint(silent = true) {
-            if (!silent) showMobileToast('🛰️ Đang tự động tìm máy chủ JIN AI Studio...');
-            let cloudData = null;
-            try {
-                const r = await fetch(`${CLOUD_DISCOVERY_URL}?_t=${Date.now()}`);
-                if (r.ok) cloudData = await r.json();
-            } catch (_) {}
+        async function autoDiscoverCloudEndpoint(silent = true, isRetry = false) {
+            if (!silent) showMobileToast('🛰️ Đang tự động dò tìm máy chủ JIN AI Studio...');
+
+            // 1. Nếu khách quét mã QR mở trực tiếp từ máy tính của khách (http://192.168.x.x:3002 hoặc https://xxx.trycloudflare.com)
+            const isDirectHost = window.location.protocol.startsWith('http') && !window.location.hostname.includes('github.io');
+            const urlParams = new URLSearchParams(window.location.search || '');
+            const urlToken = (urlParams.get('token') || urlParams.get('key') || '').trim().toUpperCase();
+
+            if (isDirectHost) {
+                mobileState.serverBaseUrl = window.location.origin.replace(/\/+$/, '');
+                localStorage.setItem('jin_motion_server_url', mobileState.serverBaseUrl);
+                try {
+                    const localInfo = await fetch(`${mobileState.serverBaseUrl}/api/jin-motion-mobile/connection-info`).then(r => r.json()).catch(() => null);
+                    if (localInfo) {
+                        if (localInfo.lanAddresses && localInfo.lanAddresses[0]) mobileState.discoveredLanUrl = localInfo.lanAddresses[0].url;
+                        if (localInfo.rawTunnelBaseUrl) mobileState.discoveredTunnelUrl = localInfo.rawTunnelBaseUrl;
+                        if (localInfo.pcPairingToken) mobileState.pcToken = localInfo.pcPairingToken;
+                    }
+                } catch (_) {}
+                if (urlToken) {
+                    if (urlToken.startsWith('JINVIP')) {
+                        mobileState.connMode = 'cloud';
+                        mobileState.cloudVipKey = urlToken;
+                        localStorage.setItem('jin_motion_cloud_vip_key', urlToken);
+                    } else {
+                        mobileState.connMode = 'pc';
+                        mobileState.pcToken = urlToken;
+                        localStorage.setItem('jin_motion_pc_token', urlToken);
+                    }
+                }
+                const pcInput = document.getElementById('mobPcTokenInput');
+                const vipInput = document.getElementById('mobCloudVipInput');
+                if (pcInput) pcInput.value = mobileState.pcToken;
+                if (vipInput) vipInput.value = mobileState.cloudVipKey || DEFAULT_FALLBACK_CLOUD_VIP;
+                mobileState.token = (mobileState.connMode === 'cloud') ? mobileState.cloudVipKey : mobileState.pcToken;
+                document.getElementById('mobServerUrlInput').value = mobileState.serverBaseUrl;
+                document.getElementById('mobAuthTokenInput').value = mobileState.token;
+                updateConnectionModeCardsUI();
+                await verifyAndSaveMobileToken(silent, true);
+                return;
+            }
+
+            // 2. Tự động lấy địa chỉ JIN Cloud Server từ GitHub Pages (Fastly CDN) & GitHub API (Zero-Cache)
+            const cloudData = await fetchLatestCloudDiscoveryData();
 
             const candidateLan = (cloudData && cloudData.lanUrl) || DEFAULT_FALLBACK_LAN;
             const candidateTunnel = (cloudData && cloudData.tunnelUrl) || DEFAULT_FALLBACK_TUNNEL;
-            const candidateToken = (cloudData && cloudData.defaultToken) || mobileState.token || DEFAULT_FALLBACK_TOKEN;
+            const candidatePcToken = (cloudData && cloudData.defaultToken) || mobileState.pcToken || DEFAULT_FALLBACK_PC_TOKEN;
 
-            // Ưu tiên kiểm tra mạng WiFi LAN trước (tốc độ nội bộ siêu nhanh), nếu không cùng WiFi thì dùng đường truyền 4G Tunnel
+            mobileState.discoveredLanUrl = candidateLan;
+            mobileState.discoveredTunnelUrl = candidateTunnel;
+            if (!mobileState.pcToken || mobileState.pcToken === DEFAULT_FALLBACK_PC_TOKEN) {
+                mobileState.pcToken = candidatePcToken;
+                localStorage.setItem('jin_motion_pc_token', candidatePcToken);
+            }
+
             let chosenUrl = '';
-            if (await probeServerReachable(candidateLan, 1800)) {
+            // Nếu đang ở ngoài mạng WiFi nhà (VD: ở công ty hoặc 4G), probeServerReachable sẽ xác thực đúng JIN AI Studio server
+            if (await probeServerReachable(candidateTunnel, 4500)) {
+                // Nếu cả WiFi Nhà cũng thông thật sự (cùng lớp mạng và đúng pcPairingToken) thì ưu tiên WiFi Nhà nhanh hơn
+                if (await probeServerReachable(candidateLan, 1200)) {
+                    chosenUrl = candidateLan;
+                } else {
+                    chosenUrl = candidateTunnel;
+                }
+            } else if (await probeServerReachable(candidateLan, 1800)) {
                 chosenUrl = candidateLan;
-            } else if (await probeServerReachable(candidateTunnel, 4500)) {
-                chosenUrl = candidateTunnel;
-            } else if (mobileState.serverBaseUrl && await probeServerReachable(mobileState.serverBaseUrl, 3500)) {
+            } else if (mobileState.serverBaseUrl && !mobileState.serverBaseUrl.includes('.trycloudflare.com') && await probeServerReachable(mobileState.serverBaseUrl, 2500)) {
                 chosenUrl = mobileState.serverBaseUrl;
             } else {
-                chosenUrl = candidateTunnel || candidateLan;
+                chosenUrl = candidateTunnel || DEFAULT_FALLBACK_TUNNEL;
             }
 
             mobileState.serverBaseUrl = chosenUrl.replace(/\/+$/, '');
-            if (!localStorage.getItem('jin_motion_mobile_token') || mobileState.token === DEFAULT_FALLBACK_TOKEN) {
-                mobileState.token = candidateToken;
-            }
             localStorage.setItem('jin_motion_server_url', mobileState.serverBaseUrl);
-            localStorage.setItem('jin_motion_mobile_token', mobileState.token);
+
+            const pcInput = document.getElementById('mobPcTokenInput');
+            const vipInput = document.getElementById('mobCloudVipInput');
+            if (pcInput) pcInput.value = mobileState.pcToken;
+            if (vipInput) vipInput.value = mobileState.cloudVipKey || DEFAULT_FALLBACK_CLOUD_VIP;
+
+            mobileState.token = (mobileState.connMode === 'cloud')
+                ? (mobileState.cloudVipKey || DEFAULT_FALLBACK_CLOUD_VIP)
+                : mobileState.pcToken;
 
             document.getElementById('mobServerUrlInput').value = mobileState.serverBaseUrl;
             document.getElementById('mobAuthTokenInput').value = mobileState.token;
+            updateConnectionModeCardsUI();
 
-            await verifyAndSaveMobileToken(silent);
+            await verifyAndSaveMobileToken(silent, true);
         }
 
-        async function verifyAndSaveMobileToken(silent = false) {
+        async function verifyAndSaveMobileToken(silent = false, isRetry = false) {
             const srvInput = document.getElementById('mobServerUrlInput');
-            const tokInput = document.getElementById('mobAuthTokenInput');
             if (srvInput && srvInput.value.trim()) {
                 mobileState.serverBaseUrl = srvInput.value.trim().replace(/\/+$/, '');
                 localStorage.setItem('jin_motion_server_url', mobileState.serverBaseUrl);
             }
-            if (tokInput && tokInput.value.trim()) {
-                mobileState.token = tokInput.value.trim().toUpperCase();
-                localStorage.setItem('jin_motion_mobile_token', mobileState.token);
+
+            const pcInput = document.getElementById('mobPcTokenInput');
+            const vipInput = document.getElementById('mobCloudVipInput');
+            if (mobileState.connMode === 'pc' && pcInput && pcInput.value.trim()) {
+                mobileState.pcToken = pcInput.value.trim().toUpperCase();
+                localStorage.setItem('jin_motion_pc_token', mobileState.pcToken);
+                mobileState.token = mobileState.pcToken;
+            } else if (mobileState.connMode === 'cloud' && vipInput && vipInput.value.trim()) {
+                mobileState.cloudVipKey = vipInput.value.trim().toUpperCase();
+                localStorage.setItem('jin_motion_cloud_vip_key', mobileState.cloudVipKey);
+                mobileState.token = mobileState.cloudVipKey;
             }
+            localStorage.setItem('jin_motion_mobile_token', mobileState.token);
 
             const pill = document.getElementById('connStatusPill');
             const pillText = document.getElementById('connStatusText');
             const infoCard = document.getElementById('mobAuthInfoCard');
+            const qSubPc = document.getElementById('quickConnSub_pc');
+            const qSubCloud = document.getElementById('quickConnSub_cloud');
 
             try {
                 const res = await fetch(resolveServerUrl('/api/jin-motion-mobile/verify'), {
@@ -771,28 +1250,41 @@
                 pill.classList.remove('disconnected');
                 const isLan = mobileState.serverBaseUrl.includes('192.168.') || mobileState.serverBaseUrl.includes('10.');
                 if (res.mode === '1A') {
-                    pillText.textContent = isLan ? '1A: WiFi PC' : '1A: 4G PC';
+                    mobileState.connMode = 'pc';
+                    updateConnectionModeCardsUI();
+                    pillText.textContent = isLan ? '💻 PC (WiFi)' : '💻 PC (4G)';
+                    if (qSubPc) qSubPc.innerHTML = `<span style="color:#34D399;">● Đang kết nối (${isLan ? 'WiFi' : '4G'})</span>`;
+                    if (qSubCloud) qSubCloud.textContent = 'Không cần PC • Chạm để đổi';
                     infoCard.innerHTML = `
-                        <div style="color:#34D399;font-weight:900;margin-bottom:4px;">✅ Đã kết nối Máy Tính Cá Nhân (Cách 1A • ${isLan ? 'WiFi LAN' : '4G Internet'})</div>
-                        <div style="color:#CBD5E1;font-size:0.76rem;">Máy chủ: <b>${mobileState.serverBaseUrl}</b><br/>Mã ghép đôi: <b>${res.token}</b> • Số lượt: <b>Không giới hạn</b></div>
+                        <div style="color:#34D399;font-weight:900;margin-bottom:4px;">✅ Đang dùng: Máy Tính Cá Nhân (${isLan ? 'WiFi Nhà' : '4G Từ Xa'})</div>
+                        <div style="color:#CBD5E1;font-size:0.76rem;">Mã Ghép Đôi PC: <b>${res.token}</b> • Số lượt tạo: <b>Không giới hạn</b></div>
                     `;
                 } else {
-                    pillText.textContent = `1B: Còn ${res.creditsLeft} lượt`;
+                    mobileState.connMode = 'cloud';
+                    updateConnectionModeCardsUI();
+                    pillText.textContent = `☁️ Cloud (${res.creditsLeft} lượt)`;
+                    if (qSubCloud) qSubCloud.innerHTML = `<span style="color:#FBBF24;">● Còn ${res.creditsLeft} lượt tạo</span>`;
+                    if (qSubPc) qSubPc.textContent = 'Tự chủ PC • Chạm để đổi';
                     const expText = res.expiresAt ? new Date(res.expiresAt).toLocaleDateString('vi-VN') : 'Không giới hạn';
                     infoCard.innerHTML = `
-                        <div style="color:#34D399;font-weight:900;margin-bottom:4px;">💎 Tài khoản VIP Cloud Server (Cách 1B)</div>
+                        <div style="color:#FBBF24;font-weight:900;margin-bottom:4px;">☁️ Đang dùng: Máy Chủ Đám Mây JIN Cloud (Không Cần PC)</div>
                         <div style="color:#CBD5E1;font-size:0.76rem;">
                             Khách hàng: <b>${res.customerName}</b><br/>
                             Số lượt còn lại: <b style="color:#38BDF8;">${res.creditsLeft}/${res.totalCredits} video</b> • Hạn dùng: <b>${expText}</b>
                         </div>
                     `;
                 }
-                if (!silent) showMobileToast(`✅ Đã kết nối thành công (${res.label})!`);
+                if (!silent) showMobileToast(`✅ Đã kết nối: ${res.label}!`);
                 return true;
             } catch (e) {
+                if (!isRetry) {
+                    // Tự động dò lại đường truyền 4G/Cloud mới nhất nếu địa chỉ cũ đã đổi
+                    await autoDiscoverCloudEndpoint(silent, true);
+                    return true;
+                }
                 pill.classList.add('disconnected');
-                pillText.textContent = 'Chưa kết nối PC';
-                infoCard.innerHTML = `<span style="color:#F87171;">⚠️ Không kết nối được tới <b>${mobileState.serverBaseUrl}</b>. Hãy đảm bảo máy tính đang bật JIN AI Studio hoặc bấm "Tự tìm máy chủ".</span>`;
+                pillText.textContent = 'Chưa kết nối';
+                infoCard.innerHTML = `<span style="color:#F87171;">⚠️ Không kết nối được tới máy chủ. Hãy bấm nút <b>"Tự dò máy chủ"</b> ở góc trên.</span>`;
                 if (!silent) showMobileToast('⚠️ Chưa kết nối được máy chủ.');
                 return false;
             }
@@ -824,7 +1316,8 @@
         async function handleMobileImageUpload(input, type) {
             const file = input.files && input.files[0];
             if (!file) return;
-            showMobileToast(`⏳ Đang tải ảnh ${type === 'koc' ? 'KOC' : 'Sản phẩm'}...`);
+            const labelMap = { koc: 'KOC', product: 'Sản phẩm', scene: 'Phối cảnh' };
+            showMobileToast(`⏳ Đang tải ảnh ${labelMap[type] || ''}...`);
             try {
                 const fd = new FormData();
                 if (type === 'koc') {
@@ -838,6 +1331,19 @@
                     img.style.display = 'block';
                     document.getElementById('mobKocPlaceholder').style.display = 'none';
                     document.getElementById('mobKocBadge').style.display = 'block';
+                } else if (type === 'scene') {
+                    fd.append('image', file);
+                    const res = await fetch(resolveServerUrl('/api/jin-motion-mobile/upload-image'), { method: 'POST', body: fd }).then(r => r.json());
+                    if (!res || !res.success) throw new Error(res?.message || 'Lỗi tải ảnh phối cảnh');
+                    mobileState.sceneImagePath = res.filePath;
+                    mobileState.sceneImageUrl = res.fileUrl;
+                    const img = document.getElementById('mobScenePreviewImg');
+                    img.src = resolveServerUrl(res.fileUrl);
+                    img.style.display = 'block';
+                    document.getElementById('mobScenePlaceholder').style.display = 'none';
+                    document.getElementById('mobSceneBadge').style.display = 'block';
+                    const btnClear = document.getElementById('btnClearMobScene');
+                    if (btnClear) btnClear.style.display = 'inline-block';
                 } else {
                     fd.append('image', file);
                     const res = await fetch(resolveServerUrl('/api/jin-motion-mobile/upload-image'), { method: 'POST', body: fd }).then(r => r.json());
@@ -895,6 +1401,11 @@
                     body: JSON.stringify({
                         token: mobileState.token,
                         jinMode: mobileState.jinMode,
+                        perspective: mobileState.perspective || 'source',
+                        scenePreset: document.getElementById('mobScenePresetSelect')?.value || 'reference_image',
+                        sceneDescription: (document.getElementById('mobSceneDescInput')?.value || '').trim(),
+                        sceneImagePath: mobileState.sceneImagePath,
+                        sceneImageUrl: mobileState.sceneImageUrl,
                         url,
                         sourceVideoPath: mobileState.sourceVideoPath,
                         kocImagePath: mobileState.kocImagePath,
@@ -958,11 +1469,53 @@
             titleEl.textContent = job.stepTitle || 'Đang xử lý...';
             fillEl.style.width = `${job.progressPct || 10}%`;
 
-            if (job.queuePosition && job.queuePosition > 1 && job.status === 'queued') {
+            const qDetail = document.getElementById('mobQueueDetailBanner');
+            if (job.status === 'queued' && job.queuePosition && job.queuePosition >= 1) {
                 qBadge.style.display = 'inline-block';
-                qBadge.textContent = `Hàng đợi #${job.queuePosition}`;
+                qBadge.textContent = `⏳ Lượt đợi #${job.queuePosition} (~${job.estimatedWaitMinutes || 2}p)`;
+                if (qDetail) {
+                    const prepText = job.step1Prepared
+                        ? `<span style="color:#34D399;font-weight:800;">✅ Đã cắt sẵn ${job.numSegments || 4} đoạn &amp; tạo xong 3 ảnh tham chiếu</span> (Sẵn sàng vào Google Vids ngay khi tới lượt!)`
+                        : (job.step1Preparing
+                            ? `<span style="color:#38BDF8;font-weight:800;">⚡ Máy chủ đang cắt trước video &amp; tạo 3 ảnh tham chiếu cho bạn trong lúc chờ...</span>`
+                            : `Đang chuẩn bị cắt phân đoạn &amp; tạo 3 ảnh tham chiếu trước cho bạn...`);
+                    qDetail.style.display = 'block';
+                    qDetail.style.borderColor = 'rgba(245,158,11,0.55)';
+                    qDetail.style.background = 'linear-gradient(145deg,rgba(245,158,11,0.16),rgba(15,23,42,0.94))';
+                    qDetail.innerHTML = `
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                            <span style="font-weight:900;color:#FBBF24;font-size:0.8rem;"><i class="fas fa-users-line"></i> LƯỢT ĐỢI CỦA BẠN: VỊ TRÍ SỐ #${job.queuePosition}</span>
+                            <span style="background:rgba(245,158,11,0.22);color:#FDE68A;padding:2px 8px;border-radius:99px;font-weight:900;font-size:0.68rem;">Dự kiến ~${job.estimatedWaitMinutes || 2} phút</span>
+                        </div>
+                        <div style="color:#E2E8F0;font-size:0.73rem;">
+                            • Phía trước bạn có <b>${job.waitingAheadCount || job.queuePosition} video</b> đang xử lý (Chế độ xoay vòng công bằng giữa các khách hàng).<br/>
+                            • Tiến độ chuẩn bị: ${prepText}
+                        </div>
+                    `;
+                }
+            } else if (['cutting', 'generating', 'merging'].includes(job.status)) {
+                if (job.workerProfile) {
+                    qBadge.style.display = 'inline-block';
+                    qBadge.textContent = `⚡ ${job.workerProfile}`;
+                } else {
+                    qBadge.style.display = 'none';
+                }
+                if (qDetail) {
+                    qDetail.style.display = 'block';
+                    qDetail.style.borderColor = 'rgba(16,185,129,0.5)';
+                    qDetail.style.background = 'linear-gradient(145deg,rgba(16,185,129,0.16),rgba(15,23,42,0.94))';
+                    qDetail.innerHTML = `
+                        <div style="font-weight:900;color:#34D399;font-size:0.78rem;">
+                            🚀 ĐÃ TỚI LƯỢT BẠN — MÁY CHỦ ĐANG TẠO TRỰC TIẾP (${job.workerProfile || 'Luồng chính'})
+                        </div>
+                        <div style="color:#CBD5E1;font-size:0.71rem;margin-top:2px;">
+                            Bạn có thể thoát ứng dụng hoặc tắt màn hình điện thoại, máy chủ vẫn tự chạy 100% đến khi hoàn tất!
+                        </div>
+                    `;
+                }
             } else {
                 qBadge.style.display = 'none';
+                if (qDetail) qDetail.style.display = 'none';
             }
 
             if (Array.isArray(job.jinReferenceUrls) && job.jinReferenceUrls.length > 0) {
@@ -1024,16 +1577,114 @@
                 }
                 runBtn.disabled = false;
                 runBtn.innerHTML = '<i class="fas fa-bolt"></i> TẠO VIDEO JIN MOTION MỚI';
-                stopBtn.style.display = 'none';
             } else if (['error', 'stopped'].includes(job.status)) {
                 runBtn.disabled = false;
                 runBtn.innerHTML = '<i class="fas fa-bolt"></i> THỬ LẠI TẠO VIDEO JIN MOTION';
-                stopBtn.style.display = 'none';
             } else {
                 runBtn.disabled = true;
                 runBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${job.stepTitle || 'Đang xử lý...'}`;
-                stopBtn.style.display = 'block';
             }
+            if (stopBtn) stopBtn.style.display = 'flex';
+        }
+
+        function restoreJobInputsToForm(job) {
+            if (!job) return;
+            if (job.jinMode) selectJinMode(job.jinMode);
+            if (job.perspective) selectMobilePerspective(job.perspective);
+            if (job.scenePreset) {
+                const sp = document.getElementById('mobScenePresetSelect');
+                if (sp) sp.value = job.scenePreset;
+            }
+            if (job.sceneDescription !== undefined) {
+                const sd = document.getElementById('mobSceneDescInput');
+                if (sd) sd.value = job.sceneDescription || '';
+            }
+            if (job.sceneImageUrl) {
+                mobileState.sceneImageUrl = job.sceneImageUrl;
+                mobileState.sceneImagePath = job.sceneImagePath || job.sceneImageUrl;
+                const img = document.getElementById('mobScenePreviewImg');
+                if (img) {
+                    img.src = resolveServerUrl(job.sceneImageUrl);
+                    img.style.display = 'block';
+                }
+                const ph = document.getElementById('mobScenePlaceholder');
+                if (ph) ph.style.display = 'none';
+                const bg = document.getElementById('mobSceneBadge');
+                if (bg) bg.style.display = 'block';
+                const btnClear = document.getElementById('btnClearMobScene');
+                if (btnClear) btnClear.style.display = 'inline-block';
+            }
+            if (job.kocImageUrl) {
+                mobileState.kocImageUrl = job.kocImageUrl;
+                mobileState.kocImagePath = job.kocImagePath || job.kocImageUrl;
+                const img = document.getElementById('mobKocPreviewImg');
+                if (img) {
+                    img.src = resolveServerUrl(job.kocImageUrl);
+                    img.style.display = 'block';
+                }
+                const ph = document.getElementById('mobKocPlaceholder');
+                if (ph) ph.style.display = 'none';
+                const bg = document.getElementById('mobKocBadge');
+                if (bg) bg.style.display = 'block';
+            }
+            if (job.productImageUrl) {
+                mobileState.productImageUrl = job.productImageUrl;
+                mobileState.productImagePath = job.productImagePath || job.productImageUrl;
+                const img = document.getElementById('mobProdPreviewImg');
+                if (img) {
+                    img.src = resolveServerUrl(job.productImageUrl);
+                    img.style.display = 'block';
+                }
+                const ph = document.getElementById('mobProdPlaceholder');
+                if (ph) ph.style.display = 'none';
+                const bg = document.getElementById('mobProdBadge');
+                if (bg) bg.style.display = 'block';
+            }
+            if (job.url) {
+                const urlEl = document.getElementById('mobTiktokUrl');
+                if (urlEl) urlEl.value = job.url;
+            }
+            if (job.sourceVideoPath) {
+                mobileState.sourceVideoPath = job.sourceVideoPath;
+                const label = document.getElementById('mobVideoUploadLabel');
+                if (label) {
+                    label.innerHTML = `<span style="color:#34D399;">✅ Đã khôi phục video gốc (${job.totalDurationSec || 0}s • ${job.numSegments || 1} đoạn)</span>`;
+                }
+                const firstClip = Array.isArray(job.segments) && job.segments[0] && job.segments[0].sourceClipUrl;
+                if (firstClip) {
+                    const vid = document.getElementById('mobSourceVideoPreview');
+                    if (vid) {
+                        vid.src = resolveServerUrl(firstClip);
+                        vid.style.display = 'block';
+                    }
+                }
+            }
+        }
+
+        async function restoreLatestJobFromServer() {
+            try {
+                const res = await fetch(resolveServerUrl(`/api/jin-motion-mobile/jobs?token=${encodeURIComponent(mobileState.token)}&_t=${Date.now()}`)).then(r => r.json());
+                const jobs = res?.jobs || [];
+                if (jobs.length === 0) return;
+
+                let targetJob = null;
+                if (mobileState.activeJobId) {
+                    targetJob = jobs.find(j => j.jobId === mobileState.activeJobId);
+                }
+                if (!targetJob) {
+                    targetJob = jobs[0];
+                }
+                if (!targetJob) return;
+
+                mobileState.activeJobId = targetJob.jobId;
+                localStorage.setItem('jin_motion_active_job_id', targetJob.jobId);
+                restoreJobInputsToForm(targetJob);
+                renderMobileJobState(targetJob);
+
+                if (['queued', 'cutting', 'generating', 'merging'].includes(targetJob.status)) {
+                    startPollingMobileJob(targetJob.jobId);
+                }
+            } catch (_) {}
         }
 
         function downloadFinalVideoToPhone() {
@@ -1048,9 +1699,59 @@
         }
 
         async function stopCurrentMobileJob() {
-            if (!mobileState.activeJobId) return;
-            await fetch(resolveServerUrl(`/api/jin-motion-mobile/job/${encodeURIComponent(mobileState.activeJobId)}/stop`), { method: 'POST' });
-            showMobileToast('🛑 Đã gửi lệnh dừng.');
+            if (mobileState.pollTimer) {
+                clearInterval(mobileState.pollTimer);
+                mobileState.pollTimer = null;
+            }
+            const stopBtn = document.getElementById('mobStopBtn');
+            const runBtn = document.getElementById('mobRunBtn');
+            const titleEl = document.getElementById('mobStepHeaderTitle');
+
+            if (stopBtn) {
+                stopBtn.disabled = true;
+                stopBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang buộc dừng &amp; mở khóa trên máy chủ...';
+            }
+
+            try {
+                await fetch(resolveServerUrl('/api/fashion/reset-lock'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                }).catch(() => {});
+                if (mobileState.activeJobId) {
+                    await fetch(resolveServerUrl(`/api/jin-motion-mobile/job/${encodeURIComponent(mobileState.activeJobId)}/stop`), {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    }).catch(() => {});
+                }
+                const res = await fetch(resolveServerUrl('/api/jin-motion-mobile/stop-all'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ jobId: mobileState.activeJobId || '' })
+                }).then(r => r.json()).catch(() => null);
+
+                if (titleEl) {
+                    titleEl.innerHTML = '<span style="color:#F87171;">🛑 Đã buộc dừng tất cả tiến trình &amp; mở khóa thành công!</span>';
+                }
+                if (runBtn) {
+                    runBtn.disabled = false;
+                    runBtn.innerHTML = '<i class="fas fa-bolt"></i> TẠO VIDEO JIN MOTION PRO';
+                }
+                if (res && res.job) {
+                    renderMobileJobState(res.job);
+                }
+                showMobileToast('🛑 Đã buộc dừng toàn bộ tiến trình trên máy chủ & mở khóa thành công!', 4500);
+            } catch (e) {
+                if (runBtn) {
+                    runBtn.disabled = false;
+                    runBtn.innerHTML = '<i class="fas fa-bolt"></i> TẠO VIDEO JIN MOTION PRO';
+                }
+                showMobileToast('🛑 Đã mở khóa nút tạo video.');
+            } finally {
+                if (stopBtn) {
+                    stopBtn.disabled = false;
+                    stopBtn.innerHTML = '<i class="fas fa-stop-circle"></i> BUỘC DỪNG TẤT CẢ &amp; MỞ KHÓA TIẾN TRÌNH';
+                }
+            }
         }
 
         async function retryMobileSeg(jobId, sceneId) {
@@ -1077,36 +1778,121 @@
 
         async function loadMobileHistory() {
             const box = document.getElementById('mobHistoryContainer');
+            if (box) box.innerHTML = '<div style="padding:12px;text-align:center;color:#38BDF8;"><i class="fas fa-spinner fa-spin"></i> Đang đồng bộ lịch sử video từ máy chủ...</div>';
+
+            async function fetchHistoryOnce() {
+                const r = await fetch(resolveServerUrl(`/api/jin-motion-mobile/jobs?token=${encodeURIComponent(mobileState.token)}&_t=${Date.now()}`));
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                return await r.json();
+            }
+
             try {
-                const res = await fetch(resolveServerUrl(`/api/jin-motion-mobile/jobs?token=${encodeURIComponent(mobileState.token)}&_t=${Date.now()}`)).then(r => r.json());
+                let res = null;
+                try {
+                    res = await fetchHistoryOnce();
+                } catch (firstErr) {
+                    // Nếu đường truyền cũ bị đổi/ngắt, tự động dò lại đường truyền mới (WiFi / 4G Cloud) và thử lại ngay
+                    localStorage.removeItem('jin_motion_custom_server_saved');
+                    await autoDiscoverCloudEndpoint(true);
+                    res = await fetchHistoryOnce();
+                }
+
                 const jobs = res?.jobs || [];
                 if (jobs.length === 0) {
-                    box.innerHTML = 'Chưa có video nào được tạo.';
+                    box.innerHTML = '<div style="padding:16px;text-align:center;color:#94A3B8;">Chưa có video nào được tạo. Hãy tạo video ở tab Tạo Video nhé!</div>';
                     return;
                 }
-                box.innerHTML = jobs.map(j => {
-                    const fUrl = j.finalVideoUrl ? resolveServerUrl(j.finalVideoUrl) : '';
+
+                const modeLabels = {
+                    character: '👤 Thay KOC',
+                    koc_product: '👗 KOC + Sản Phẩm',
+                    product: '📦 Làm Mới SP'
+                };
+
+                box.innerHTML = jobs.map((j, idx) => {
+                    const hasFinal = Boolean(j.finalVideoUrl);
+                    const fUrl = hasFinal ? resolveServerUrl(j.finalVideoUrl) : '';
+                    const isDone = (j.status === 'completed') || hasFinal;
+                    const timeStr = j.createdAt ? new Date(j.createdAt).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' }) : '';
+                    const modeTxt = modeLabels[j.jinMode] || '👤 Thay KOC';
+                    const perspTxt = j.perspective === 'reference' ? '🖼️ Đổi Phối Cảnh' : '📹 Góc Máy Gốc';
+                    const thumbRaw = j.kocImageUrl || j.productImageUrl || (Array.isArray(j.jinReferenceUrls) && j.jinReferenceUrls[0]) || '';
+                    const thumbUrl = thumbRaw ? resolveServerUrl(thumbRaw) : '';
+                    const isQueued = j.status === 'queued';
+                    const statusLabel = isDone
+                        ? '✅ HOÀN TẤT'
+                        : (isQueued
+                            ? `⏳ LƯỢT ĐỢI #${j.queuePosition || 1} (~${j.estimatedWaitMinutes || 2}p)`
+                            : (['cutting', 'generating', 'merging'].includes(j.status) ? '⚡ ĐANG CHẠY' : '⏹️ TẠM DỪNG'));
+                    const statusCol = isDone ? '#34D399' : (isQueued ? '#FBBF24' : (['cutting', 'generating', 'merging'].includes(j.status) ? '#38BDF8' : '#F87171'));
+
                     return `
-                        <div style="background:rgba(6,9,19,0.85);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:10px;margin-bottom:10px;">
-                            <div style="display:flex;justify-content:space-between;align-items:center;">
-                                <span style="font-weight:800;color:#F472B6;">${j.productName || j.jobId} (${j.numSegments || 1} đoạn)</span>
-                                <span style="font-size:0.72rem;color:${j.status === 'completed' ? '#34D399' : '#38BDF8'};font-weight:800;">${j.status.toUpperCase()}</span>
+                        <div style="background:rgba(6,9,19,0.88);border:1px solid ${isDone ? 'rgba(16,185,129,0.45)' : 'rgba(255,255,255,0.14)'};border-radius:14px;padding:12px;margin-bottom:12px;box-shadow:0 4px 14px rgba(0,0,0,0.3);">
+                            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+                                <div style="display:flex;gap:10px;align-items:center;">
+                                    ${thumbUrl ? `<img src="${thumbUrl}" style="width:44px;height:44px;border-radius:8px;object-fit:cover;border:1px solid rgba(56,189,248,0.5);flex-shrink:0;" />` : ''}
+                                    <div>
+                                        <div style="font-weight:900;color:#F472B6;font-size:0.84rem;">
+                                            #${jobs.length - idx} • ${modeTxt} (${j.numSegments || 1} đoạn • ${j.totalDurationSec || 0}s)
+                                        </div>
+                                        <div style="font-size:0.68rem;color:#94A3B8;margin-top:2px;">
+                                            🕒 ${timeStr} • <span style="color:#38BDF8;">${perspTxt}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span style="font-size:0.68rem;color:${statusCol};font-weight:900;background:rgba(255,255,255,0.06);padding:3px 8px;border-radius:8px;white-space:nowrap;">${statusLabel}</span>
                             </div>
-                            <div style="font-size:0.72rem;color:#94A3B8;margin-top:4px;">${j.stepTitle || ''}</div>
+
+                            <div style="font-size:0.73rem;color:#CBD5E1;margin-top:6px;">
+                                ${isDone ? '🎉 Đã ghép hoàn chỉnh, xóa logo &amp; lồng nhạc gốc TikTok!' : (j.stepTitle || '')}
+                            </div>
+
                             ${fUrl ? `
-                                <video src="${fUrl}" controls preload="metadata" playsinline style="width:100%;max-height:220px;margin-top:8px;border-radius:8px;background:#000;"></video>
-                                <div style="display:flex;gap:8px;margin-top:6px;">
-                                    <button onclick="window.AndroidBridge ? window.AndroidBridge.downloadVideo('${fUrl}', '${j.product}.mp4') : window.open('${fUrl}')" style="flex:1;background:#10B981;color:#04130e;border:none;padding:8px;border-radius:8px;font-weight:800;font-size:0.76rem;cursor:pointer;"><i class="fas fa-download"></i> Tải về máy</button>
-                                    <button onclick="openJobInCreateTab('${j.jobId}')" style="flex:1;background:rgba(56,189,248,0.15);border:1px solid rgba(56,189,248,0.4);color:#38BDF8;padding:8px;border-radius:8px;font-weight:800;font-size:0.76rem;cursor:pointer;">Chi tiết</button>
+                                <video src="${fUrl}" controls preload="none" playsinline style="width:100%;max-height:230px;margin-top:8px;border-radius:10px;background:#000;border:1px solid rgba(16,185,129,0.4);"></video>
+                                <div style="display:grid;grid-template-columns:1.2fr 1.2fr auto;gap:6px;margin-top:8px;">
+                                    <button onclick="window.AndroidBridge ? window.AndroidBridge.downloadVideo('${fUrl}', '${j.product}.mp4') : window.open('${fUrl}')" style="background:#10B981;color:#04130e;border:none;padding:9px 8px;border-radius:9px;font-weight:900;font-size:0.75rem;cursor:pointer;">
+                                        <i class="fas fa-download"></i> Tải Về Máy
+                                    </button>
+                                    <button onclick="openJobInCreateTab('${j.jobId}')" style="background:rgba(56,189,248,0.16);border:1px solid rgba(56,189,248,0.45);color:#38BDF8;padding:9px 8px;border-radius:9px;font-weight:800;font-size:0.75rem;cursor:pointer;">
+                                        <i class="fas fa-film"></i> Mở Xem ${j.numSegments || ''} Đoạn
+                                    </button>
+                                    <button onclick="deleteHistoryJob('${j.jobId}')" style="background:rgba(239,68,68,0.18);border:1px solid rgba(239,68,68,0.45);color:#FCA5A5;padding:9px 10px;border-radius:9px;font-weight:800;font-size:0.75rem;cursor:pointer;" title="Xóa dự án này">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
                                 </div>
                             ` : `
-                                <button onclick="openJobInCreateTab('${j.jobId}')" style="margin-top:8px;width:100%;background:rgba(236,72,153,0.18);border:1px solid #EC4899;color:#F472B6;padding:8px;border-radius:8px;font-weight:800;font-size:0.76rem;cursor:pointer;">Xem tiến độ trực tiếp</button>
+                                <div style="display:grid;grid-template-columns:1fr auto;gap:6px;margin-top:8px;">
+                                    <button onclick="openJobInCreateTab('${j.jobId}')" style="background:rgba(236,72,153,0.18);border:1px solid #EC4899;color:#F472B6;padding:9px;border-radius:9px;font-weight:800;font-size:0.76rem;cursor:pointer;">
+                                        <i class="fas fa-eye"></i> Xem tiến độ &amp; Mở dự án này
+                                    </button>
+                                    <button onclick="deleteHistoryJob('${j.jobId}')" style="background:rgba(239,68,68,0.18);border:1px solid rgba(239,68,68,0.45);color:#FCA5A5;padding:9px 10px;border-radius:9px;font-weight:800;font-size:0.75rem;cursor:pointer;">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
                             `}
                         </div>
                     `;
                 }).join('');
             } catch (e) {
-                box.innerHTML = 'Lỗi tải lịch sử: ' + e.message;
+                box.innerHTML = `
+                    <div style="padding:14px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.4);border-radius:10px;color:#FCA5A5;font-size:0.78rem;text-align:center;">
+                        ⚠️ Chưa kết nối được tới máy chủ (${e.message}).<br/>
+                        <button onclick="autoDiscoverCloudEndpoint(false).then(() => loadMobileHistory())" style="margin-top:8px;background:#10B981;color:#04130e;border:none;border-radius:8px;padding:8px 14px;font-weight:900;font-size:0.76rem;cursor:pointer;">
+                            🛰️ Tự Động Kết Nối Lại &amp; Tải Lịch Sử
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        async function deleteHistoryJob(jobId) {
+            if (!confirm('Bạn có muốn xóa dự án này khỏi danh sách lịch sử?')) return;
+            try {
+                await fetch(resolveServerUrl(`/api/jin-motion-mobile/job/${encodeURIComponent(jobId)}`), { method: 'DELETE' });
+                showMobileToast('🗑️ Đã xóa khỏi lịch sử.');
+                loadMobileHistory();
+            } catch (e) {
+                showMobileToast('❌ Lỗi xóa: ' + e.message);
             }
         }
 
@@ -1116,6 +1902,7 @@
             switchMobileTab('create');
             const res = await fetch(resolveServerUrl(`/api/jin-motion-mobile/job/${encodeURIComponent(jobId)}`)).then(r => r.json());
             if (res && res.success && res.job) {
+                restoreJobInputsToForm(res.job);
                 renderMobileJobState(res.job);
                 if (!['completed', 'error', 'stopped'].includes(res.job.status)) {
                     startPollingMobileJob(jobId);
@@ -1125,17 +1912,7 @@
 
         window.addEventListener('DOMContentLoaded', async () => {
             await autoDiscoverCloudEndpoint(true);
-            if (mobileState.activeJobId) {
-                try {
-                    const res = await fetch(resolveServerUrl(`/api/jin-motion-mobile/job/${encodeURIComponent(mobileState.activeJobId)}`)).then(r => r.json());
-                    if (res && res.success && res.job) {
-                        renderMobileJobState(res.job);
-                        if (!['completed', 'error', 'stopped'].includes(res.job.status)) {
-                            startPollingMobileJob(mobileState.activeJobId);
-                        }
-                    }
-                } catch (_) {}
-            }
+            await restoreLatestJobFromServer();
         });
     </script>
 </body>
