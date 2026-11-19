@@ -469,16 +469,24 @@
                     <span style="font-size:0.7rem;color:#38BDF8;">TikTok / Video máy</span>
                 </div>
                 <div class="input-group">
-                    <input type="text" id="mobTiktokUrl" class="m-input" placeholder="Dán link TikTok / Douyin / Reels vào đây..." />
+                    <input type="text" id="mobTiktokUrl" class="m-input" oninput="onMobileTiktokUrlChanged(this.value)" placeholder="Dán link TikTok / Douyin / Reels vào đây..." />
                     <button type="button" class="paste-btn" onclick="pasteClipboardUrl()">
                         <i class="fas fa-paste"></i> Dán
                     </button>
                 </div>
 
                 <input type="file" id="mobVideoFileInput" accept="video/mp4,video/quicktime,video/*" style="display:none;" onchange="handleMobileVideoUpload(this)" />
-                <div class="upload-zone" onclick="document.getElementById('mobVideoFileInput').click()">
-                    <div id="mobVideoUploadLabel" style="font-size:0.8rem;font-weight:700;color:#38BDF8;">
-                        <i class="fas fa-cloud-arrow-up"></i> Hoặc chạm để chọn Video từ Điện Thoại (.MP4)
+                <div class="upload-zone" style="cursor:default;">
+                    <div style="display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;">
+                        <button type="button" onclick="document.getElementById('mobVideoFileInput').click()" style="background:linear-gradient(135deg,#0284C7,#2563EB);color:#fff;border:none;border-radius:10px;padding:9px 14px;font-size:0.78rem;font-weight:900;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 3px 10px rgba(37,99,235,0.35);">
+                            <i class="fas fa-file-video"></i> Chọn / Tải File Video .MP4 Từ Máy
+                        </button>
+                        <button type="button" id="btnClearMobSourceVideo" onclick="clearMobileSourceVideo()" style="display:none;background:rgba(239,68,68,0.18);border:1px solid rgba(239,68,68,0.45);color:#FCA5A5;border-radius:10px;padding:9px 11px;font-size:0.74rem;font-weight:800;cursor:pointer;">
+                            <i class="fas fa-trash"></i> Bỏ file máy
+                        </button>
+                    </div>
+                    <div id="mobVideoUploadLabel" style="font-size:0.74rem;font-weight:700;color:#94A3B8;margin-top:6px;">
+                        Chưa chọn file .MP4 từ máy (Hoặc dán link TikTok ở ô trên)
                     </div>
                     <video id="mobSourceVideoPreview" controls playsinline muted style="display:none;width:100%;max-height:190px;margin-top:8px;border-radius:8px;background:#000;"></video>
                 </div>
@@ -1088,20 +1096,55 @@
             showMobileToast('🖼️ Đã bỏ ảnh phối cảnh riêng (Sẽ lấy nền của Ảnh số 1)');
         }
 
+        function clearMobileSourceVideo(silent = false) {
+            mobileState.sourceVideoPath = '';
+            mobileState.sourceVideoUrl = '';
+            const inp = document.getElementById('mobVideoFileInput');
+            if (inp) inp.value = '';
+            const vid = document.getElementById('mobSourceVideoPreview');
+            if (vid) {
+                vid.src = '';
+                vid.style.display = 'none';
+            }
+            const btnClr = document.getElementById('btnClearMobSourceVideo');
+            if (btnClr) btnClr.style.display = 'none';
+            const label = document.getElementById('mobVideoUploadLabel');
+            if (label) {
+                label.innerHTML = 'Chưa chọn file .MP4 từ máy (Hoặc dán link TikTok ở ô trên)';
+            }
+            if (!silent) showMobileToast('🗑️ Đã bỏ file video máy (Sẽ dùng link TikTok nếu có).');
+        }
+
+        function onMobileTiktokUrlChanged(val) {
+            const cleanVal = String(val || '').trim();
+            if (cleanVal.length > 5 && mobileState.sourceVideoPath) {
+                // Khi người dùng dán hoặc nhập link TikTok mới, tự động xóa file video .MP4 cũ trong bộ nhớ để bắt buộc tải đúng link mới!
+                clearMobileSourceVideo(true);
+                const label = document.getElementById('mobVideoUploadLabel');
+                if (label) {
+                    label.innerHTML = '<span style="color:#38BDF8;">🔗 Đang ưu tiên dùng Link Video mới vừa dán ở trên</span>';
+                }
+            }
+        }
+
         async function pasteClipboardUrl() {
             try {
                 if (window.AndroidBridge && typeof window.AndroidBridge.readFromClipboard === 'function') {
                     const clip = window.AndroidBridge.readFromClipboard();
                     if (clip) {
-                        document.getElementById('mobTiktokUrl').value = clip.trim();
-                        showMobileToast('✅ Đã dán link video!');
+                        const clean = clip.trim();
+                        document.getElementById('mobTiktokUrl').value = clean;
+                        onMobileTiktokUrlChanged(clean);
+                        showMobileToast('✅ Đã dán link video mới!');
                         return;
                     }
                 }
                 const text = await navigator.clipboard.readText();
                 if (text) {
-                    document.getElementById('mobTiktokUrl').value = text.trim();
-                    showMobileToast('✅ Đã dán link video!');
+                    const clean = text.trim();
+                    document.getElementById('mobTiktokUrl').value = clean;
+                    onMobileTiktokUrlChanged(clean);
+                    showMobileToast('✅ Đã dán link video mới!');
                 }
             } catch (_) {
                 showMobileToast('Vui lòng chạm giữ ô nhập để dán link.');
@@ -1305,7 +1348,7 @@
             const file = input.files && input.files[0];
             if (!file) return;
             const label = document.getElementById('mobVideoUploadLabel');
-            label.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải video lên máy chủ...';
+            label.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải file video .MP4 lên máy chủ...';
             try {
                 const fd = new FormData();
                 fd.append('sourceVideo', file);
@@ -1313,13 +1356,18 @@
                 if (!res || !res.success) throw new Error(res?.message || 'Lỗi tải video');
                 mobileState.sourceVideoPath = res.filePath;
                 mobileState.sourceVideoUrl = resolveServerUrl(res.fileUrl);
-                label.innerHTML = `<span style="color:#34D399;">✅ Đã nạp video: ${res.fileName}</span>`;
+                // Khi chọn file .MP4 từ máy, tự động xóa link TikTok cũ ở ô trên để máy chủ chạy đúng file .MP4 vừa chọn!
+                const urlInput = document.getElementById('mobTiktokUrl');
+                if (urlInput) urlInput.value = '';
+                const btnClr = document.getElementById('btnClearMobSourceVideo');
+                if (btnClr) btnClr.style.display = 'inline-block';
+                label.innerHTML = `<span style="color:#34D399;">✅ Đang dùng file máy: ${res.fileName}</span>`;
                 const vid = document.getElementById('mobSourceVideoPreview');
                 vid.src = mobileState.sourceVideoUrl;
                 vid.style.display = 'block';
-                showMobileToast('✅ Đã tải video nguồn thành công!');
+                showMobileToast('✅ Đã tải file video .MP4 thành công!');
             } catch (e) {
-                label.innerHTML = '<i class="fas fa-triangle-exclamation" style="color:#F87171;"></i> Lỗi tải video, chạm để thử lại';
+                label.innerHTML = '<i class="fas fa-triangle-exclamation" style="color:#F87171;"></i> Lỗi tải video, hãy bấm nút Chọn File .MP4 ở trên để thử lại';
                 showMobileToast('❌ ' + e.message);
             }
         }
@@ -1565,7 +1613,11 @@
                                 <div>
                                     ${isDone
                                         ? `<video src="${resolveServerUrl(seg.aiVideoUrl)}" controls preload="metadata" playsinline style="border-color:#10B981;"></video>
-                                           <div style="font-size:0.66rem;color:#34D399;text-align:center;margin-top:3px;font-weight:800;">✨ Video AI #${seg.scene_id} <span onclick="retryMobileSeg('${job.jobId}', ${seg.scene_id})" style="color:#F472B6;text-decoration:underline;cursor:pointer;margin-left:4px;">(Tạo lại)</span></div>`
+                                           <div style="font-size:0.66rem;color:#34D399;text-align:center;margin-top:3px;font-weight:800;">
+                                               ✨ Video AI #${seg.scene_id}
+                                               <span onclick="window.AndroidBridge ? window.AndroidBridge.downloadVideo('${resolveServerUrl(seg.aiVideoUrl)}', '${job.product}_doan_${seg.scene_id}.mp4') : window.open('${resolveServerUrl(seg.aiVideoUrl)}')" style="color:#38BDF8;text-decoration:underline;cursor:pointer;margin-left:5px;">(📥 Tải .MP4)</span>
+                                               <span onclick="retryMobileSeg('${job.jobId}', ${seg.scene_id})" style="color:#F472B6;text-decoration:underline;cursor:pointer;margin-left:5px;">(🔄 Tạo lại)</span>
+                                           </div>`
                                         : `<div style="height:180px;border-radius:8px;background:#03050a;border:1px dashed rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:0.72rem;color:#64748B;text-align:center;padding:8px;">
                                             ${isGen ? '⚡ Veo 3.1 đang dựng đoạn này...' : 'Đang chờ tạo AI'}
                                            </div>`
@@ -1577,7 +1629,7 @@
                 }).join('');
             }
 
-            if (job.status === 'completed' && job.finalVideoUrl) {
+            if (job.finalVideoUrl) {
                 const fullFinalUrl = resolveServerUrl(job.finalVideoUrl);
                 mobileState.currentFinalVideoUrl = fullFinalUrl;
                 finalBox.style.display = 'block';
@@ -1586,6 +1638,8 @@
                     player.setAttribute('data-src', fullFinalUrl);
                     player.src = fullFinalUrl;
                 }
+            }
+            if (job.status === 'completed' || (job.finalVideoUrl && ['stopped', 'error'].includes(job.status))) {
                 runBtn.disabled = false;
                 runBtn.innerHTML = '<i class="fas fa-bolt"></i> TẠO VIDEO JIN MOTION MỚI';
             } else if (['error', 'stopped'].includes(job.status)) {
@@ -1654,12 +1708,15 @@
             if (job.url) {
                 const urlEl = document.getElementById('mobTiktokUrl');
                 if (urlEl) urlEl.value = job.url;
-            }
-            if (job.sourceVideoPath) {
+                // Nếu dự án dùng Link TikTok, không giữ lại sourceVideoPath cũ để tránh bị đè khi dán link mới
+                clearMobileSourceVideo(true);
+            } else if (job.sourceVideoPath) {
                 mobileState.sourceVideoPath = job.sourceVideoPath;
+                const btnClr = document.getElementById('btnClearMobSourceVideo');
+                if (btnClr) btnClr.style.display = 'inline-block';
                 const label = document.getElementById('mobVideoUploadLabel');
                 if (label) {
-                    label.innerHTML = `<span style="color:#34D399;">✅ Đã khôi phục video gốc (${job.totalDurationSec || 0}s • ${job.numSegments || 1} đoạn)</span>`;
+                    label.innerHTML = `<span style="color:#34D399;">✅ Đang chọn file máy (${job.totalDurationSec || 0}s • ${job.numSegments || 1} đoạn)</span>`;
                 }
                 const firstClip = Array.isArray(job.segments) && job.segments[0] && job.segments[0].sourceClipUrl;
                 if (firstClip) {
