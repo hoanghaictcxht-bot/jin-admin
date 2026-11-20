@@ -918,7 +918,7 @@
         const CLOUD_DISCOVERY_ADMIN_API_URL = 'https://api.github.com/repos/hoanghaictcxht-bot/jin-admin/contents/jin_motion_endpoint.json';
         const CLOUD_DISCOVERY_API_URL = 'https://api.github.com/repos/hoanghaictcxht-bot/jin-ai-studio-releases/contents/jin_motion_endpoint.json';
         const CLOUD_DISCOVERY_URL = 'https://raw.githubusercontent.com/hoanghaictcxht-bot/jin-ai-studio-releases/main/jin_motion_endpoint.json';
-        const DEFAULT_FALLBACK_TUNNEL = 'https://slim-expanding-fathers-containing.trycloudflare.com';
+        const DEFAULT_FALLBACK_TUNNEL = 'https://barcelona-oxygen-assumptions-avoid.trycloudflare.com';
         const DEFAULT_FALLBACK_LAN = 'http://192.168.1.7:3002';
         const DEFAULT_FALLBACK_PC_TOKEN = '';
         const DEFAULT_FALLBACK_CLOUD_VIP = '';
@@ -1101,14 +1101,18 @@
             const vipInput = document.getElementById('mobCloudVipInput');
             const srvInput = document.getElementById('mobServerUrlInput');
             if (srvInput && srvInput.value.trim()) {
-                mobileState.serverBaseUrl = srvInput.value.trim().replace(/\/+$/, '');
-                localStorage.setItem('jin_motion_server_url', mobileState.serverBaseUrl);
-                localStorage.setItem('jin_motion_custom_server_saved', '1');
+                const candidateSrv = srvInput.value.trim().replace(/\/+$/, '');
+                // Nếu địa chỉ trong ô nhập là đường truyền .trycloudflare.com cũ đã hết hạn, tự động dò link 4G mới nhất thay vì dùng lại link chết
+                if (!candidateSrv.includes('.trycloudflare.com') || await probeServerReachable(candidateSrv, 2200)) {
+                    mobileState.serverBaseUrl = candidateSrv;
+                    localStorage.setItem('jin_motion_server_url', mobileState.serverBaseUrl);
+                } else {
+                    await ensureLiveServerConnection();
+                }
             }
             if (mobileState.connMode === 'pc') {
                 mobileState.pcToken = (pcInput && pcInput.value.trim().toUpperCase()) || '';
                 localStorage.setItem('jin_motion_pc_token', mobileState.pcToken);
-                localStorage.setItem('jin_motion_custom_server_saved', '1');
                 mobileState.token = mobileState.pcToken;
             } else {
                 mobileState.cloudVipKey = (vipInput && vipInput.value.trim().toUpperCase()) || '';
@@ -1373,6 +1377,32 @@
             }
         }
 
+        async function ensureLiveServerConnection() {
+            if (mobileState.serverBaseUrl && await probeServerReachable(mobileState.serverBaseUrl, 2400)) {
+                return mobileState.serverBaseUrl;
+            }
+            const cloudData = await fetchLatestCloudDiscoveryData();
+            if (cloudData) {
+                if (cloudData.tunnelUrl) mobileState.discoveredTunnelUrl = cloudData.tunnelUrl;
+                if (cloudData.lanUrl) mobileState.discoveredLanUrl = cloudData.lanUrl;
+                let nextUrl = '';
+                if (cloudData.tunnelUrl && await probeServerReachable(cloudData.tunnelUrl, 3500)) {
+                    nextUrl = cloudData.tunnelUrl;
+                } else if (cloudData.lanUrl && await probeServerReachable(cloudData.lanUrl, 1500)) {
+                    nextUrl = cloudData.lanUrl;
+                } else {
+                    nextUrl = cloudData.tunnelUrl || DEFAULT_FALLBACK_TUNNEL;
+                }
+                if (nextUrl) {
+                    mobileState.serverBaseUrl = nextUrl.replace(/\/+$/, '');
+                    localStorage.setItem('jin_motion_server_url', mobileState.serverBaseUrl);
+                    const srvInput = document.getElementById('mobServerUrlInput');
+                    if (srvInput) srvInput.value = mobileState.serverBaseUrl;
+                }
+            }
+            return mobileState.serverBaseUrl;
+        }
+
         async function autoDiscoverCloudEndpoint(silent = true, isRetry = false) {
             if (!silent) showMobileToast('🛰️ Đang tự động dò tìm máy chủ JIN AI Studio...');
 
@@ -1480,12 +1510,6 @@
         }
 
         async function verifyAndSaveMobileToken(silent = false, isRetry = false) {
-            const srvInput = document.getElementById('mobServerUrlInput');
-            if (srvInput && srvInput.value.trim()) {
-                mobileState.serverBaseUrl = srvInput.value.trim().replace(/\/+$/, '');
-                localStorage.setItem('jin_motion_server_url', mobileState.serverBaseUrl);
-            }
-
             const pcInput = document.getElementById('mobPcTokenInput');
             const vipInput = document.getElementById('mobCloudVipInput');
             if (mobileState.connMode === 'pc' && pcInput) {
@@ -1526,6 +1550,7 @@
             }
 
             try {
+                await ensureLiveServerConnection();
                 const res = await fetch(resolveServerUrl('/api/jin-motion-mobile/verify'), {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -1589,6 +1614,7 @@
             const label = document.getElementById('mobVideoUploadLabel');
             label.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Đang tải ${isAudio ? 'file nhạc bài hát' : 'file video .MP4'} lên máy chủ...`;
             try {
+                await ensureLiveServerConnection();
                 const fd = new FormData();
                 fd.append('sourceVideo', file);
                 const res = await fetch(resolveServerUrl('/api/fashion/upload-source-video'), { method: 'POST', body: fd }).then(r => r.json());
@@ -1622,6 +1648,7 @@
             const labelMap = { koc: 'KOC', product: 'Sản phẩm', scene: 'Phối cảnh' };
             showMobileToast(`⏳ Đang tải ảnh ${labelMap[type] || ''}...`);
             try {
+                await ensureLiveServerConnection();
                 const fd = new FormData();
                 if (type === 'koc') {
                     fd.append('customModel', file);
@@ -1704,6 +1731,7 @@
             runBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang gửi yêu cầu lên máy chủ...';
 
             try {
+                await ensureLiveServerConnection();
                 const res = await fetch(resolveServerUrl('/api/jin-motion-mobile/submit'), {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
