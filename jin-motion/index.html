@@ -132,7 +132,7 @@
         }
         .mode-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 8px;
         }
         .mode-btn {
@@ -532,29 +532,50 @@
                 <div class="mode-grid">
                     <div class="mode-btn active" id="modeBtn_character" onclick="selectJinMode('character')">
                         <i class="fas fa-user-astronaut"></i>
-                        <div class="m-name">Thay KOC</div>
+                        <div class="m-name">1. Thay KOC</div>
                         <div class="m-desc">Đổi nhân vật theo chuyển động mẫu</div>
                     </div>
                     <div class="mode-btn" id="modeBtn_koc_product" onclick="selectJinMode('koc_product')">
                         <i class="fas fa-shirt"></i>
-                        <div class="m-name">KOC + Sản Phẩm</div>
-                        <div class="m-desc">Thay KOC & mặc đồ mới</div>
+                        <div class="m-name">2. KOC + Sản Phẩm</div>
+                        <div class="m-desc">Thay KOC &amp; mặc đồ mới</div>
                     </div>
                     <div class="mode-btn" id="modeBtn_product" onclick="selectJinMode('product')">
                         <i class="fas fa-box-open"></i>
-                        <div class="m-name">Làm Mới SP</div>
-                        <div class="m-desc">Khóa sản phẩm & nhãn mác</div>
+                        <div class="m-name">3. Làm Mới SP</div>
+                        <div class="m-desc">Khóa sản phẩm &amp; nhãn mác</div>
+                    </div>
+                    <div class="mode-btn" id="modeBtn_music_mv" onclick="selectJinMode('music_mv')">
+                        <i class="fas fa-music" style="color:#FBBF24;"></i>
+                        <div class="m-name" style="color:#FDE68A;">4. 🎵 MV Ca Nhạc</div>
+                        <div class="m-desc">1 Ảnh + 1 Bài Hát &rarr; Tự đổi 3-4 trang phục &amp; hát</div>
+                    </div>
+                </div>
+
+                <!-- BẢNG CHỌN CHỦ ĐỀ TRANG PHỤC & BỐI CẢNH MV CA NHẠC (HIỂN THỊ KHI CHỌN CHẾ ĐỘ 4: MV CA NHẠC) -->
+                <div id="mobMvThemePanel" style="display:none;margin-top:10px;padding:11px;border-radius:12px;background:linear-gradient(145deg,rgba(245,158,11,0.16),rgba(15,23,42,0.95));border:1.5px solid rgba(245,158,11,0.5);">
+                    <div style="font-size:0.76rem;font-weight:900;color:#FBBF24;margin-bottom:6px;">
+                        <i class="fas fa-wand-sparkles"></i> CHỦ ĐỀ BIẾN HÓA TRANG PHỤC &amp; BỐI CẢNH MV:
+                    </div>
+                    <select id="mobMvThemeSelect" class="m-select" style="width:100%;font-size:0.76rem;font-weight:800;color:#FEF3C7;border-color:rgba(245,158,11,0.5);">
+                        <option value="fantasy_ao_dai">👑 Tiên Cảnh &amp; Cổ Trang Đa Sắc (Áo Dài Hoàng Kim &rarr; Cổ Trang Đỏ &rarr; Khăn Voan Trắng)</option>
+                        <option value="vietnam_heritage">🌸 Áo Dài Truyền Thống Việt Nam 4 Mùa (Đầm Sen &rarr; Phố Cổ Hội An &rarr; Thu Hà Nội &rarr; Vườn Đào)</option>
+                        <option value="modern_diva">🎤 Ca Sĩ Sân Khấu &amp; Phòng Thu Hiện Đại (Đầm Dạ Hội Spotlight &rarr; Acoustic &rarr; Thành Phố Đêm)</option>
+                        <option value="bolero_retro">🎙️ Phòng Trà Bolero &amp; Sài Gòn Xưa Trữ Tình (Áo Dài Nhung Tím &rarr; Đêm Mưa &rarr; Đèn Chùm)</option>
+                    </select>
+                    <div style="font-size:0.68rem;color:#CBD5E1;margin-top:6px;line-height:1.4;">
+                        ✨ Hệ thống sẽ <b>khóa 100% gương mặt &amp; kính mắt</b> trong Ảnh số 1, tự động đổi trang phục qua từng đoạn 10 giây của bài hát và cho nhân vật hát nhép môi khớp nhạc!
                     </div>
                 </div>
             </div>
 
             <div class="m-card">
                 <div class="m-card-title">
-                    <span><i class="fas fa-video"></i> 2. VIDEO CHUYỂN ĐỘNG MẪU</span>
-                    <span style="font-size:0.7rem;color:#38BDF8;">TikTok / File .MP4</span>
+                    <span id="mobStep2CardTitle"><i class="fas fa-video"></i> 2. VIDEO MẪU / BÀI HÁT (.MP4 / .MP3)</span>
+                    <span style="font-size:0.7rem;color:#38BDF8;">Link / File .MP4 / .MP3</span>
                 </div>
                 <div class="input-group">
-                    <input type="text" id="mobTiktokUrl" class="m-input" oninput="onMobileTiktokUrlChanged(this.value)" placeholder="Dán link TikTok / Douyin / Reels vào đây..." />
+                    <input type="text" id="mobTiktokUrl" class="m-input" oninput="onMobileTiktokUrlChanged(this.value)" placeholder="Dán link TikTok / Facebook Reels / YouTube / Bài hát..." />
                     <button type="button" class="paste-btn" onclick="pasteClipboardUrl()">
                         <i class="fas fa-paste"></i> Dán
                     </button>
@@ -563,20 +584,21 @@
                     </button>
                 </div>
 
-                <input type="file" id="mobVideoFileInput" accept="video/mp4,video/quicktime,video/*" style="display:none;" onchange="handleMobileVideoUpload(this)" />
+                <input type="file" id="mobVideoFileInput" accept="video/mp4,video/quicktime,video/*,audio/mpeg,audio/mp3,audio/mp4,audio/wav,audio/*,.mp3,.m4a,.wav,.mp4" style="display:none;" onchange="handleMobileVideoUpload(this)" />
                 <div class="upload-zone" style="cursor:default;padding:12px;">
-                    <div style="display:grid;grid-template-columns:1.35fr 0.85fr;gap:8px;align-items:center;">
-                        <button type="button" onclick="document.getElementById('mobVideoFileInput').click()" style="background:linear-gradient(135deg,#0284C7,#2563EB);color:#fff;border:none;border-radius:10px;padding:10px 10px;font-size:0.78rem;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 3px 10px rgba(37,99,235,0.35);">
-                            <i class="fas fa-cloud-arrow-up"></i> Tải Video .MP4 Lên
+                    <div style="display:grid;grid-template-columns:1.45fr 0.75fr;gap:8px;align-items:center;">
+                        <button type="button" id="btnUploadMobMedia" onclick="document.getElementById('mobVideoFileInput').click()" style="background:linear-gradient(135deg,#0284C7,#2563EB);color:#fff;border:none;border-radius:10px;padding:10px 10px;font-size:0.76rem;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 3px 10px rgba(37,99,235,0.35);">
+                            <i class="fas fa-cloud-arrow-up"></i> Tải Video .MP4 / Nhạc .MP3
                         </button>
                         <button type="button" id="btnClearMobSourceVideo" onclick="clearMobileSourceVideo()" style="background:rgba(239,68,68,0.22);border:1px solid rgba(239,68,68,0.55);color:#FCA5A5;border-radius:10px;padding:10px 10px;font-size:0.76rem;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;">
-                            <i class="fas fa-trash"></i> Xóa Video
+                            <i class="fas fa-trash"></i> Xóa File
                         </button>
                     </div>
                     <div id="mobVideoUploadLabel" style="font-size:0.74rem;font-weight:700;color:#94A3B8;margin-top:8px;">
-                        Chưa chọn file .MP4 từ máy (Hoặc dán link TikTok ở ô trên)
+                        Chưa chọn file .MP4 / .MP3 từ máy (Hoặc dán link ở ô trên)
                     </div>
                     <video id="mobSourceVideoPreview" controls playsinline muted style="display:none;width:100%;max-height:190px;margin-top:8px;border-radius:8px;background:#000;"></video>
+                    <audio id="mobSourceAudioPreview" controls style="display:none;width:100%;margin-top:8px;"></audio>
                 </div>
             </div>
 
@@ -1176,10 +1198,21 @@
 
         function selectJinMode(mode) {
             mobileState.jinMode = mode;
-            ['character', 'koc_product', 'product'].forEach(m => {
+            ['character', 'koc_product', 'product', 'music_mv'].forEach(m => {
                 const btn = document.getElementById('modeBtn_' + m);
                 if (btn) btn.classList.toggle('active', m === mode);
             });
+            const mvPanel = document.getElementById('mobMvThemePanel');
+            if (mvPanel) mvPanel.style.display = (mode === 'music_mv') ? 'block' : 'none';
+            const step2Title = document.getElementById('mobStep2CardTitle');
+            const btnUp = document.getElementById('btnUploadMobMedia');
+            if (mode === 'music_mv') {
+                if (step2Title) step2Title.innerHTML = '<i class="fas fa-music"></i> 2. CHỌN BÀI HÁT (.MP3 / .MP4 / LINK NHẠC)';
+                if (btnUp) btnUp.innerHTML = '<i class="fas fa-music"></i> Tải Bài Hát (.MP3 / .MP4) Lên';
+            } else {
+                if (step2Title) step2Title.innerHTML = '<i class="fas fa-video"></i> 2. VIDEO CHUYỂN ĐỘNG MẪU';
+                if (btnUp) btnUp.innerHTML = '<i class="fas fa-cloud-arrow-up"></i> Tải Video .MP4 / Nhạc .MP3';
+            }
         }
 
         function selectMobilePerspective(persp) {
@@ -1275,11 +1308,16 @@
                 vid.src = '';
                 vid.style.display = 'none';
             }
+            const aud = document.getElementById('mobSourceAudioPreview');
+            if (aud) {
+                aud.src = '';
+                aud.style.display = 'none';
+            }
             const label = document.getElementById('mobVideoUploadLabel');
             if (label) {
-                label.innerHTML = 'Chưa chọn file .MP4 từ máy (Hoặc dán link TikTok ở ô trên)';
+                label.innerHTML = 'Chưa chọn file .MP4 / .MP3 từ máy (Hoặc dán link ở ô trên)';
             }
-            if (!silent) showMobileToast('🗑️ Đã xóa file video .MP4 (Sẽ dùng link TikTok ở ô trên).');
+            if (!silent) showMobileToast('🗑️ Đã xóa file .MP4 / .MP3 (Sẽ dùng link ở ô trên).');
         }
 
         function onMobileTiktokUrlChanged(val) {
@@ -1547,27 +1585,33 @@
         async function handleMobileVideoUpload(input) {
             const file = input.files && input.files[0];
             if (!file) return;
+            const isAudio = /\.(mp3|m4a|wav|aac|ogg|flac)$/i.test(file.name) || (file.type && file.type.startsWith('audio/'));
             const label = document.getElementById('mobVideoUploadLabel');
-            label.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải file video .MP4 lên máy chủ...';
+            label.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Đang tải ${isAudio ? 'file nhạc bài hát' : 'file video .MP4'} lên máy chủ...`;
             try {
                 const fd = new FormData();
                 fd.append('sourceVideo', file);
                 const res = await fetch(resolveServerUrl('/api/fashion/upload-source-video'), { method: 'POST', body: fd }).then(r => r.json());
-                if (!res || !res.success) throw new Error(res?.message || 'Lỗi tải video');
+                if (!res || !res.success) throw new Error(res?.message || 'Lỗi tải file');
                 mobileState.sourceVideoPath = res.filePath;
                 mobileState.sourceVideoUrl = resolveServerUrl(res.fileUrl);
-                // Khi chọn file .MP4 từ máy, tự động xóa link TikTok cũ ở ô trên để máy chủ chạy đúng file .MP4 vừa chọn!
                 const urlInput = document.getElementById('mobTiktokUrl');
                 if (urlInput) urlInput.value = '';
                 const btnClr = document.getElementById('btnClearMobSourceVideo');
-                if (btnClr) btnClr.style.display = 'inline-block';
-                label.innerHTML = `<span style="color:#34D399;">✅ Đang dùng file máy: ${res.fileName}</span>`;
+                if (btnClr) btnClr.style.display = 'inline-flex';
+                label.innerHTML = `<span style="color:#34D399;">✅ Đang dùng ${isAudio ? 'bài hát' : 'file máy'}: ${res.fileName}</span>`;
                 const vid = document.getElementById('mobSourceVideoPreview');
-                vid.src = mobileState.sourceVideoUrl;
-                vid.style.display = 'block';
-                showMobileToast('✅ Đã tải file video .MP4 thành công!');
+                const aud = document.getElementById('mobSourceAudioPreview');
+                if (isAudio) {
+                    if (vid) { vid.src = ''; vid.style.display = 'none'; }
+                    if (aud) { aud.src = mobileState.sourceVideoUrl; aud.style.display = 'block'; }
+                } else {
+                    if (aud) { aud.src = ''; aud.style.display = 'none'; }
+                    if (vid) { vid.src = mobileState.sourceVideoUrl; vid.style.display = 'block'; }
+                }
+                showMobileToast(`✅ Đã tải ${isAudio ? 'bài hát' : 'file video'} thành công!`);
             } catch (e) {
-                label.innerHTML = '<i class="fas fa-triangle-exclamation" style="color:#F87171;"></i> Lỗi tải video, hãy bấm nút Chọn File .MP4 ở trên để thử lại';
+                label.innerHTML = '<i class="fas fa-triangle-exclamation" style="color:#F87171;"></i> Lỗi tải file, hãy bấm nút Tải Lên ở trên để thử lại';
                 showMobileToast('❌ ' + e.message);
             }
         }
@@ -1633,12 +1677,16 @@
 
             const url = document.getElementById('mobTiktokUrl').value.trim();
             if (!url && !mobileState.sourceVideoPath) {
-                showMobileToast('⚠️ Vui lòng dán link TikTok hoặc chọn video từ điện thoại ở mục 2!');
+                showMobileToast(mobileState.jinMode === 'music_mv'
+                    ? '⚠️ Vui lòng tải file bài hát (.MP3 / .MP4) hoặc dán link bài hát ở mục 2!'
+                    : '⚠️ Vui lòng dán link TikTok / Reels hoặc chọn video từ điện thoại ở mục 2!');
                 return;
             }
 
-            if (mobileState.jinMode === 'character' && !mobileState.kocImagePath) {
-                showMobileToast('⚠️ Vui lòng chọn Ảnh KOC Mẫu ở mục 3!');
+            if ((mobileState.jinMode === 'character' || mobileState.jinMode === 'music_mv') && !mobileState.kocImagePath) {
+                showMobileToast(mobileState.jinMode === 'music_mv'
+                    ? '⚠️ Vui lòng chọn 1 Ảnh Chân Dung của bạn / ca sĩ ở mục 3!'
+                    : '⚠️ Vui lòng chọn Ảnh KOC Mẫu ở mục 3!');
                 return;
             }
             if (mobileState.jinMode === 'product' && !mobileState.productImagePath) {
@@ -1663,6 +1711,7 @@
                         token: mobileState.token,
                         deviceId: mobileState.deviceId,
                         jinMode: mobileState.jinMode,
+                        mvTheme: document.getElementById('mobMvThemeSelect')?.value || 'fantasy_ao_dai',
                         perspective: mobileState.perspective || 'source',
                         scenePreset: document.getElementById('mobScenePresetSelect')?.value || 'reference_image',
                         sceneDescription: (document.getElementById('mobSceneDescInput')?.value || '').trim(),
@@ -2116,7 +2165,8 @@
                 const modeLabels = {
                     character: '👤 Thay KOC',
                     koc_product: '👗 KOC + Sản Phẩm',
-                    product: '📦 Làm Mới SP'
+                    product: '📦 Làm Mới SP',
+                    music_mv: '🎵 MV Ca Nhạc'
                 };
 
                 box.innerHTML = jobs.map((j, idx) => {
