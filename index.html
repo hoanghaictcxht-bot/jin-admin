@@ -69,14 +69,14 @@
 
         /* STATS ROW */
         .stats-bar {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 12px 14px 4px; max-width: 760px; margin: 0 auto;
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 12px 12px 4px; max-width: 760px; margin: 0 auto;
         }
         .stat-box {
             background: var(--card); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;
-            padding: 10px 8px; text-align: center;
+            padding: 9px 6px; text-align: center;
         }
-        .stat-num { font-size: 19px; font-weight: 900; margin-bottom: 2px; }
-        .stat-lbl { font-size: 10.5px; color: var(--muted); font-weight: 600; }
+        .stat-num { font-size: 18px; font-weight: 900; margin-bottom: 2px; }
+        .stat-lbl { font-size: 10px; color: var(--muted); font-weight: 600; }
 
         /* MAIN CONTENT CONTAINER */
         .main-wrap { max-width: 760px; margin: 0 auto; padding: 10px 14px; }
@@ -147,8 +147,8 @@
             position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
             background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(16px);
             border-top: 1px solid rgba(255,255,255,0.1);
-            display: grid; grid-template-columns: repeat(3, 1fr);
-            padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
         }
         .nav-item {
             background: none; border: none; color: var(--muted); display: flex; flex-direction: column;
@@ -206,7 +206,7 @@
 <div class="stats-bar">
     <div class="stat-box">
         <div class="stat-num" style="color:#38bdf8;" id="stTotal">0</div>
-        <div class="stat-lbl">💻 Tổng máy</div>
+        <div class="stat-lbl">💻 Máy PC</div>
     </div>
     <div class="stat-box" style="border-color:rgba(239,68,68,0.35);">
         <div class="stat-num" style="color:#f87171;" id="stPending">0</div>
@@ -214,14 +214,18 @@
     </div>
     <div class="stat-box" style="border-color:rgba(16,185,129,0.35);">
         <div class="stat-num" style="color:#34d399;" id="stActive">0</div>
-        <div class="stat-lbl">⭐ Đã kích hoạt</div>
+        <div class="stat-lbl">⭐ PC VIP</div>
+    </div>
+    <div class="stat-box" style="border-color:rgba(245,158,11,0.45);">
+        <div class="stat-num" style="color:#fde047;" id="stMobileVip">0</div>
+        <div class="stat-lbl">📱 App VIP</div>
     </div>
 </div>
 
 <!-- NỘI DUNG CHÍNH -->
 <div class="main-wrap">
 
-    <!-- TAB 1: DANH SÁCH MÁY KHÁCH & DUYỆT 1-CHẠM -->
+    <!-- TAB 1: DANH SÁCH MÁY KHÁCH PC & DUYỆT 1-CHẠM -->
     <div id="tabDevices" class="tab-view active">
         <div class="filter-row">
             <button class="chip active" onclick="setFilter('all', this)">Tất cả</button>
@@ -238,12 +242,98 @@
         </div>
     </div>
 
-    <!-- TAB 2: CẤP QUYỀN TRƯỚC THEO SỐ ĐIỆN THOẠI ZALO -->
+    <!-- TAB 2: QUẢN LÝ KHÁCH APP ANDROID JIN MOTION PRO (JINVIP) & TRẠNG THÁI SERVER 4G -->
+    <div id="tabMobileVip" class="tab-view">
+        <!-- Trạng thái Server 4G & Hàng đợi -->
+        <div class="form-card" id="mobileServerStatusBox" style="border-color:rgba(56,189,248,0.45);background:linear-gradient(145deg,rgba(15,23,42,0.95),rgba(7,11,20,0.95));">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
+                <div style="font-size:14px;font-weight:800;color:#38bdf8;">🌐 Trạng Thái Máy Chủ JIN MOTION 4G</div>
+                <span id="srvStatusBadge" style="background:rgba(16,185,129,0.2);border:1px solid #10b981;color:#34d399;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:800;">Đang kiểm tra...</span>
+            </div>
+            <div id="srvStatusDetail" style="font-size:12px;color:#cbd5e1;line-height:1.5;">
+                Đang đồng bộ trạng thái đường truyền Cloudflare 4G &amp; bể đa luồng CloakBrowser từ máy chủ PC...
+            </div>
+        </div>
+
+        <!-- Tạo Mã VIP App Android (JINVIP) 1-Chạm -->
+        <div class="form-card" style="border-color:rgba(245,158,11,0.5);">
+            <div style="font-size:15px;font-weight:800;color:#fde047;">📱 Tạo Mã VIP App Android (JIN MOTION PRO)</div>
+            <div style="font-size:12px;color:#94a3b8;line-height:1.45;">
+                Cấp mã <code>JINVIP-...</code> hoặc kích hoạt theo <b>SĐT Zalo</b> cho khách dùng App Android (không cần PC). Hỗ trợ đầy đủ tính năng mới: <b>Chọn Hiệu ứng chuyển cảnh &amp; Màu điện ảnh, Ghép lại video tổng (0 lượt), Tặng miễn phí lần sửa/tạo lại đoạn lẻ</b>!
+            </div>
+
+            <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:10px;">
+                <div>
+                    <label class="form-label">👤 Tên khách hàng:</label>
+                    <input type="text" id="mobVipName" class="form-input" placeholder="VD: Chị Lan - Shop Áo Dài" />
+                </div>
+                <div>
+                    <label class="form-label">📱 SĐT Zalo (Tự đăng nhập):</label>
+                    <input type="tel" id="mobVipPhone" class="form-input" placeholder="VD: 0988123456" style="font-weight:800;color:#38bdf8;" />
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div>
+                    <label class="form-label">🎬 Gói số lượt tạo Video:</label>
+                    <select id="mobVipCredits" class="form-select" style="color:#34d399;font-weight:800;">
+                        <option value="5">🎁 5 Lượt (Dùng thử)</option>
+                        <option value="20">⭐ 20 Lượt Video</option>
+                        <option value="50" selected>⭐ 50 Lượt Video (Phổ biến)</option>
+                        <option value="100">🔥 100 Lượt Video</option>
+                        <option value="250">💎 250 Lượt Video</option>
+                        <option value="500">👑 500 Lượt Video</option>
+                        <option value="99999">♾️ KHÔNG GIỚI HẠN LƯỢT</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label">⏳ Thời hạn sử dụng:</label>
+                    <select id="mobVipDays" class="form-select" style="color:#fde047;font-weight:800;">
+                        <option value="3">⏳ 3 Ngày (Trải nghiệm)</option>
+                        <option value="7">⏳ 7 Ngày (1 Tuần)</option>
+                        <option value="30" selected>⭐ 1 Tháng (30 ngày)</option>
+                        <option value="90">⭐ 3 Tháng (90 ngày)</option>
+                        <option value="180">⭐ 6 Tháng (180 ngày)</option>
+                        <option value="365">⭐ 1 Năm (365 ngày)</option>
+                        <option value="36500">👑 VĨNH VIỄN (Trọn đời)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div>
+                    <label class="form-label">🔄 Lần sửa/tạo lại đoạn miễn phí/video:</label>
+                    <select id="mobVipFreeRetries" class="form-select" style="color:#f472b6;font-weight:800;">
+                        <option value="1">1 lần sửa đoạn miễn phí / video</option>
+                        <option value="3" selected>🎁 3 lần sửa đoạn miễn phí / video</option>
+                        <option value="5">🎁 5 lần sửa đoạn miễn phí / video</option>
+                        <option value="999">♾️ Sửa đoạn không giới hạn (0 lượt)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label">🔑 Mã VIP tùy chọn (Để trống tự tạo):</label>
+                    <input type="text" id="mobVipCustomCode" class="form-input" placeholder="Tự tạo JINVIP-XXXX-XXXX" style="font-family:monospace;text-transform:uppercase;color:#fde047;font-weight:800;" />
+                </div>
+            </div>
+
+            <button class="btn btn-life" style="padding:14px;font-size:14px;margin-top:2px;" onclick="createMobileVipKeyCloud()">
+                👑 TẠO MÃ VIP APP ANDROID &amp; COPY TIN NHẮN ZALO
+            </button>
+        </div>
+
+        <input type="text" id="searchMobileVipBox" class="search-input" oninput="renderMobileVipKeys()" placeholder="🔍 Tìm Mã JINVIP, SĐT Zalo, Tên khách Android..." />
+
+        <div id="mobileVipListWrap" style="display:flex;flex-direction:column;gap:10px;">
+            <div style="text-align:center;padding:24px;color:#94a3b8;">⏳ Đang tải danh sách Mã VIP App Android...</div>
+        </div>
+    </div>
+
+    <!-- TAB 3: CẤP QUYỀN TRƯỚC THEO SỐ ĐIỆN THOẠI ZALO (COMBO PC + APP ANDROID) -->
     <div id="tabPhone" class="tab-view">
         <div class="form-card" style="border-color:rgba(16,185,129,0.45);">
-            <div style="font-size:15px;font-weight:800;color:#34d399;">⚡ Cấp quyền trước theo SĐT Zalo</div>
+            <div style="font-size:15px;font-weight:800;color:#34d399;">⚡ Cấp quyền trước theo SĐT Zalo (PC + App Android)</div>
             <div style="font-size:12px;color:#94a3b8;line-height:1.5;">
-                Khách chưa cần cài App hay gửi mã UID! Bố chỉ cần nhập SĐT Zalo của khách vào đây. Khi khách mở phần mềm và gõ SĐT của họ vào ô bản quyền, máy khách sẽ <b>tự động kích hoạt VIP ngay lập tức</b>.
+                Khách chưa cần cài App hay gửi mã! Bố chỉ cần nhập SĐT Zalo của khách vào đây. Khi khách mở <b>Phần mềm PC</b> hoặc <b>App Android JIN MOTION PRO</b> và gõ SĐT của họ vào ô kích hoạt, hệ thống sẽ <b>tự động mở khóa VIP cả PC lẫn Điện thoại ngay lập tức</b>!
             </div>
 
             <div>
@@ -256,32 +346,42 @@
                 <input type="text" id="preName" class="form-input" placeholder="Ví dụ: Anh Minh - Hà Nội" />
             </div>
 
-            <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:10px;">
+            <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:8px;">
                 <div>
                     <label class="form-label">⏳ Gói thời hạn:</label>
                     <select id="preDays" class="form-select" style="color:#fde047;font-weight:800;">
-                        <option value="3">⏳ 3 Ngày (Dùng thử / Trải nghiệm)</option>
-                        <option value="7">⏳ 7 Ngày (1 Tuần)</option>
-                        <option value="30">⭐ 1 Tháng (30 ngày)</option>
-                        <option value="90">⭐ 3 Tháng (90 ngày)</option>
-                        <option value="180">⭐ 6 Tháng (180 ngày)</option>
-                        <option value="365" selected>⭐ 1 Năm (365 ngày)</option>
-                        <option value="36500">👑 VĨNH VIỄN (Trọn đời)</option>
+                        <option value="3">⏳ 3 Ngày (Thử)</option>
+                        <option value="7">⏳ 7 Ngày</option>
+                        <option value="30">⭐ 1 Tháng</option>
+                        <option value="90">⭐ 3 Tháng</option>
+                        <option value="180">⭐ 6 Tháng</option>
+                        <option value="365" selected>⭐ 1 Năm</option>
+                        <option value="36500">👑 VĨNH VIỄN</option>
                     </select>
                 </div>
                 <div>
-                    <label class="form-label">💻 Số máy tối đa:</label>
+                    <label class="form-label">💻 Số máy PC:</label>
                     <select id="preMax" class="form-select">
-                        <option value="1" selected>1 máy</option>
-                        <option value="2">2 máy</option>
-                        <option value="3">3 máy</option>
-                        <option value="5">5 máy</option>
+                        <option value="1" selected>1 máy PC</option>
+                        <option value="2">2 máy PC</option>
+                        <option value="3">3 máy PC</option>
+                        <option value="5">5 máy PC</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label">📱 Lượt App ĐT:</label>
+                    <select id="preMobileCredits" class="form-select" style="color:#34d399;font-weight:800;">
+                        <option value="20">+20 lượt ĐT</option>
+                        <option value="50" selected>+50 lượt ĐT</option>
+                        <option value="100">+100 lượt ĐT</option>
+                        <option value="500">+500 lượt ĐT</option>
+                        <option value="99999">♾️ Không giới hạn</option>
                     </select>
                 </div>
             </div>
 
             <button class="btn btn-y1" style="padding:14px;font-size:14px;margin-top:4px;" onclick="createPhonePreApproval()">
-                ✅ CẤP QUYỀN CHO SĐT NÀY NGAY
+                ✅ CẤP QUYỀN SĐT NÀY (TỰ KÍCH HOẠT PC &amp; APP ANDROID)
             </button>
         </div>
 
@@ -291,10 +391,10 @@
         </div>
     </div>
 
-    <!-- TAB 3: KÍCH HOẠT MÃ HWID & CÀI APP ĐIỆN THOẠI -->
+    <!-- TAB 4: KÍCH HOẠT MÃ HWID, KEY OFFLINE & CÀI APP ĐIỆN THOẠI -->
     <div id="tabManual" class="tab-view">
         <div class="form-card" style="border-color:rgba(99,102,241,0.45);">
-            <div style="font-size:15px;font-weight:800;color:#a5b4fc;">🔑 Kích hoạt hoặc Tạo Key theo HWID</div>
+            <div style="font-size:15px;font-weight:800;color:#a5b4fc;">🔑 Tạo Key Bản Quyền PC (HWID)</div>
             <div style="font-size:12px;color:#94a3b8;line-height:1.45;">
                 Nếu khách chụp ảnh gửi mã <code>JIN-XXXX-XXXX-XXXX</code>, Bố nhập vào đây để kích hoạt thẳng lên Cloud hoặc copy mã Key gửi Zalo:
             </div>
@@ -327,9 +427,42 @@
                     ☁️ Kích hoạt Online
                 </button>
                 <button class="btn btn-life" style="padding:13px;" onclick="generateOfflineKeyMobile()">
-                    📋 Copy Key Offline
+                    📋 Copy Key PC Offline
                 </button>
             </div>
+        </div>
+
+        <div class="form-card" style="border-color:rgba(236,72,153,0.45);">
+            <div style="font-size:15px;font-weight:800;color:#f472b6;">📲 Tạo Nhanh Key App Android Chữ Ký Số (Offline HMAC)</div>
+            <div style="font-size:12px;color:#94a3b8;line-height:1.45;">
+                Tạo mã <code>JINVIP-C50-...</code> có chữ ký bảo mật HMAC-SHA256. Khách nhập mã này vào App Android sẽ được xác thực và cộng lượt ngay lập tức:
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div>
+                    <label class="form-label">🎬 Số lượt Video:</label>
+                    <select id="offMobCredits" class="form-select" style="color:#34d399;font-weight:800;">
+                        <option value="10">10 Lượt</option>
+                        <option value="30">30 Lượt</option>
+                        <option value="50" selected>50 Lượt</option>
+                        <option value="100">100 Lượt</option>
+                        <option value="300">300 Lượt</option>
+                        <option value="99999">♾️ Không giới hạn</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label">⏳ Thời hạn:</label>
+                    <select id="offMobDays" class="form-select" style="color:#fde047;font-weight:800;">
+                        <option value="7">7 Ngày</option>
+                        <option value="30" selected>30 Ngày (1 Tháng)</option>
+                        <option value="90">90 Ngày (3 Tháng)</option>
+                        <option value="365">365 Ngày (1 Năm)</option>
+                        <option value="36500">👑 Vĩnh viễn</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn" style="background:linear-gradient(135deg,#ec4899,#8b5cf6);padding:13px;" onclick="generateSignedMobileVipKeyNow()">
+                📋 Tạo &amp; Copy Mã JINVIP Chữ Ký Số
+            </button>
         </div>
 
         <div class="form-card" style="border-color:rgba(245,158,11,0.4);">
@@ -350,20 +483,24 @@
 
 </div>
 
-<!-- THANH ĐIỀU HƯỚNG DƯỚI CÙNG (BOTTOM NAV) -->
+<!-- THANH ĐIỀU HƯỚNG DƯỚI CÙNG (BOTTOM NAV - 4 TABS) -->
 <div class="bottom-nav">
     <button class="nav-item active" onclick="switchTab('tabDevices', this)">
         <span class="nav-icon">💻</span>
-        <span>Máy khách & Duyệt</span>
+        <span>Máy Khách PC</span>
         <span class="nav-badge" id="navPendingBadge">0</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('tabMobileVip', this)">
+        <span class="nav-icon">📱</span>
+        <span>App Android VIP</span>
     </button>
     <button class="nav-item" onclick="switchTab('tabPhone', this)">
         <span class="nav-icon">⚡</span>
-        <span>Cấp quyền SĐT</span>
+        <span>Cấp Quyền SĐT</span>
     </button>
     <button class="nav-item" onclick="switchTab('tabManual', this)">
         <span class="nav-icon">🔑</span>
-        <span>Mã HWID / App</span>
+        <span>Tạo Key / App</span>
     </button>
 </div>
 
@@ -667,11 +804,17 @@ async function loadCloudData(notify = false) {
             ...p,
             claimed_hwids: p.bound_hwids || p.claimed_hwids || []
         }));
+        window.cloudState.mobile_vip_keys = Object.values(cloudDb.mobile_vip_keys || {})
+            .filter(k => k && !k.deleted && k.key)
+            .sort((a, b) => new Date(b.updatedAt || b.createdAt || 0).getTime() - new Date(a.updatedAt || a.createdAt || 0).getTime());
+        window.cloudState.mobile_server_status = cloudDb.mobile_server_status || null;
 
         const pendingCount = items.filter(i => i.requested_activation).length;
         document.getElementById('stTotal').textContent = items.length;
         document.getElementById('stPending').textContent = pendingCount;
         document.getElementById('stActive').textContent = items.filter(i => i.is_active).length;
+        const stMobEl = document.getElementById('stMobileVip');
+        if (stMobEl) stMobEl.textContent = window.cloudState.mobile_vip_keys.filter(k => k.active !== false).length;
 
         const navBadge = document.getElementById('navPendingBadge');
         if (navBadge) {
@@ -684,6 +827,8 @@ async function loadCloudData(notify = false) {
 
         renderPreApprovals();
         renderDevices();
+        renderMobileVipKeys();
+        renderMobileServerStatus();
         if (notify) showMsg('✅ Đã cập nhật dữ liệu mới nhất!');
     } catch (e) {
         if (notify) showMsg('❌ Lỗi kết nối: ' + e.message, true);
@@ -792,14 +937,257 @@ function renderPreApprovals() {
         const used = (p.claimed_hwids || []).length;
         const max = p.max_devices || 1;
         const dLabel = p.days > 5000 ? '👑 Vĩnh viễn' : `${p.days} ngày`;
+        const mobC = Number(p.mobile_credits || 50);
+        const mobLbl = mobC >= 99999 ? '♾️ Không giới hạn ĐT' : `📱 ${mobC} lượt ĐT`;
         return `<div style="background:#070b14;border:1px solid rgba(16,185,129,0.35);border-radius:10px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
             <div>
-                <div style="font-weight:800;color:#34d399;font-size:14px;">📱 ${p.phone} <span style="color:#fde047;font-size:12px;">(${dLabel})</span></div>
-                <div style="font-size:11.5px;color:#94a3b8;margin-top:2px;">${p.customer_name || 'Khách hàng'} • Đã kích hoạt: ${used}/${max} máy</div>
+                <div style="font-weight:800;color:#34d399;font-size:14px;">📱 ${p.phone} <span style="color:#fde047;font-size:12px;">(${dLabel} • ${mobLbl})</span></div>
+                <div style="font-size:11.5px;color:#94a3b8;margin-top:2px;">${p.customer_name || 'Khách hàng'} • PC: ${used}/${max} máy ${p.mobile_vip_key ? `• Mã ĐT: <code style="color:#38bdf8;">${p.mobile_vip_key}</code>` : ''}</div>
             </div>
-            <button class="btn btn-lock" style="padding:6px 10px;" onclick="deletePrePhone('${p.phone}')">✕ Xóa</button>
+            <div style="display:flex;gap:5px;">
+                <button class="btn btn-del" style="padding:6px 8px;" onclick="copyPhoneCustomerMsg('${p.phone}', '${(p.customer_name || '').replace(/'/g, "\\'")}', '${p.mobile_vip_key || p.phone}', ${mobC}, ${p.days})">📋 Gửi Zalo</button>
+                <button class="btn btn-lock" style="padding:6px 10px;" onclick="deletePrePhone('${p.phone}')">✕</button>
+            </div>
         </div>`;
     }).join('');
+}
+
+function generateRandomVipCode(prefix = 'JINVIP') {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const part = () => Array.from({ length: 4 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+    return `${prefix}-${part()}-${part()}`;
+}
+
+function renderMobileServerStatus() {
+    const badge = document.getElementById('srvStatusBadge');
+    const detail = document.getElementById('srvStatusDetail');
+    const srv = window.cloudState.mobile_server_status;
+    if (!badge || !detail) return;
+    if (!srv) {
+        badge.textContent = '⚪ Chưa có báo cáo từ PC';
+        badge.style.color = '#94a3b8';
+        return;
+    }
+    const updMs = srv.updatedAt ? new Date(srv.updatedAt).getTime() : 0;
+    const isAlive = (Date.now() - updMs) < 10 * 60 * 1000 && srv.tunnelStatus === 'running';
+    badge.textContent = isAlive ? '🟢 4G Online • Sẵn sàng' : `🟡 ${formatTimeAgo(updMs)}`;
+    badge.style.color = isAlive ? '#34d399' : '#fde047';
+    badge.style.borderColor = isAlive ? '#10b981' : '#f59e0b';
+    detail.innerHTML = `
+        • <b>Đường truyền 4G:</b> <span style="color:#38bdf8;font-family:monospace;font-size:11px;">${srv.tunnelUrl || 'Đang mở...'}</span><br/>
+        • <b>Bể luồng Google Vids:</b> <b style="color:#34d399;">${srv.workerProfilesCount || 1} luồng CloakBrowser</b> (${(srv.workerProfiles || ['cloak1']).join(', ')})<br/>
+        • <b>Hàng đợi hiện tại:</b> <b style="color:#fde047;">${srv.activeRunningJobsCount || 0} video đang tạo</b> • <b>${srv.queuedJobsCount || 0} video chờ</b> • Đã xong: <b>${srv.totalCompletedJobsCount || 0} video</b>
+    `;
+}
+
+function buildMobileCustomerZaloMessage(key, customerName, customerPhone, totalCredits, days, freeRetries = 3) {
+    const cText = Number(totalCredits) >= 99999 ? 'Không giới hạn số lượt (Unlimited)' : `${totalCredits} lượt tạo video AI (1080p)`;
+    const dText = Number(days) >= 9999 ? 'Vĩnh viễn (Trọn đời)' : `${days} ngày`;
+    const rText = Number(freeRetries) >= 99 ? 'Miễn phí không giới hạn lần tạo lại đoạn lẻ' : `Tặng miễn phí ${freeRetries} lần sửa/tạo lại đoạn lẻ trên mỗi video`;
+    return [
+        `👑 THÔNG TIN BẢN QUYỀN APP JIN MOTION PRO (ANDROID / IPHONE)`,
+        `━━━━━━━━━━━━━━━━━━━━`,
+        `👤 Khách hàng: ${customerName || 'Quý khách'}${customerPhone ? ' (' + customerPhone + ')' : ''}`,
+        `🔑 Mã VIP Kích Hoạt: ${key}`,
+        ...(customerPhone ? [`📱 Hoặc đăng nhập nhanh bằng chính SĐT Zalo: ${customerPhone}`] : []),
+        `🎬 Gói lượt: ${cText}`,
+        `⏳ Thời hạn: ${dText}`,
+        `✨ Quyền lợi tính năng mới:`,
+        `  • Chọn Hiệu ứng chuyển cảnh & Màu điện ảnh trước khi tạo`,
+        `  • Ghép lại Video Tổng khi đổi hiệu ứng/màu: Miễn phí 0 lượt`,
+        `  • ${rText}`,
+        `━━━━━━━━━━━━━━━━━━━━`,
+        `📲 Link tải App Android (.APK): https://hoanghaictcxht-bot.github.io/jin-admin/JIN_Motion_Pro.apk`,
+        `📞 Hỗ trợ kỹ thuật Zalo Admin Hoàng Hải: 0913.227.766`
+    ].join('\n');
+}
+
+function copyPhoneCustomerMsg(phone, name, key, credits, days) {
+    const msg = buildMobileCustomerZaloMessage(key, name, phone, credits, days, 3);
+    copyTextSafe(msg);
+    showMsg(`📋 Đã copy tin nhắn Zalo gửi khách ${phone}!`);
+}
+
+function renderMobileVipKeys() {
+    const wrap = document.getElementById('mobileVipListWrap');
+    if (!wrap) return;
+    const q = (document.getElementById('searchMobileVipBox')?.value || '').trim().toLowerCase();
+    const list = (window.cloudState.mobile_vip_keys || []).filter(k => {
+        if (!q) return true;
+        const hay = `${k.key} ${k.customerName || ''} ${k.customerPhone || ''}`.toLowerCase();
+        return hay.includes(q);
+    });
+
+    if (!list.length) {
+        wrap.innerHTML = `<div style="text-align:center;padding:28px 14px;color:#64748b;background:var(--card);border-radius:14px;">Chưa có Mã VIP App Android nào. Hãy tạo mã ở khung phía trên!</div>`;
+        return;
+    }
+
+    const now = Date.now();
+    wrap.innerHTML = list.map(k => {
+        const total = Number(k.totalCredits || 50);
+        const used = Number(k.usedCredits || 0);
+        const isUnlim = total >= 99999;
+        const left = isUnlim ? 999999 : Math.max(0, total - used);
+        const expMs = k.expiresAt ? new Date(k.expiresAt).getTime() : 0;
+        const daysLeft = expMs > now ? Math.ceil((expMs - now) / 86400000) : 0;
+        const isLife = daysLeft > 3650;
+        const isActive = k.active !== false && (expMs === 0 || expMs > now) && (isUnlim || left > 0);
+        const freeR = k.freeRetriesPerVideo !== undefined ? Number(k.freeRetriesPerVideo) : 3;
+
+        const statusBadge = k.active === false
+            ? `<span style="background:rgba(239,68,68,0.22);border:1px solid #ef4444;color:#fca5a5;padding:3px 9px;border-radius:10px;font-size:11px;font-weight:800;">🚫 ĐÃ KHÓA</span>`
+            : (isActive
+                ? `<span style="background:rgba(16,185,129,0.2);border:1px solid #10b981;color:#34d399;padding:3px 9px;border-radius:10px;font-size:11px;font-weight:800;">🟢 ĐANG HOẠT ĐỘNG (${isLife ? 'Vĩnh viễn' : daysLeft + ' ngày'})</span>`
+                : `<span style="background:rgba(245,158,11,0.2);border:1px solid #f59e0b;color:#fde047;padding:3px 9px;border-radius:10px;font-size:11px;font-weight:800;">⚠️ HẾT LƯỢT / HẾT HẠN</span>`);
+
+        const safeName = (k.customerName || '').replace(/'/g, "\\'");
+        const safePhone = (k.customerPhone || '').replace(/'/g, "\\'");
+
+        return `<div class="dev-card" style="border-color:${isActive ? 'rgba(245,158,11,0.4)' : 'rgba(255,255,255,0.1)'}">
+            <div class="dev-top">
+                <div>
+                    <div class="cust-name">
+                        <span>👤 ${k.customerName || 'Khách VIP Android'}</span>
+                        ${k.customerPhone ? `<a href="tel:${k.customerPhone}" style="color:#38bdf8;text-decoration:none;">📞 ${k.customerPhone}</a>` : ''}
+                    </div>
+                    <div class="pc-info">
+                        🎬 Còn lại: <b style="color:#34d399;font-size:12.5px;">${isUnlim ? '♾️ Không giới hạn' : `${left}/${total} lượt`}</b> (Đã dùng: ${used}) • 🔄 Sửa đoạn miễn phí: <b>${freeR >= 99 ? '♾️' : freeR + ' lần'}</b>
+                    </div>
+                </div>
+                ${statusBadge}
+            </div>
+
+            <div class="hwid-row">
+                <span class="hwid-code" style="color:#fde047;">${k.key}</span>
+                <div style="display:flex;gap:6px;">
+                    <button class="btn btn-del" style="padding:4px 8px;" onclick="copyTextSafe('${k.key}');showMsg('📋 Đã copy mã ${k.key}')">📋 Copy Mã</button>
+                    <button class="btn btn-y1" style="padding:4px 9px;font-size:11px;" onclick="copyTextSafe(buildMobileCustomerZaloMessage('${k.key}','${safeName}','${safePhone}',${total},${isLife ? 36500 : (daysLeft || 30)},${freeR}));showMsg('📋 Đã copy tin nhắn Zalo gửi khách!')">💬 Copy Zalo</button>
+                </div>
+            </div>
+
+            <div class="action-grid" style="grid-template-columns: repeat(4, 1fr);">
+                <button class="btn btn-m1" onclick="updateMobileVipKeyAction('${k.key}', 'add_credits', 20)">+20 Lượt</button>
+                <button class="btn btn-m3" onclick="updateMobileVipKeyAction('${k.key}', 'add_credits', 50)">+50 Lượt</button>
+                <button class="btn btn-y1" onclick="updateMobileVipKeyAction('${k.key}', 'add_credits', 100)">+100 Lượt</button>
+                <button class="btn btn-life" onclick="updateMobileVipKeyAction('${k.key}', 'extend_days', 30)">⏳ +30 Ngày</button>
+            </div>
+            <div class="action-grid-2">
+                <button class="btn btn-trial" onclick="updateMobileVipKeyAction('${k.key}', 'reset_used', 0)">🔄 Reset đã dùng về 0</button>
+                ${k.active === false
+                    ? `<button class="btn btn-y1" style="padding:8px 6px;font-size:11px;" onclick="updateMobileVipKeyAction('${k.key}', 'unlock', 0)">🔓 Mở Khóa</button>`
+                    : `<button class="btn btn-lock" onclick="updateMobileVipKeyAction('${k.key}', 'lock', 0)">🔒 Khóa Mã</button>`
+                }
+                <button class="btn btn-del" onclick="deleteMobileVipKeyCloud('${k.key}')">🗑️ Xóa</button>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+async function createMobileVipKeyCloud() {
+    const name = (document.getElementById('mobVipName')?.value || '').trim() || 'Khách VIP Android';
+    const phone = normalizePhone(document.getElementById('mobVipPhone')?.value || '');
+    const credits = Number(document.getElementById('mobVipCredits')?.value || 50);
+    const days = Number(document.getElementById('mobVipDays')?.value || 30);
+    const freeRetries = Number(document.getElementById('mobVipFreeRetries')?.value || 3);
+    const customCode = (document.getElementById('mobVipCustomCode')?.value || '').trim().toUpperCase();
+    const key = customCode || (phone.length >= 4 ? `JINVIP-${phone.slice(-4)}-${generateRandomVipCode().split('-').pop()}` : generateRandomVipCode('JINVIP'));
+
+    showMsg(`☁️ Đang tạo Mã VIP ${key} trên Cloud...`);
+    const cur = await readCloudJson('licenses/cloud_licenses.json');
+    const db = cur.json || { updated_at: new Date().toISOString(), records: {}, pre_approvals: {}, mobile_vip_keys: {} };
+    if (!db.mobile_vip_keys) db.mobile_vip_keys = {};
+
+    const expMs = days >= 9999 ? 4102444800000 : (Date.now() + days * 86400000);
+    const nowIso = new Date().toISOString();
+    db.mobile_vip_keys[key] = {
+        key,
+        customerName: name,
+        customerPhone: phone,
+        totalCredits: credits,
+        usedCredits: 0,
+        creditsLeft: credits >= 99999 ? 999999 : credits,
+        freeRetriesPerVideo: freeRetries,
+        expiresAt: new Date(expMs).toISOString(),
+        active: true,
+        createdAt: nowIso,
+        updatedAt: nowIso
+    };
+    db.updated_at = nowIso;
+    await writeCloudJson('licenses/cloud_licenses.json', db, `Create Mobile VIP ${key} (${name})`, cur.sha);
+
+    const msg = buildMobileCustomerZaloMessage(key, name, phone, credits, days, freeRetries);
+    await copyTextSafe(msg);
+
+    if (document.getElementById('mobVipName')) document.getElementById('mobVipName').value = '';
+    if (document.getElementById('mobVipPhone')) document.getElementById('mobVipPhone').value = '';
+    if (document.getElementById('mobVipCustomCode')) document.getElementById('mobVipCustomCode').value = '';
+
+    showMsg(`🎉 Đã tạo ${key} & Copy tin nhắn Zalo gửi khách!`);
+    loadCloudData(false);
+}
+
+async function updateMobileVipKeyAction(key, action, val) {
+    showMsg(`☁️ Đang cập nhật ${key}...`);
+    const cur = await readCloudJson('licenses/cloud_licenses.json');
+    const db = cur.json || { updated_at: new Date().toISOString(), records: {}, pre_approvals: {}, mobile_vip_keys: {} };
+    if (!db.mobile_vip_keys || !db.mobile_vip_keys[key]) return showMsg('❌ Không tìm thấy mã này!', true);
+
+    const entry = db.mobile_vip_keys[key];
+    const now = Date.now();
+    const nowIso = new Date(now).toISOString();
+
+    if (action === 'add_credits') {
+        entry.totalCredits = Math.max(1, Number(entry.totalCredits || 0) + Number(val || 20));
+    } else if (action === 'extend_days') {
+        const curExp = entry.expiresAt ? new Date(entry.expiresAt).getTime() : now;
+        const base = curExp > now ? curExp : now;
+        entry.expiresAt = new Date(base + Number(val || 30) * 86400000).toISOString();
+        entry.active = true;
+    } else if (action === 'reset_used') {
+        entry.usedCredits = 0;
+        entry.resetUsedAt = nowIso;
+    } else if (action === 'lock') {
+        entry.active = false;
+    } else if (action === 'unlock') {
+        entry.active = true;
+    }
+
+    entry.creditsLeft = Number(entry.totalCredits) >= 99999
+        ? 999999
+        : Math.max(0, Number(entry.totalCredits || 0) - Number(entry.usedCredits || 0));
+    entry.updatedAt = nowIso;
+    db.updated_at = nowIso;
+
+    await writeCloudJson('licenses/cloud_licenses.json', db, `Update Mobile VIP ${key} (${action})`, cur.sha);
+    showMsg(`✅ Đã cập nhật ${key} thành công!`);
+    loadCloudData(false);
+}
+
+async function deleteMobileVipKeyCloud(key) {
+    if (!confirm(`Xóa Mã VIP App Android ${key}?`)) return;
+    showMsg(`🗑️ Đang xóa ${key}...`);
+    const cur = await readCloudJson('licenses/cloud_licenses.json');
+    if (cur.exists && cur.json?.mobile_vip_keys?.[key]) {
+        delete cur.json.mobile_vip_keys[key];
+        cur.json.updated_at = new Date().toISOString();
+        await writeCloudJson('licenses/cloud_licenses.json', cur.json, `Delete Mobile VIP ${key}`, cur.sha);
+    }
+    showMsg(`🗑️ Đã xóa ${key}!`);
+    loadCloudData(false);
+}
+
+async function generateSignedMobileVipKeyNow() {
+    const credits = Number(document.getElementById('offMobCredits')?.value || 50);
+    const days = Number(document.getElementById('offMobDays')?.value || 30);
+    const expTs = days >= 9999 ? 4102444800000 : (Date.now() + days * 86400000);
+    const expHex = expTs.toString(16).toUpperCase();
+    const full = await hmacSha256Hex(MASTER_SECRET, `JINVIP|${credits}|${expTs}`);
+    const sig = full.substring(0, 8);
+    const key = `JINVIP-C${credits}-${expHex}-${sig}`;
+    const msg = buildMobileCustomerZaloMessage(key, 'Khách VIP', '', credits, days, 3);
+    await copyTextSafe(msg);
+    showMsg(`📋 Đã tạo & Copy Mã JINVIP Chữ Ký Số:\n${key}`);
 }
 
 async function grantHwid(hwid, action, days, extraName = '', extraPhone = '') {
@@ -894,25 +1282,55 @@ async function createPhonePreApproval() {
     const name = document.getElementById('preName').value.trim();
     const days = Number(document.getElementById('preDays').value || 365);
     const max = Number(document.getElementById('preMax').value || 1);
+    const mobileCredits = Number(document.getElementById('preMobileCredits')?.value || 50);
     if (!phone || phone.length < 8) return showMsg('⚠️ Vui lòng nhập SĐT Zalo hợp lệ!', true);
 
-    showMsg(`☁️ Đang cấp quyền SĐT ${phone}...`);
+    showMsg(`☁️ Đang cấp quyền SĐT ${phone} (PC + App Android)...`);
     const cur = await readCloudJson('licenses/cloud_licenses.json');
-    const db = cur.json || { updated_at: new Date().toISOString(), records: {}, pre_approvals: {} };
+    const db = cur.json || { updated_at: new Date().toISOString(), records: {}, pre_approvals: {}, mobile_vip_keys: {} };
     if (!db.pre_approvals) db.pre_approvals = {};
+    if (!db.mobile_vip_keys) db.mobile_vip_keys = {};
+
+    const existingPre = db.pre_approvals[phone] || {};
+    const autoVipKey = existingPre.mobile_vip_key || `JINVIP-${phone.slice(-4)}-${generateRandomVipCode().split('-').pop()}`;
+    const expMs = days >= 9999 ? 4102444800000 : (Date.now() + days * 86400000);
+    const nowIso = new Date().toISOString();
+
     db.pre_approvals[phone] = {
         phone,
         customer_name: name,
         days,
         plan: 'vip',
         max_devices: max,
-        bound_hwids: db.pre_approvals[phone]?.bound_hwids || [],
-        created_at: new Date().toISOString()
+        allow_mobile: true,
+        mobile_credits: mobileCredits,
+        mobile_vip_key: autoVipKey,
+        bound_hwids: existingPre.bound_hwids || [],
+        created_at: nowIso
     };
-    await writeCloudJson('licenses/cloud_licenses.json', db, `Mobile Pre-approve ${phone}`, cur.sha);
+
+    db.mobile_vip_keys[autoVipKey] = {
+        key: autoVipKey,
+        customerName: name || `Khách SĐT ${phone}`,
+        customerPhone: phone,
+        totalCredits: mobileCredits,
+        usedCredits: db.mobile_vip_keys[autoVipKey]?.usedCredits || 0,
+        creditsLeft: mobileCredits >= 99999 ? 999999 : mobileCredits,
+        freeRetriesPerVideo: 3,
+        expiresAt: new Date(expMs).toISOString(),
+        active: true,
+        createdAt: nowIso,
+        updatedAt: nowIso
+    };
+
+    db.updated_at = nowIso;
+    await writeCloudJson('licenses/cloud_licenses.json', db, `Mobile Pre-approve ${phone} (PC + Mobile VIP)`, cur.sha);
     document.getElementById('prePhone').value = '';
     document.getElementById('preName').value = '';
-    showMsg(`🎉 Đã cấp quyền trước cho SĐT ${phone}!`);
+
+    const msg = buildMobileCustomerZaloMessage(autoVipKey, name || `Khách ${phone}`, phone, mobileCredits, days, 3);
+    await copyTextSafe(msg);
+    showMsg(`🎉 Đã cấp quyền SĐT ${phone} (PC + App Android) & Copy tin nhắn Zalo!`);
     loadCloudData(false);
 }
 
