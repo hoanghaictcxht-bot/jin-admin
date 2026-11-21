@@ -1,6 +1,6 @@
 {
-  "tunnelUrl": "https://backed-nitrogen-bet-pound.trycloudflare.com",
-  "lanUrl": "http://192.168.1.7:3002",
+  "tunnelUrl": "https://nvidia-texture-eng-suite.trycloudflare.com",
+  "lanUrl": "http://192.168.1.129:3002",
   "defaultToken": "",
-  "updatedAt": "2026-11-21T20:47:45.333Z"
+  "updatedAt": "2026-11-21T20:51:23.380Z"
 }
