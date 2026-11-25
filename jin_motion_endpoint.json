@@ -1,6 +1,6 @@
 {
-  "tunnelUrl": "https://bones-impression-singer-notify.trycloudflare.com",
-  "lanUrl": "http://192.168.1.129:3002",
+  "tunnelUrl": "https://local-has-recovered-transmit.trycloudflare.com",
+  "lanUrl": "http://192.168.1.7:3002",
   "defaultToken": "",
-  "updatedAt": "2026-11-24T21:52:45.873Z"
+  "updatedAt": "2026-11-25T01:17:16.193Z"
 }
