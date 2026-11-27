@@ -720,6 +720,42 @@
                     </div>
                 </div>
 
+                <!-- TÙY CHỌN HIỆU ỨNG CHUYỂN CẢNH & HIỆU ỨNG MÀU ĐIỆN ẢNH TRƯỚC KHI TẠO VIDEO -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+                    <div>
+                        <label style="font-size:0.7rem;color:#F472B6;font-weight:800;display:block;margin-bottom:4px;"><i class="fas fa-wand-magic-sparkles"></i> Hiệu ứng chuyển cảnh</label>
+                        <select id="mobTransitionSelect" class="m-input" style="width:100%;padding:9px 10px;font-size:0.76rem;border-color:rgba(236,72,153,0.45);">
+                            <option value="none" selected>⚡ Cắt nối trực tiếp (Chuẩn)</option>
+                            <option value="random">🎲 Ngẫu nhiên mỗi cảnh</option>
+                            <option value="fade">✨ Làm mờ chuyển tiếp (Fade)</option>
+                            <option value="dissolve">💧 Hòa tan quang học</option>
+                            <option value="fadeblack">🌙 Làm mờ qua đen</option>
+                            <option value="fadewhite">☀️ Làm mờ qua trắng</option>
+                            <option value="smoothleft">⏪ Gạt mượt sang trái</option>
+                            <option value="smoothright">⏩ Gạt mượt sang phải</option>
+                            <option value="slideleft">⬅️ Trượt sang trái</option>
+                            <option value="slideright">➡️ Trượt sang phải</option>
+                            <option value="circleopen">⭕ Mở ống kính tròn</option>
+                            <option value="zoomin">🔍 Phóng to chuyển cảnh</option>
+                            <option value="hblur">💨 Làm mờ chuyển động</option>
+                            <option value="radial">🧭 Quạt xoay rẻ</option>
+                            <option value="pixelize">🧩 Điểm ảnh vỡ hạt</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-size:0.7rem;color:#FBBF24;font-weight:800;display:block;margin-bottom:4px;"><i class="fas fa-palette"></i> Màu &amp; Hiệu ứng hình</label>
+                        <select id="mobVisualEffectSelect" class="m-input" style="width:100%;padding:9px 10px;font-size:0.76rem;border-color:rgba(245,158,11,0.45);">
+                            <option value="none" selected>🎨 Tự nhiên gốc 100%</option>
+                            <option value="cinema_warm">🌅 Điện Ảnh Ấm Áp</option>
+                            <option value="vibrant_hdr">💎 Sắc Nét Rực Rỡ HDR</option>
+                            <option value="dreamy_glow">✨ Lung Linh Mộng Mơ</option>
+                            <option value="film_vintage">🎞️ Phim Nhựa Hoài Cổ</option>
+                            <option value="cool_teal">❄️ Điện Ảnh Lạnh</option>
+                            <option value="bw_classic">🎬 Đen Trắng Nghệ Thuật</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div style="margin-top:8px;">
                     <input type="text" id="mobIdentityNotes" class="m-input" style="width:100%;padding:9px 12px;font-size:0.78rem;" placeholder="Ghi chú thêm (VD: Áo khoác thể thao đen, giữ nguyên bối cảnh...)" />
                 </div>
@@ -860,17 +896,17 @@
                         <i class="fas fa-crown"></i> KÍCH HOẠT TÀI KHOẢN MÁY CHỦ ĐÁM MÂY JIN CLOUD:
                     </div>
                     <label style="font-size:0.72rem;font-weight:800;color:#94A3B8;display:block;margin-bottom:4px;">
-                        Nhập Mã VIP JIN Cloud (Do Admin Hoàng Hải cấp riêng cho bạn):
+                        Nhập Số điện thoại Zalo đã đăng ký HOẶC Mã VIP JIN Cloud (JINVIP-...):
                     </label>
                     <div class="input-group">
-                        <input type="text" id="mobCloudVipInput" class="m-input" placeholder="Nhập Mã VIP của bạn (VD: JINVIP-...)" style="text-transform:uppercase;font-weight:900;color:#FBBF24;" />
+                        <input type="text" id="mobCloudVipInput" class="m-input" placeholder="Nhập SĐT Zalo (VD: 0912345678) hoặc Mã JINVIP-..." style="text-transform:uppercase;font-weight:900;color:#FBBF24;" />
                         <button type="button" class="paste-btn" onclick="applySelectedConnectionMode(false)" style="background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;border:none;">
                             <i class="fas fa-check-circle"></i> Kích hoạt VIP
                         </button>
                     </div>
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
-                        <span style="font-size:0.7rem;color:#FBBF24;font-weight:800;">🔑 Mỗi khách hàng sử dụng 1 Mã VIP riêng biệt</span>
-                        <span style="font-size:0.68rem;color:#94A3B8;">Zalo cấp mã: <b style="color:#34D399;">0913.227.766</b></span>
+                        <span style="font-size:0.7rem;color:#FBBF24;font-weight:800;">🔑 Hỗ trợ kích hoạt bằng SĐT Zalo hoặc Mã JINVIP</span>
+                        <span style="font-size:0.68rem;color:#94A3B8;">Zalo Admin: <b style="color:#34D399;">0913.227.766</b></span>
                     </div>
                 </div>
 
@@ -1475,19 +1511,31 @@
             }
 
             let chosenUrl = '';
-            // Nếu đang ở ngoài mạng WiFi nhà (VD: ở công ty hoặc 4G), probeServerReachable sẽ xác thực đúng JIN AI Studio server
+            const isHttpsPage = window.location.protocol === 'https:';
+            // Khi mở qua HTTPS (GitHub Pages), luôn ưu tiên đường truyền HTTPS Cloudflare Tunnel để không bao giờ bị trình duyệt chặn Mixed Content (HTTPS -> HTTP LAN)!
             if (await probeServerReachable(candidateTunnel, 4500)) {
-                if (await probeServerReachable(candidateLan, 1200)) {
+                if (!isHttpsPage && await probeServerReachable(candidateLan, 1200)) {
                     chosenUrl = candidateLan;
                 } else {
                     chosenUrl = candidateTunnel;
                 }
-            } else if (await probeServerReachable(candidateLan, 1800)) {
+            } else if (!isHttpsPage && await probeServerReachable(candidateLan, 1800)) {
                 chosenUrl = candidateLan;
-            } else if (mobileState.serverBaseUrl && !mobileState.serverBaseUrl.includes('.trycloudflare.com') && await probeServerReachable(mobileState.serverBaseUrl, 2500)) {
-                chosenUrl = mobileState.serverBaseUrl;
             } else {
-                chosenUrl = candidateTunnel || DEFAULT_FALLBACK_TUNNEL;
+                // Nếu máy chủ PC vừa khởi động lại và đang đẩy link 4G mới lên GitHub, tự động thử lại tối đa 3 lần (mỗi lần cách nhau 2.2 giây)
+                for (let retryIdx = 0; retryIdx < 3; retryIdx++) {
+                    await new Promise(r => setTimeout(r, 2200));
+                    const freshCloud = await fetchLatestCloudDiscoveryData();
+                    const freshTunnel = (freshCloud && freshCloud.tunnelUrl) || '';
+                    if (freshTunnel && await probeServerReachable(freshTunnel, 3500)) {
+                        mobileState.discoveredTunnelUrl = freshTunnel;
+                        chosenUrl = freshTunnel;
+                        break;
+                    }
+                }
+                if (!chosenUrl) {
+                    chosenUrl = candidateTunnel || DEFAULT_FALLBACK_TUNNEL;
+                }
             }
 
             mobileState.serverBaseUrl = chosenUrl.replace(/\/+$/, '');
@@ -1753,6 +1801,9 @@
                         productImageUrl: mobileState.productImageUrl,
                         aspectRatio: document.getElementById('mobAspectRatio').value,
                         segmentDuration: Number(document.getElementById('mobSegmentDuration').value) || 10,
+                        transition: document.getElementById('mobTransitionSelect')?.value || 'none',
+                        transitionDuration: (document.getElementById('mobTransitionSelect')?.value && document.getElementById('mobTransitionSelect').value !== 'none') ? 0.6 : 0,
+                        visualEffect: document.getElementById('mobVisualEffectSelect')?.value || 'none',
                         identityNotes: document.getElementById('mobIdentityNotes').value.trim()
                     })
                 }).then(r => r.json());
@@ -1868,45 +1919,84 @@
             }
 
             if (Array.isArray(job.segments) && job.segments.length > 0) {
-                segList.innerHTML = job.segments.map((seg) => {
-                    const isDone = seg.status === 'done' && seg.aiVideoUrl;
-                    const isErr = ['error', 'content_error', 'failed'].includes(seg.status);
-                    const isGen = ['generating', 'running'].includes(seg.status);
-                    const statusBadge = isDone
-                        ? '<span style="color:#34D399;font-size:0.72rem;font-weight:800;">✅ Đã xong</span>'
-                        : (isGen
-                            ? '<span style="color:#F472B6;font-size:0.72rem;font-weight:800;"><i class="fas fa-spinner fa-spin"></i> Đang tạo AI...</span>'
-                            : (isErr
-                                ? `<button onclick="retryMobileSeg('${job.jobId}', ${seg.scene_id})" style="background:#EF4444;color:#fff;border:none;border-radius:6px;padding:3px 8px;font-size:0.7rem;font-weight:800;cursor:pointer;">🔄 Tạo lại đoạn này</button>`
-                                : '<span style="color:#FBBF24;font-size:0.72rem;">⏳ Chờ tới lượt</span>'));
-                    return `
-                        <div class="seg-card" style="border-color:${isDone ? 'rgba(16,185,129,0.5)' : (isGen ? '#EC4899' : 'rgba(255,255,255,0.12)')}">
-                            <div style="display:flex;justify-content:space-between;align-items:center;">
-                                <span style="font-size:0.78rem;font-weight:800;color:#F472B6;">🎬 Đoạn ${String(seg.scene_id).padStart(3, '0')} (${seg.timestamp})</span>
-                                ${statusBadge}
+                if (!window._mobSelectedRetrySegs) window._mobSelectedRetrySegs = new Set();
+                const selCount = window._mobSelectedRetrySegs.size;
+                // Không ghi đè lại DOM của danh sách phân đoạn nếu đang có video phân đoạn đang được khách bấm Play hoặc trạng thái các đoạn không thay đổi
+                const segStateKey = job.jobId + '|' + job.segments.map(s => `${s.scene_id}:${s.status}:${s.aiVideoUrl || ''}`).join(',') + '|' + Array.from(window._mobSelectedRetrySegs).sort().join(',');
+                const anySegVideoPlaying = Array.from(segList.querySelectorAll('video')).some(v => v && !v.paused && !v.ended);
+                if (!anySegVideoPlaying && segList.getAttribute('data-seg-state-key') !== segStateKey) {
+                    segList.setAttribute('data-seg-state-key', segStateKey);
+                    const batchToolbarHtml = `
+                        <div style="background:rgba(15,23,42,0.92);border:1px solid rgba(236,72,153,0.45);border-radius:10px;padding:8px 10px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;">
+                            <div style="font-size:0.72rem;color:#F8FAFC;font-weight:800;">
+                                <i class="fas fa-check-double" style="color:#F472B6;"></i> Chọn đoạn chưa ưng ý để tạo lại <span style="color:#34D399;font-size:0.67rem;">(Tặng 3 lần sửa đoạn miễn phí/video)</span>:
                             </div>
-                            <div class="seg-videos">
-                                <div>
-                                    <video src="${resolveServerUrl(seg.sourceClipUrl)}" controls preload="metadata" muted playsinline></video>
-                                    <div style="font-size:0.66rem;color:#38BDF8;text-align:center;margin-top:3px;font-weight:700;">Video gốc #${seg.scene_id}</div>
-                                </div>
-                                <div>
-                                    ${isDone
-                                        ? `<video src="${resolveServerUrl(seg.aiVideoUrl)}" controls preload="metadata" playsinline style="border-color:#10B981;"></video>
-                                           <div style="font-size:0.66rem;color:#34D399;text-align:center;margin-top:3px;font-weight:800;">
-                                               ✨ Video AI #${seg.scene_id}
-                                               <span onclick="downloadMobileVideoSmart('${resolveServerUrl(seg.aiVideoUrl)}', '${job.product}_doan_${seg.scene_id}.mp4')" style="color:#38BDF8;text-decoration:underline;cursor:pointer;margin-left:5px;">(📥 Tải .MP4)</span>
-                                               <span onclick="retryMobileSeg('${job.jobId}', ${seg.scene_id})" style="color:#F472B6;text-decoration:underline;cursor:pointer;margin-left:5px;">(🔄 Tạo lại)</span>
-                                           </div>`
-                                        : `<div style="height:180px;border-radius:8px;background:#03050a;border:1px dashed rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:0.72rem;color:#64748B;text-align:center;padding:8px;">
-                                            ${isGen ? '⚡ Veo 3.1 đang dựng đoạn này...' : 'Đang chờ tạo AI'}
-                                           </div>`
-                                    }
-                                </div>
+                            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                                <button type="button" onclick="toggleSelectAllMobileSegs('${job.jobId}', ${job.segments.length})" style="background:rgba(56,189,248,0.16);border:1px solid rgba(56,189,248,0.45);color:#38BDF8;border-radius:7px;padding:5px 8px;font-size:0.68rem;font-weight:800;cursor:pointer;">
+                                    ☑️ Chọn tất cả
+                                </button>
+                                <button type="button" id="mobBatchRetryBtn" onclick="retrySelectedMobileSegs('${job.jobId}')" style="background:linear-gradient(135deg,#EC4899,#8B5CF6);color:#fff;border:none;border-radius:7px;padding:5px 10px;font-size:0.7rem;font-weight:900;cursor:pointer;box-shadow:0 2px 8px rgba(236,72,153,0.4);">
+                                    🔄 Tạo lại đã chọn (<span id="mobBatchRetryCount">${selCount}</span>)
+                                </button>
+                                <button type="button" onclick="remergeMobileProjectNow('${job.jobId}')" style="background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.55);color:#34D399;border-radius:7px;padding:5px 9px;font-size:0.68rem;font-weight:800;cursor:pointer;">
+                                    🎬 Ghép lại theo Hiệu ứng &amp; Màu (0 lượt)
+                                </button>
                             </div>
                         </div>
                     `;
-                }).join('');
+                    segList.innerHTML = batchToolbarHtml + job.segments.map((seg) => {
+                        const isDone = seg.status === 'done' && seg.aiVideoUrl;
+                        const isErr = ['error', 'content_error', 'failed'].includes(seg.status);
+                        const isGen = ['generating', 'running'].includes(seg.status);
+                        const isChecked = window._mobSelectedRetrySegs.has(Number(seg.scene_id));
+                        const statusBadge = isDone
+                            ? `<div style="display:flex;align-items:center;gap:6px;">
+                                   <span style="color:#34D399;font-size:0.71rem;font-weight:800;">✅ Đã xong</span>
+                                   <button type="button" onclick="retryMobileSeg('${job.jobId}', ${seg.scene_id})" style="background:rgba(236,72,153,0.22);border:1px solid #EC4899;color:#F472B6;border-radius:6px;padding:3px 8px;font-size:0.68rem;font-weight:900;cursor:pointer;">🔄 Tạo lại đoạn này</button>
+                               </div>`
+                            : (isGen
+                                ? '<span style="color:#F472B6;font-size:0.72rem;font-weight:800;"><i class="fas fa-spinner fa-spin"></i> Đang tạo AI...</span>'
+                                : (isErr
+                                    ? `<button type="button" onclick="retryMobileSeg('${job.jobId}', ${seg.scene_id})" style="background:#EF4444;color:#fff;border:none;border-radius:6px;padding:3px 8px;font-size:0.7rem;font-weight:800;cursor:pointer;">🔄 Tạo lại đoạn lỗi</button>`
+                                    : `<div style="display:flex;align-items:center;gap:6px;">
+                                           <span style="color:#FBBF24;font-size:0.71rem;">⏳ Chờ tới lượt</span>
+                                           <button type="button" onclick="retryMobileSeg('${job.jobId}', ${seg.scene_id})" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.22);color:#CBD5E1;border-radius:6px;padding:2px 7px;font-size:0.66rem;font-weight:800;cursor:pointer;">🔄 Tạo lại</button>
+                                       </div>`));
+                        return `
+                            <div class="seg-card" style="border-color:${isDone ? 'rgba(16,185,129,0.5)' : (isGen ? '#EC4899' : 'rgba(255,255,255,0.12)')}">
+                                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;">
+                                    <label style="display:flex;align-items:center;gap:6px;font-size:0.78rem;font-weight:800;color:#F472B6;cursor:pointer;">
+                                        <input type="checkbox" class="mob-retry-seg-cb" data-scene-id="${seg.scene_id}" ${isChecked ? 'checked' : ''} onchange="onToggleMobileSegCheckbox(${seg.scene_id}, this.checked)" style="width:16px;height:16px;accent-color:#EC4899;cursor:pointer;" />
+                                        🎬 Đoạn ${String(seg.scene_id).padStart(3, '0')} (${seg.timestamp})
+                                    </label>
+                                    ${statusBadge}
+                                </div>
+                                <div class="seg-videos">
+                                    <div>
+                                        <video id="mobSrcVid_${seg.scene_id}" src="${resolveServerUrl(seg.sourceClipUrl)}" controls preload="metadata" muted playsinline></video>
+                                        <div style="font-size:0.66rem;color:#38BDF8;text-align:center;margin-top:4px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;">
+                                            <span>Video gốc #${seg.scene_id}</span>
+                                            <button type="button" onclick="const v=document.getElementById('mobSrcVid_${seg.scene_id}');if(v){if(v.paused)v.play();else v.pause();}" style="background:rgba(56,189,248,0.2);border:1px solid #38BDF8;color:#38BDF8;border-radius:5px;padding:2px 6px;font-size:0.64rem;font-weight:800;cursor:pointer;">▶ Phát</button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        ${isDone
+                                            ? `<video id="mobAiVid_${seg.scene_id}" src="${resolveServerUrl(seg.aiVideoUrl)}" controls preload="metadata" playsinline style="border-color:#10B981;"></video>
+                                               <div style="font-size:0.66rem;color:#34D399;text-align:center;margin-top:4px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:5px;flex-wrap:wrap;">
+                                                   <button type="button" onclick="const v=document.getElementById('mobAiVid_${seg.scene_id}');if(v){if(v.paused)v.play();else v.pause();}" style="background:rgba(16,185,129,0.22);border:1px solid #10B981;color:#34D399;border-radius:5px;padding:2px 7px;font-size:0.65rem;font-weight:800;cursor:pointer;">▶ Phát AI #${seg.scene_id}</button>
+                                                   <span onclick="downloadMobileVideoSmart('${resolveServerUrl(seg.aiVideoUrl)}', '${job.product}_doan_${seg.scene_id}.mp4')" style="color:#38BDF8;text-decoration:underline;cursor:pointer;">(📥 Tải .MP4)</span>
+                                                   <span onclick="retryMobileSeg('${job.jobId}', ${seg.scene_id})" style="color:#F472B6;text-decoration:underline;cursor:pointer;">(🔄 Tạo lại)</span>
+                                               </div>`
+                                            : `<div style="height:180px;border-radius:8px;background:#03050a;border:1px dashed rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:0.72rem;color:#64748B;text-align:center;padding:8px;">
+                                                ${isGen ? '⚡ Veo 3.1 đang dựng đoạn này...' : 'Đang chờ tạo AI'}
+                                               </div>`
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
             }
 
             if (job.finalVideoUrl) {
@@ -2135,17 +2225,101 @@
             }
         }
 
+        function onToggleMobileSegCheckbox(sceneId, checked) {
+            if (!window._mobSelectedRetrySegs) window._mobSelectedRetrySegs = new Set();
+            const sid = Number(sceneId);
+            if (checked) window._mobSelectedRetrySegs.add(sid);
+            else window._mobSelectedRetrySegs.delete(sid);
+            const countEl = document.getElementById('mobBatchRetryCount');
+            if (countEl) countEl.textContent = String(window._mobSelectedRetrySegs.size);
+        }
+
+        function toggleSelectAllMobileSegs(jobId, totalSegs) {
+            if (!window._mobSelectedRetrySegs) window._mobSelectedRetrySegs = new Set();
+            const cbs = Array.from(document.querySelectorAll('.mob-retry-seg-cb'));
+            const allChecked = cbs.length > 0 && cbs.every(cb => cb.checked);
+            cbs.forEach(cb => {
+                cb.checked = !allChecked;
+                const sid = Number(cb.getAttribute('data-scene-id'));
+                if (!allChecked) window._mobSelectedRetrySegs.add(sid);
+                else window._mobSelectedRetrySegs.delete(sid);
+            });
+            const countEl = document.getElementById('mobBatchRetryCount');
+            if (countEl) countEl.textContent = String(window._mobSelectedRetrySegs.size);
+        }
+
+        async function retrySelectedMobileSegs(jobId) {
+            const selected = window._mobSelectedRetrySegs ? Array.from(window._mobSelectedRetrySegs) : [];
+            if (selected.length === 0) {
+                showMobileToast('⚠️ Vui lòng tích chọn ít nhất 1 đoạn cần tạo lại!');
+                return;
+            }
+            try {
+                await ensureLiveServerConnection();
+                const transition = document.getElementById('mobTransitionSelect')?.value || 'none';
+                const visualEffect = document.getElementById('mobVisualEffectSelect')?.value || 'none';
+                showMobileToast(`🔄 Đang gửi yêu cầu tạo lại ${selected.length} đoạn (Đoạn ${selected.join(', ')})...`);
+                const res = await fetch(resolveServerUrl(`/api/jin-motion-mobile/job/${encodeURIComponent(jobId)}/retry-segment`), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sceneIds: selected,
+                        transition,
+                        transitionDuration: transition === 'none' ? 0 : 0.6,
+                        visualEffect
+                    })
+                }).then(r => r.json());
+                if (!res || !res.success) throw new Error(res?.message || 'Lỗi tạo lại các đoạn đã chọn');
+                window._mobSelectedRetrySegs.clear();
+                renderMobileJobState(res.job);
+                startPollingMobileJob(jobId);
+            } catch (e) {
+                showMobileToast('❌ ' + e.message);
+            }
+        }
+
         async function retryMobileSeg(jobId, sceneId) {
             try {
+                await ensureLiveServerConnection();
+                const transition = document.getElementById('mobTransitionSelect')?.value || 'none';
+                const visualEffect = document.getElementById('mobVisualEffectSelect')?.value || 'none';
                 showMobileToast(`🔄 Đang yêu cầu tạo lại Đoạn ${sceneId}...`);
                 const res = await fetch(resolveServerUrl(`/api/jin-motion-mobile/job/${encodeURIComponent(jobId)}/retry-segment`), {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ sceneId })
+                    body: JSON.stringify({
+                        sceneId,
+                        transition,
+                        transitionDuration: transition === 'none' ? 0 : 0.6,
+                        visualEffect
+                    })
                 }).then(r => r.json());
                 if (!res || !res.success) throw new Error(res?.message || 'Lỗi tạo lại');
                 renderMobileJobState(res.job);
                 startPollingMobileJob(jobId);
+            } catch (e) {
+                showMobileToast('❌ ' + e.message);
+            }
+        }
+
+        async function remergeMobileProjectNow(jobId) {
+            try {
+                await ensureLiveServerConnection();
+                const transition = document.getElementById('mobTransitionSelect')?.value || 'none';
+                const visualEffect = document.getElementById('mobVisualEffectSelect')?.value || 'none';
+                showMobileToast('🎬 Đang ghép lại toàn bộ video với Hiệu ứng & Màu đang chọn (Miễn phí 0 lượt)...', 4500);
+                const res = await fetch(resolveServerUrl(`/api/jin-motion-mobile/job/${encodeURIComponent(jobId)}/remerge`), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        transition,
+                        transitionDuration: transition === 'none' ? 0 : 0.6,
+                        visualEffect
+                    })
+                }).then(r => r.json());
+                if (!res || !res.success) throw new Error(res?.message || 'Lỗi ghép lại video');
+                renderMobileJobState(res.job);
+                showMobileToast('🎉 Đã ghép lại xong video tổng với Hiệu ứng & Màu mới (0 lượt)!', 4500);
             } catch (e) {
                 showMobileToast('❌ ' + e.message);
             }
