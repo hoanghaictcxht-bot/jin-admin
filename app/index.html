@@ -232,6 +232,16 @@
             }
             window.location.href = APK_CLEAN_URL;
         }
+            // Tự động chuyển tiếp ?token=... (nếu có) vào nút Mở Ứng Dụng Dùng Luôn
+        (function forwardTokenToWebBtn() {
+            var qs = window.location.search || '';
+            if (qs && qs.length > 1) {
+                var webBtn = document.querySelector('.btn-web');
+                if (webBtn) {
+                    webBtn.href = 'https://hoanghaictcxht-bot.github.io/jin-admin/jin-motion/' + qs;
+                }
+            }
+        })();
     </script>
 </body>
 </html>
