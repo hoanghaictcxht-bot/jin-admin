@@ -1445,8 +1445,14 @@
             // 1. Nếu khách quét mã QR mở trực tiếp từ máy tính của khách (http://192.168.x.x:3002 hoặc https://xxx.trycloudflare.com)
             const isDirectHost = window.location.protocol.startsWith('http') && !window.location.hostname.includes('github.io');
             const urlParams = new URLSearchParams(window.location.search || '');
-            const rawUrlToken = (urlParams.get('token') || urlParams.get('key') || '').trim().toUpperCase();
+            const rawUrlToken = (urlParams.get('token') || urlParams.get('key') || urlParams.get('hwid') || '').trim().toUpperCase();
             const urlToken = REVOKED_TOKENS.includes(rawUrlToken) ? '' : rawUrlToken;
+            const urlSrv = (urlParams.get('srv') || '').trim().replace(/\/+$/, '');
+            if (urlSrv && urlSrv.startsWith('https://') && await probeServerReachable(urlSrv, 3500)) {
+                mobileState.serverBaseUrl = urlSrv;
+                mobileState.discoveredTunnelUrl = urlSrv;
+                localStorage.setItem('jin_motion_server_url', urlSrv);
+            }
 
             if (isDirectHost) {
                 mobileState.serverBaseUrl = window.location.origin.replace(/\/+$/, '');
@@ -1611,6 +1617,19 @@
                     infoCard.innerHTML = `<span style="color:#F87171;font-weight:800;">❌ ${res?.message || 'Mã kết nối không hợp lệ'}</span>`;
                     if (!silent) showMobileToast('❌ ' + (res?.message || 'Mã không hợp lệ'));
                     return false;
+                }
+
+                // Nếu khách nhập Mã Máy PC riêng của khách (VD: JIN-5448-0ECD-94C1) và máy PC của khách đã có đường truyền 4G riêng (redirectServerUrl),
+                // tự động chuyển hướng kết nối sang chính PC của khách đó!
+                if (res.redirectServerUrl && res.redirectServerUrl !== mobileState.serverBaseUrl) {
+                    const cleanRedirect = String(res.redirectServerUrl).trim().replace(/\/+$/, '');
+                    if (cleanRedirect.startsWith('https://') && await probeServerReachable(cleanRedirect, 3500)) {
+                        mobileState.serverBaseUrl = cleanRedirect;
+                        mobileState.discoveredTunnelUrl = cleanRedirect;
+                        localStorage.setItem('jin_motion_server_url', cleanRedirect);
+                        const srvInp = document.getElementById('mobServerUrlInput');
+                        if (srvInp) srvInp.value = cleanRedirect;
+                    }
                 }
 
                 pill.classList.remove('disconnected');
